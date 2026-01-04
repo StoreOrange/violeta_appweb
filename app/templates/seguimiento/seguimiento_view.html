@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Seguimiento Scrum | Violeta Workspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1f1d2b;
+      --muted: #6b7280;
+      --violet: #6d28d9;
+      --violet-dark: #4c1d95;
+      --bg: #f6f4fb;
+      --card: #ffffff;
+      --line: #e7ddf8;
+      --accent: #f59e0b;
+    }
+    body {
+      background: radial-gradient(1000px 500px at 10% -10%, #f0e9ff 0%, #f7f7fb 45%) no-repeat;
+      font-family: "Sora", Arial, sans-serif;
+      color: var(--ink);
+    }
+    .main-header {
+      background: linear-gradient(180deg, #ffffff 0%, #fbf9ff 100%);
+      border-radius: 0 0 22px 22px;
+      box-shadow: 0 12px 30px #b7a6e522;
+      padding: 1.4rem 2.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #ede7fb;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .main-header h1 {
+      margin: 0;
+      font-size: 1.7rem;
+      font-weight: 700;
+    }
+    .main-header p {
+      margin: 0.2rem 0 0;
+      color: var(--muted);
+    }
+    .btn-soft {
+      background: #ede7fb;
+      color: var(--violet-dark);
+      border: none;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 0.6rem 1.2rem;
+    }
+    .scrum-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 0 2.8rem 2.6rem;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 34px rgba(88, 70, 122, 0.12);
+      padding: 1.8rem 2rem;
+    }
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      color: var(--violet-dark);
+      margin-bottom: 1rem;
+    }
+    .form-label {
+      font-weight: 600;
+      color: var(--violet-dark);
+    }
+    .form-control, .form-select {
+      border-radius: 12px;
+      border-color: #e6defa;
+    }
+    .sprint-list {
+      display: grid;
+      gap: 0.8rem;
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 0.3rem;
+    }
+    .sprint-item {
+      border: 1px solid #efe8fb;
+      border-radius: 16px;
+      padding: 0.9rem 1rem;
+      background: #fdfbff;
+    }
+    .sprint-item h6 {
+      margin: 0 0 0.35rem;
+      font-weight: 700;
+    }
+    .sprint-meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .progress {
+      height: 8px;
+      border-radius: 999px;
+      background: #efe8fb;
+    }
+    .progress-bar {
+      background: linear-gradient(90deg, #6d28d9, #8b5cf6);
+    }
+    .timeline {
+      display: grid;
+      gap: 0.9rem;
+      margin-top: 1rem;
+    }
+    .timeline-item {
+      border: 1px dashed #e4d7ff;
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      background: #fbf8ff;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: #ede7fb;
+      color: var(--violet-dark);
+    }
+    .task-list {
+      display: grid;
+      gap: 0.5rem;
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid #efe8fb;
+      border-radius: 12px;
+      padding: 0.6rem;
+      background: #fbfaff;
+    }
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: #fff;
+      border: 1px solid #efe8fb;
+      border-radius: 10px;
+      padding: 0.45rem 0.6rem;
+      font-size: 0.9rem;
+    }
+    .nav-tabs .nav-link {
+      color: var(--violet-dark);
+      font-weight: 600;
+      border: none;
+      border-radius: 999px;
+      margin-right: 0.4rem;
+      background: #f3edff;
+    }
+    .nav-tabs .nav-link.active {
+      background: var(--violet);
+      color: #fff;
+    }
+    .tab-pane {
+      padding-top: 1rem;
+    }
+    .tab-page {
+      background: #fff;
+      border: 1px solid #efe8fb;
+      border-radius: 20px;
+      padding: 1.6rem;
+      box-shadow: 0 14px 28px rgba(31, 21, 68, 0.08);
+    }
+    .tab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      gap: 1.4rem;
+      align-items: start;
+    }
+    .tab-pane .panel-section {
+      background: #fff;
+      border: 1px solid #efe8fb;
+      border-radius: 16px;
+      padding: 1.4rem 1.6rem;
+      box-shadow: 0 12px 24px rgba(31, 21, 68, 0.08);
+      margin-bottom: 1.4rem;
+    }
+    .tab-pane .panel-section h5 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--violet-dark);
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .jira-layout {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 1.4rem;
+    }
+    .jira-sidebar {
+      background: #fbf8ff;
+      border: 1px solid #e9ddff;
+      border-radius: 16px;
+      padding: 1.2rem 1.3rem;
+    }
+    .jira-sidebar h6 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+    .jira-main {
+      background: #fff;
+      border: 1px solid #efe8fb;
+      border-radius: 16px;
+      padding: 1.3rem 1.6rem;
+      box-shadow: 0 12px 24px rgba(31, 21, 68, 0.08);
+    }
+    .jira-subtabs {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    .jira-subtabs button {
+      border: none;
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      background: #f3edff;
+      color: var(--violet-dark);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .jira-subtabs button.active {
+      background: var(--violet);
+      color: #fff;
+    }
+    .jira-panel {
+      display: none;
+    }
+    .jira-panel.active {
+      display: block;
+    }
+    .backlog-list {
+      display: grid;
+      gap: 0.7rem;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+    .backlog-item {
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid #efe8fb;
+      background: #fbfaff;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .jira-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+    .board-col {
+      background: #fbf8ff;
+      border: 1px dashed #e4d7ff;
+      border-radius: 14px;
+      padding: 0.9rem;
+      min-height: 240px;
+    }
+    .board-col h6 {
+      margin: 0 0 0.6rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--violet-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .board-task {
+      background: #fff;
+      border: 1px solid #efe8fb;
+      border-radius: 10px;
+      padding: 0.6rem 0.7rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.85rem;
+    }
+    .board-task:last-child { margin-bottom: 0; }
+    .table-scrum {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 22px rgba(31, 21, 68, 0.08);
+    }
+    .table-scrum th, .table-scrum td {
+      padding: 0.7rem 0.8rem;
+      border-bottom: 1px solid #efe8fb;
+      vertical-align: middle;
+    }
+    .table-scrum th {
+      background: #f5f0ff;
+      color: var(--violet-dark);
+      font-weight: 700;
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .estado-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.18rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .backlog-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.6rem;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .backlog-table th, .backlog-table td {
+      padding: 0.6rem 0.7rem;
+      border-bottom: 1px solid #efe8fb;
+      font-size: 0.88rem;
+      vertical-align: middle;
+    }
+    .backlog-table th {
+      background: #f5f0ff;
+      color: var(--violet-dark);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+    }
+    .mini-input {
+      max-width: 90px;
+    }
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.8rem;
+    }
+    .role-card {
+      border: 1px solid #efe8fb;
+      border-radius: 12px;
+      padding: 0.7rem;
+      background: #fbfaff;
+    }
+    .burndown-box {
+      border: 1px dashed #e4d7ff;
+      border-radius: 12px;
+      padding: 0.8rem;
+      background: #fbf8ff;
+    }
+    @media (max-width: 980px) {
+      .scrum-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1.4rem 2rem;
+      }
+      .main-header {
+        padding: 1.2rem 1.6rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="main-header">
+    <div>
+      <h1>Seguimiento Scrum</h1>
+      <p>Organiza sprints, asigna tareas y controla el avance por proyecto.</p>
+    </div>
+    <a href="{{ url_for('usuario.dashboard') }}" class="btn btn-soft">
+      <i class="bi bi-arrow-left"></i> Volver al dashboard
+    </a>
+  </header>
+
+  <main class="scrum-grid">
+    <section class="card">
+      <ul class="nav nav-tabs" id="scrumTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tab-gestion" data-bs-toggle="tab" data-bs-target="#pane-gestion" type="button" role="tab">Gestion de Sprint</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-seguimiento" data-bs-toggle="tab" data-bs-target="#pane-seguimiento" type="button" role="tab">Seguimiento por Proyecto</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="scrumTabsContent">
+        <div class="tab-pane fade show active" id="pane-gestion" role="tabpanel">
+          <div class="tab-page">
+            <div class="tab-grid">
+              <div class="panel-section">
+            <h5><i class="bi bi-plus-circle"></i> Crear sprint</h5>
+            <form method="POST">
+              <input type="hidden" name="accion" value="crear_sprint">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Proyecto</label>
+                  <select name="idproyecto" class="form-select" required>
+                    <option value="">Selecciona proyecto</option>
+                    {% for proyecto in proyectos %}
+                      <option value="{{ proyecto.idproyecto }}">{{ proyecto.nombre_proyecto }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Nombre del sprint</label>
+                  <input type="text" name="nombre" class="form-control" placeholder="Sprint N (auto)" />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Objetivo</label>
+                  <textarea name="objetivo" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Inicio</label>
+                  <input type="date" name="fecha_inicio" class="form-control" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Fin</label>
+                  <input type="date" name="fecha_fin" class="form-control" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Capacidad</label>
+                  <input type="number" name="capacidad" class="form-control" min="1">
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Estado</label>
+                  <select name="estado" class="form-select">
+                    <option>Planeado</option>
+                    <option>Activo</option>
+                    <option>Cerrado</option>
+                    <option>Cancelado</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-primary w-100" type="submit">
+                    <i class="bi bi-rocket-takeoff"></i> Crear sprint
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+              <div class="panel-section">
+            <h5><i class="bi bi-diagram-3"></i> Crear grupos de sprint</h5>
+            <form method="POST">
+              <input type="hidden" name="accion" value="crear_grupo">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Sprint</label>
+                  <select name="idsprint" class="form-select" required>
+                    <option value="">Selecciona sprint</option>
+                    {% for sprint in sprints %}
+                      <option value="{{ sprint.idsprint }}">{{ sprint.nombre }} ({{ sprint.proyecto }})</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Nombre del grupo</label>
+                  <input type="text" name="nombre_grupo" class="form-control" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Descripcion</label>
+                  <textarea name="descripcion_grupo" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Orden</label>
+                  <input type="number" name="orden_grupo" class="form-control" min="1">
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-primary w-100" type="submit">
+                    <i class="bi bi-folder-plus"></i> Crear grupo
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+              <div class="panel-section">
+            <h5><i class="bi bi-link-45deg"></i> Asignar tareas reales</h5>
+            <form method="POST">
+              <input type="hidden" name="accion" value="asignar_tareas">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Sprint</label>
+                  <select name="idsprint" id="sprintSelect" class="form-select" required>
+                    <option value="">Selecciona sprint</option>
+                    {% for sprint in sprints %}
+                      <option value="{{ sprint.idsprint }}" data-proyecto="{{ sprint.proyecto }}">{{ sprint.nombre }} ({{ sprint.proyecto }})</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Grupo (opcional)</label>
+                  <select name="idsprint_grupo" id="grupoSelect" class="form-select">
+                    <option value="">Sin grupo</option>
+                    {% for grupo in grupos %}
+                      <option value="{{ grupo.idsprint_grupo }}" data-sprint="{{ grupo.idsprint }}">{{ grupo.nombre }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Buscar tareas</label>
+                  <input type="text" id="taskSearch" class="form-control" placeholder="Filtra por titulo o proyecto">
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Tareas disponibles</label>
+                  <div class="task-list" id="taskList">
+                    {% for tarea in backlog %}
+                      <label class="task-item" data-proyecto="{{ tarea.proyecto.nombre_proyecto if tarea.proyecto else '' }}" data-titulo="{{ tarea.titulo|lower }}">
+                        <input type="checkbox" name="tareas_ids" value="{{ tarea.idtarea }}">
+                        <span>{{ tarea.titulo }}</span>
+                        {% if tarea.proyecto %}
+                          <small class="text-muted">({{ tarea.proyecto.nombre_proyecto }})</small>
+                        {% endif %}
+                      </label>
+                    {% else %}
+                      <div class="text-muted">No hay tareas disponibles.</div>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-outline-primary w-100" type="submit">
+                    <i class="bi bi-diagram-3"></i> Asignar tareas
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+              <div class="panel-section">
+            <h5><i class="bi bi-bullseye"></i> Sprint Planning (Goal y DoD)</h5>
+            <form method="POST">
+              <input type="hidden" name="accion" value="actualizar_sprint_plan">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Sprint</label>
+                  <select name="idsprint" class="form-select" required>
+                    <option value="">Selecciona sprint</option>
+                    {% for sprint in sprints %}
+                      <option value="{{ sprint.idsprint }}">{{ sprint.nombre }} ({{ sprint.proyecto }})</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Goal</label>
+                  <textarea name="goal" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Definition of Done</label>
+                  <textarea name="definicion_done" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Capacidad (puntos)</label>
+                  <input type="number" name="capacidad" class="form-control" min="1">
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-primary w-100" type="submit">
+                    <i class="bi bi-check2-circle"></i> Guardar planning
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+              <div class="panel-section">
+            <h5><i class="bi bi-people"></i> Roles Scrum</h5>
+            <form method="POST">
+              <input type="hidden" name="accion" value="asignar_roles">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Sprint</label>
+                  <select name="idsprint" class="form-select" required>
+                    <option value="">Selecciona sprint</option>
+                    {% for sprint in sprints %}
+                      <option value="{{ sprint.idsprint }}">{{ sprint.nombre }} ({{ sprint.proyecto }})</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Rol</label>
+                  <select name="rol" class="form-select" required>
+                    <option value="Product Owner">Product Owner</option>
+                    <option value="Scrum Master">Scrum Master</option>
+                    <option value="Development Team">Development Team</option>
+                  </select>
+                </div>
+                <div class="col-12 role-grid">
+                  {% for usuario in usuarios %}
+                  <label class="role-card">
+                    <input type="checkbox" name="usuarios_ids" value="{{ usuario.idusuario }}">
+                    {{ usuario.nombre }}
+                  </label>
+                  {% endfor %}
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-outline-primary w-100" type="submit">
+                    <i class="bi bi-person-check"></i> Guardar roles
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+              <div class="panel-section">
+            <h5><i class="bi bi-chat-square-dots"></i> Retrospectiva</h5>
+            <form method="POST">
+              <input type="hidden" name="accion" value="crear_retro">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Sprint</label>
+                  <select name="idsprint" class="form-select" required>
+                    <option value="">Selecciona sprint</option>
+                    {% for sprint in sprints %}
+                      <option value="{{ sprint.idsprint }}">{{ sprint.nombre }} ({{ sprint.proyecto }})</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Notas</label>
+                  <textarea name="notas_retro" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-primary w-100" type="submit">
+                    <i class="bi bi-send"></i> Registrar retrospectiva
+                  </button>
+                </div>
+              </div>
+            </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="pane-seguimiento" role="tabpanel">
+          <div class="tab-page">
+            <div class="jira-layout">
+            <aside class="jira-sidebar">
+              <h6>Proyecto</h6>
+              <select id="projectFilter" class="form-select mb-3">
+                <option value="">Todos</option>
+                {% for proyecto in proyectos %}
+                  <option value="{{ proyecto.nombre_proyecto }}">{{ proyecto.nombre_proyecto }}</option>
+                {% endfor %}
+              </select>
+              <h6>Sprint</h6>
+              <select id="sprintBoardSelect" class="form-select mb-3">
+                <option value="">Selecciona sprint</option>
+                {% for sprint in sprints %}
+                  <option value="{{ sprint.idsprint }}" data-proyecto="{{ sprint.proyecto }}">{{ sprint.nombre }} ({{ sprint.proyecto }})</option>
+                {% endfor %}
+              </select>
+              <h6>Estado</h6>
+              <select id="estadoFilter" class="form-select">
+                <option value="">Todos</option>
+                {% for estado in estados %}
+                  <option value="{{ estado.nombre_estado }}">{{ estado.nombre_estado }}</option>
+                {% endfor %}
+              </select>
+            </aside>
+            <section class="jira-main">
+              <div class="jira-subtabs">
+                <button type="button" class="active" data-view="backlogView">Backlog</button>
+                <button type="button" data-view="boardView">Sprint board</button>
+              </div>
+              <div id="backlogView" class="jira-panel active">
+                <div class="backlog-list" id="backlogList"></div>
+              </div>
+              <div id="boardView" class="jira-panel">
+                <div class="jira-board" id="boardContainer">
+                  {% for estado in estados %}
+                  <div class="board-col" data-estado="{{ estado.nombre_estado }}">
+                    <h6>
+                      <span>{{ estado.nombre_estado }}</span>
+                      <span class="estado-pill" style="background: {{ estado.color or '#94a3b8' }};">0</span>
+                    </h6>
+                    <div class="board-list"></div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="burndown-box mt-3">
+                <h6 class="mb-2">Burndown (simple)</h6>
+                <canvas id="burndownCanvas" height="120"></canvas>
+              </div>
+            </section>
+          </div>
+          <div class="tab-grid mt-4">
+            <div class="panel-section">
+              <h5><i class="bi bi-graph-up-arrow"></i> Sprints y avance</h5>
+              <div class="sprint-list">
+                {% for sprint in sprints %}
+                <div class="sprint-item">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6>{{ sprint.nombre }}</h6>
+                      <div class="sprint-meta">{{ sprint.proyecto }}</div>
+                      <div class="sprint-meta">Objetivo: {{ sprint.objetivo or 'Sin objetivo' }}</div>
+                      <div class="sprint-meta">Periodo: {{ sprint.fecha_inicio }} - {{ sprint.fecha_fin }}</div>
+                    </div>
+                    <span class="status-pill">{{ sprint.estado }}</span>
+                  </div>
+                  <div class="mt-2">
+                    <div class="d-flex justify-content-between">
+                      <small class="text-muted">{{ sprint.completadas }} / {{ sprint.total }} tareas</small>
+                      <small class="text-muted">{{ sprint.progreso }}%</small>
+                    </div>
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width: {{ sprint.progreso }}%"></div>
+                    </div>
+                    {% if sprint.grupos %}
+                    <div class="mt-2">
+                      <small class="text-muted">Grupos:</small>
+                      <div class="d-flex flex-wrap gap-1 mt-1">
+                        {% for grupo in sprint.grupos %}
+                          <span class="status-pill">{{ grupo.nombre }}</span>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+                {% else %}
+                <div class="text-muted">No hay sprints creados.</div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="panel-section">
+              <h5><i class="bi bi-clock-history"></i> Reporte cronologico</h5>
+              <div class="timeline">
+                {% for sprint in sprints %}
+                <div class="timeline-item">
+                  <strong>{{ sprint.fecha_inicio }} - {{ sprint.fecha_fin }}</strong>
+                  <div class="sprint-meta">{{ sprint.nombre }} | {{ sprint.proyecto }}</div>
+                  <div class="sprint-meta">Avance: {{ sprint.progreso }}%</div>
+                </div>
+                {% else %}
+                <div class="text-muted">No hay datos cronologicos.</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+  </main>
+
+  <script>
+    const tareasData = {{ tareas_json|tojson }};
+    const sprintData = {{ sprint_json|tojson }};
+    const sprintSelect = document.getElementById('sprintSelect');
+    const taskList = document.getElementById('taskList');
+    const taskSearch = document.getElementById('taskSearch');
+    const grupoSelect = document.getElementById('grupoSelect');
+    const sprintBoardSelect = document.getElementById('sprintBoardSelect');
+    const projectFilter = document.getElementById('projectFilter');
+    const estadoFilter = document.getElementById('estadoFilter');
+    const backlogList = document.getElementById('backlogList');
+    const boardContainer = document.getElementById('boardContainer');
+    const jiraSubtabs = document.querySelectorAll('.jira-subtabs button');
+    const burndownCanvas = document.getElementById('burndownCanvas');
+
+    function filterTasksByProject() {
+      const selected = sprintSelect.options[sprintSelect.selectedIndex];
+      const proyecto = selected ? selected.dataset.proyecto : '';
+      taskList.querySelectorAll('.task-item').forEach(item => {
+        const itemProject = item.dataset.proyecto || '';
+        const visible = !proyecto || itemProject === proyecto;
+        if (visible) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+          const checkbox = item.querySelector('input[type="checkbox"]');
+          if (checkbox) checkbox.checked = false;
+        }
+      });
+    }
+
+    function filterGroupsBySprint() {
+      const selected = sprintSelect.options[sprintSelect.selectedIndex];
+      const sprintId = selected ? selected.value : '';
+      if (!grupoSelect) return;
+      grupoSelect.querySelectorAll('option').forEach(option => {
+        if (!option.value) return;
+        const allowed = option.dataset.sprint === sprintId;
+        option.hidden = !allowed;
+      });
+      if (grupoSelect.selectedOptions.length && grupoSelect.selectedOptions[0].hidden) {
+        grupoSelect.value = '';
+      }
+    }
+
+    function filterTasksBySearch() {
+      const value = (taskSearch.value || '').toLowerCase();
+      taskList.querySelectorAll('.task-item').forEach(item => {
+        const titulo = item.dataset.titulo || '';
+        const proyecto = item.dataset.proyecto || '';
+        const matches = titulo.includes(value) || proyecto.toLowerCase().includes(value);
+        const visible = matches;
+        if (visible) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+          const checkbox = item.querySelector('input[type="checkbox"]');
+          if (checkbox) checkbox.checked = false;
+        }
+      });
+    }
+
+    sprintSelect.addEventListener('change', () => {
+      filterTasksByProject();
+      filterGroupsBySprint();
+    });
+    if (taskSearch) {
+      taskSearch.addEventListener('input', filterTasksBySearch);
+    }
+    filterGroupsBySprint();
+
+    function getFilters() {
+      return {
+        proyecto: projectFilter ? projectFilter.value : '',
+        sprint: sprintBoardSelect ? sprintBoardSelect.value : '',
+        estado: estadoFilter ? estadoFilter.value : ''
+      };
+    }
+
+    function renderBacklog() {
+      if (!backlogList) return;
+      const { proyecto } = getFilters();
+      const backlog = tareasData.filter(t => !t.idsprint);
+      backlogList.innerHTML = '';
+      backlog
+        .filter(t => !proyecto || t.proyecto === proyecto)
+        .forEach(task => {
+          const item = document.createElement('div');
+          item.className = 'backlog-item';
+          item.innerHTML = `<span>${task.titulo}</span><small class="text-muted">${task.proyecto || ''}</small>`;
+          backlogList.appendChild(item);
+        });
+      if (!backlogList.children.length) {
+        backlogList.innerHTML = '<div class="text-muted">No hay tareas en backlog.</div>';
+      }
+    }
+
+    function renderBoard() {
+      if (!boardContainer) return;
+      const { proyecto, sprint, estado } = getFilters();
+      const columns = boardContainer.querySelectorAll('.board-col');
+      columns.forEach(col => {
+        col.querySelector('.board-list').innerHTML = '';
+        col.querySelector('.estado-pill').textContent = '0';
+      });
+      if (!sprint) return;
+      const tasks = tareasData.filter(t => String(t.idsprint || '') === String(sprint));
+      tasks
+        .filter(t => (!proyecto || t.proyecto === proyecto))
+        .filter(t => (!estado || t.estado === estado))
+        .forEach(task => {
+          const col = boardContainer.querySelector(`.board-col[data-estado="${task.estado}"]`);
+          if (!col) return;
+          const item = document.createElement('div');
+          item.className = 'board-task';
+          item.textContent = task.titulo;
+          col.querySelector('.board-list').appendChild(item);
+        });
+      columns.forEach(col => {
+        const count = col.querySelectorAll('.board-task').length;
+        col.querySelector('.estado-pill').textContent = String(count);
+      });
+    }
+
+    function syncSprintOptions() {
+      if (!projectFilter || !sprintBoardSelect) return;
+      const value = projectFilter.value;
+      sprintBoardSelect.querySelectorAll('option').forEach(option => {
+        if (!option.value) return;
+        option.hidden = value && option.dataset.proyecto !== value;
+      });
+      if (sprintBoardSelect.selectedOptions.length && sprintBoardSelect.selectedOptions[0].hidden) {
+        sprintBoardSelect.value = '';
+      }
+    }
+
+    function applyJiraFilters() {
+      syncSprintOptions();
+      renderBacklog();
+      renderBoard();
+      renderBurndown();
+    }
+
+    jiraSubtabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        jiraSubtabs.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.jira-panel').forEach(p => p.classList.remove('active'));
+        const target = document.getElementById(btn.dataset.view);
+        if (target) target.classList.add('active');
+      });
+    });
+
+    if (projectFilter) projectFilter.addEventListener('change', applyJiraFilters);
+    if (sprintBoardSelect) sprintBoardSelect.addEventListener('change', applyJiraFilters);
+    if (estadoFilter) estadoFilter.addEventListener('change', applyJiraFilters);
+    applyJiraFilters();
+
+    function renderBurndown() {
+      if (!burndownCanvas || !sprintBoardSelect) return;
+      const sprintId = sprintBoardSelect.value;
+      const ctx = burndownCanvas.getContext('2d');
+      ctx.clearRect(0, 0, burndownCanvas.width, burndownCanvas.height);
+      if (!sprintId) return;
+      const sprint = (sprintData || []).find(s => String(s.idsprint) === String(sprintId));
+      if (!sprint || !sprint.burndown || !sprint.burndown.length) return;
+      const points = sprint.burndown.map(p => p.restante);
+      const max = Math.max(...points, 1);
+      const stepX = burndownCanvas.width / (points.length - 1 || 1);
+      ctx.strokeStyle = '#6d28d9';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      points.forEach((val, idx) => {
+        const x = idx * stepX;
+        const y = burndownCanvas.height - (val / max) * (burndownCanvas.height - 10) - 5;
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

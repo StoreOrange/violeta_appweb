@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mis Repositorios | Violeta Workspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1f1d2b;
+      --muted: #6b7280;
+      --violet: #6d28d9;
+      --violet-dark: #4c1d95;
+      --bg: #f6f4fb;
+      --card: #ffffff;
+      --line: #e7ddf8;
+      --accent: #f59e0b;
+    }
+    body {
+      background: radial-gradient(1000px 500px at 10% -10%, #f0e9ff 0%, #f7f7fb 45%) no-repeat;
+      font-family: "Sora", Arial, sans-serif;
+      color: var(--ink);
+    }
+    .main-header {
+      background: linear-gradient(180deg, #ffffff 0%, #fbf9ff 100%);
+      border-radius: 0 0 22px 22px;
+      box-shadow: 0 12px 30px #b7a6e522;
+      padding: 1.4rem 2.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #ede7fb;
+    }
+    .main-header h1 {
+      margin: 0;
+      font-size: 1.7rem;
+      font-weight: 700;
+    }
+    .main-header p {
+      margin: 0.2rem 0 0;
+      color: var(--muted);
+    }
+    .btn-soft {
+      background: #ede7fb;
+      color: var(--violet-dark);
+      border: none;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 0.6rem 1.2rem;
+    }
+    .repo-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+      gap: 1.6rem;
+      padding: 0 2.5rem 2.5rem;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 28px rgba(88, 70, 122, 0.12);
+      padding: 1.4rem 1.6rem;
+    }
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      color: var(--violet-dark);
+      margin-bottom: 1rem;
+    }
+    .token-helper {
+      background: #fbf8ff;
+      border: 1px dashed #e4d7ff;
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .repo-list {
+      display: grid;
+      gap: 0.9rem;
+      max-height: 560px;
+      overflow-y: auto;
+      padding-right: 0.3rem;
+    }
+    .repo-card {
+      border: 1px solid #efe8fb;
+      border-radius: 16px;
+      padding: 1rem 1.1rem;
+      background: #fdfbff;
+      position: relative;
+    }
+    .repo-card.highlight {
+      border-color: #f8cc7f;
+      background: linear-gradient(135deg, #fff7e7, #ffffff);
+      box-shadow: 0 12px 20px rgba(245, 158, 11, 0.16);
+    }
+    .repo-card h5 {
+      margin: 0 0 0.3rem;
+      font-weight: 700;
+    }
+    .repo-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+    .repo-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: #f2ecff;
+      color: var(--violet-dark);
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+    .repo-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 0.6rem;
+    }
+    .repo-actions button {
+      border-radius: 999px;
+      border: 1px solid #e3d8fb;
+      background: #f5f1ff;
+      color: var(--violet-dark);
+      padding: 0.35rem 0.9rem;
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    .repo-extra {
+      margin-top: 0.6rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 12px;
+      background: #fbf8ff;
+      border: 1px dashed #e6defa;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .tracking-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.7rem;
+      margin-bottom: 1rem;
+    }
+    .tracking-controls label {
+      font-weight: 600;
+      color: var(--violet-dark);
+      font-size: 0.85rem;
+    }
+    .tracking-card {
+      border: 1px solid #efe8fb;
+      border-radius: 16px;
+      padding: 0.9rem 1rem;
+      background: #fdfbff;
+      margin-bottom: 0.6rem;
+    }
+    .tree-panel {
+      border: 1px solid #efe8fb;
+      border-radius: 16px;
+      padding: 0.9rem 1rem;
+      background: #fbfaff;
+    }
+    .tree-path {
+      font-weight: 600;
+      color: var(--violet-dark);
+      margin-bottom: 0.6rem;
+    }
+    .tree-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.4rem;
+    }
+    .tree-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding: 0.45rem 0.6rem;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid #efe8fb;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .tree-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 16px rgba(88, 70, 122, 0.12);
+    }
+    .tree-item span {
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .tree-item small {
+      color: var(--muted);
+    }
+    .code-panel {
+      margin-top: 1rem;
+      border-radius: 16px;
+      border: 1px solid #e7ddf8;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 0.9rem 1rem;
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      max-height: 420px;
+      overflow: auto;
+      white-space: pre;
+    }
+    .code-panel .muted {
+      color: #94a3b8;
+    }
+    .tracking-commit {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.7rem;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #efe8fb;
+    }
+    .tracking-commit:last-child {
+      border-bottom: none;
+    }
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ede7fb;
+      box-shadow: 0 6px 14px rgba(109, 40, 217, 0.15);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #f4efff;
+      color: var(--violet-dark);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .status {
+      margin-top: 0.8rem;
+      font-weight: 600;
+      color: #b45309;
+    }
+    .error {
+      color: #b91c1c;
+    }
+    @media (max-width: 980px) {
+      .repo-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1.4rem 2rem;
+      }
+      .main-header {
+        padding: 1.2rem 1.6rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="main-header">
+    <div>
+      <h1>Mis Repositorios de GitHub</h1>
+      <p>Conecta tu cuenta y gestiona tu portafolio desde el dashboard.</p>
+    </div>
+    <a href="{{ url_for('usuario.dashboard') }}" class="btn btn-soft">
+      <i class="bi bi-arrow-left"></i> Volver al dashboard
+    </a>
+  </header>
+
+  <main class="repo-grid">
+    <section class="card">
+      <div class="card-title">
+        <i class="bi bi-github"></i> Conectar con GitHub
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Personal Access Token</label>
+        <input type="password" id="tokenInput" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <div class="token-helper mt-2">
+          Crea un token en GitHub con permisos <strong>repo</strong>.
+          Ve a Settings -> Developer settings -> Personal access tokens.
+        </div>
+      </div>
+      <button class="btn btn-primary w-100" id="loadReposBtn">
+        <i class="bi bi-cloud-arrow-down"></i> Cargar repositorios
+      </button>
+      <div class="status" id="statusText"></div>
+      <div class="status error" id="errorText"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">
+        <i class="bi bi-kanban"></i> Repositorios detectados
+      </div>
+      <div class="repo-list" id="repoList">
+        <div class="text-muted">Aun no se han cargado repositorios.</div>
+      </div>
+    </section>
+    <section class="card">
+      <div class="card-title">
+        <i class="bi bi-clock-history"></i> Seguimiento del repositorio
+      </div>
+      <div class="text-muted mb-3">Selecciona un repositorio para ver ramas y cambios recientes.</div>
+      <div class="tracking-controls">
+        <div>
+          <label for="branchSelect">Rama</label>
+          <select id="branchSelect" class="form-select">
+            <option value="main">main</option>
+          </select>
+        </div>
+        <div>
+          <label for="commitLimit">Commits a mostrar</label>
+          <select id="commitLimit" class="form-select">
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+            <option value="40">40</option>
+            <option value="60">60</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <div>
+          <label for="filterMain">Filtrar</label>
+          <select id="filterMain" class="form-select">
+            <option value="all">Todas</option>
+            <option value="main">Solo main</option>
+          </select>
+        </div>
+        <div>
+          <label for="toggleAvatars">Autores</label>
+          <select id="toggleAvatars" class="form-select">
+            <option value="show" selected>Mostrar avatar</option>
+            <option value="hide">Ocultar avatar</option>
+          </select>
+        </div>
+      </div>
+      <div id="repoTracking" class="repo-extra d-none"></div>
+      <div class="tree-panel mt-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="tree-path" id="treePath">Raiz</div>
+          <button class="btn btn-outline-secondary btn-sm d-none" id="treeBackBtn">
+            <i class="bi bi-arrow-left"></i> Subir
+          </button>
+        </div>
+        <ul class="tree-list" id="treeList">
+          <li class="text-muted">Selecciona un repositorio para ver archivos y carpetas.</li>
+        </ul>
+      </div>
+      <div class="mt-3">
+        <div class="card-title">
+          <i class="bi bi-code-slash"></i> Vista previa de archivo
+        </div>
+        <div class="text-muted mb-2" id="codeFilename">Ningun archivo seleccionado.</div>
+        <div class="repo-meta mb-2" id="codeMeta"></div>
+        <div id="codePreview" class="code-panel"><span class="muted">Selecciona un archivo para ver el contenido.</span></div>
+        <div class="text-muted mt-2" id="codeSelectedFooter"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const tokenInput = document.getElementById('tokenInput');
+    const statusText = document.getElementById('statusText');
+    const errorText = document.getElementById('errorText');
+    const repoList = document.getElementById('repoList');
+    const loadReposBtn = document.getElementById('loadReposBtn');
+    const branchSelect = document.getElementById('branchSelect');
+    const commitLimit = document.getElementById('commitLimit');
+    const filterMain = document.getElementById('filterMain');
+    const toggleAvatars = document.getElementById('toggleAvatars');
+    const treeList = document.getElementById('treeList');
+    const treePath = document.getElementById('treePath');
+    const treeBackBtn = document.getElementById('treeBackBtn');
+    const codePreview = document.getElementById('codePreview');
+    const codeFilename = document.getElementById('codeFilename');
+    const codeMeta = document.getElementById('codeMeta');
+    const codeSelectedFooter = document.getElementById('codeSelectedFooter');
+
+    const HIGHLIGHT_REPO = 'https://github.com/StoreOrange/ERP_System';
+    const sessionKey = 'github_token_session';
+    let activeRepo = null;
+    let activeTreePath = '';
+    let activeBranch = 'main';
+    const textExtensions = [
+      '.py', '.js', '.ts', '.tsx', '.html', '.css', '.scss', '.md', '.txt',
+      '.json', '.yml', '.yaml', '.sql', '.sh', '.bat', '.ps1', '.toml'
+    ];
+
+    function setStatus(message, isError = false) {
+      statusText.textContent = isError ? '' : message;
+      errorText.textContent = isError ? message : '';
+    }
+
+    function formatDate(value) {
+      if (!value) return 'Sin fecha';
+      const date = new Date(value);
+      return date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit'
+      });
+    }
+
+    function saveToken(token) {
+      sessionStorage.setItem(sessionKey, token);
+    }
+
+    function loadToken() {
+      return sessionStorage.getItem(sessionKey) || '';
+    }
+
+    async function fetchJson(url, token) {
+      const response = await fetch(url, {
+        headers: {
+          'Accept': 'application/vnd.github+json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        const message = data.message || 'No se pudo completar la solicitud.';
+        throw new Error(message);
+      }
+      return response.json();
+    }
+
+    function sortRepos(repos) {
+      return repos.sort((a, b) => {
+        if (a.html_url === HIGHLIGHT_REPO) return -1;
+        if (b.html_url === HIGHLIGHT_REPO) return 1;
+        return new Date(b.updated_at) - new Date(a.updated_at);
+      });
+    }
+
+    function renderRepos(repos) {
+      if (!repos.length) {
+        repoList.innerHTML = '<div class="text-muted">No se encontraron repositorios.</div>';
+        return;
+      }
+      repoList.innerHTML = '';
+      repos.forEach(repo => {
+        const highlight = repo.html_url === HIGHLIGHT_REPO ? 'highlight' : '';
+        const card = document.createElement('div');
+        card.className = `repo-card ${highlight}`;
+        card.innerHTML = `
+          <h5>${repo.name}</h5>
+          <div class="text-muted">${repo.description || 'Sin descripcion.'}</div>
+          <div class="repo-meta">
+            <span><i class="bi bi-code-slash"></i> ${repo.language || 'N/A'}</span>
+            <span><i class="bi bi-star"></i> ${repo.stargazers_count}</span>
+            <span><i class="bi bi-diagram-3"></i> ${repo.forks_count}</span>
+            <span><i class="bi bi-calendar3"></i> ${formatDate(repo.updated_at)}</span>
+          </div>
+          <div class="repo-actions">
+            <a class="btn btn-sm btn-outline-primary" href="${repo.html_url}" target="_blank" rel="noopener">Ver en GitHub</a>
+            <button type="button" data-owner="${repo.owner.login}" data-repo="${repo.name}" class="btn-branches">Ramas</button>
+            <button type="button" data-owner="${repo.owner.login}" data-repo="${repo.name}" class="btn-commits">Commits</button>
+            <button type="button" data-owner="${repo.owner.login}" data-repo="${repo.name}" class="btn-track">Seguimiento</button>
+          </div>
+          <div class="repo-extra d-none"></div>
+        `;
+        repoList.appendChild(card);
+      });
+    }
+
+    async function loadRepos() {
+      const token = tokenInput.value.trim();
+      if (!token) {
+        setStatus('Ingresa un token valido para continuar.', true);
+        return;
+      }
+      setStatus('Cargando repositorios...');
+      try {
+        saveToken(token);
+        const repos = await fetchJson('https://api.github.com/user/repos?per_page=100', token);
+        const ordered = sortRepos(repos);
+        renderRepos(ordered);
+        setStatus(`Se cargaron ${ordered.length} repositorios.`);
+      } catch (error) {
+        const message = error.message.includes('Bad credentials')
+          ? 'Token invalido o sin permisos suficientes.'
+          : error.message.includes('rate limit')
+            ? 'Has alcanzado el limite de solicitudes. Intenta mas tarde.'
+            : error.message;
+        setStatus(message, true);
+      }
+    }
+
+    async function loadRepoDetails(button, endpoint) {
+      const token = tokenInput.value.trim();
+      if (!token) {
+        setStatus('Ingresa un token valido para continuar.', true);
+        return;
+      }
+      const owner = button.dataset.owner;
+      const repo = button.dataset.repo;
+      const card = button.closest('.repo-card');
+      const extra = card.querySelector('.repo-extra');
+      extra.classList.remove('d-none');
+      extra.textContent = 'Cargando...';
+      try {
+        const data = await fetchJson(`https://api.github.com/repos/${owner}/${repo}/${endpoint}`, token);
+        if (endpoint === 'branches') {
+          const branches = data.slice(0, 6).map(item => item.name).join(', ') || 'Sin ramas.';
+          extra.innerHTML = `<strong>Ramas:</strong> ${branches}`;
+        } else {
+          const commits = data.slice(0, 4).map(item => item.commit.message.split('\n')[0]).join(' | ') || 'Sin commits.';
+          extra.innerHTML = `<strong>Commits recientes:</strong> ${commits}`;
+        }
+      } catch (error) {
+        extra.textContent = 'No se pudo cargar la informacion adicional.';
+      }
+    }
+
+    
+    function buildCommitRow(item, showAvatar) {
+      const authorName = item.commit && item.commit.author ? item.commit.author.name : 'Sin autor';
+      const date = item.commit && item.commit.author ? formatDate(item.commit.author.date) : 'Sin fecha';
+      const message = item.commit ? item.commit.message.split('\\n')[0] : 'Sin mensaje';
+      const avatarUrl = item.author && item.author.avatar_url ? item.author.avatar_url : '';
+      const initial = authorName ? authorName.charAt(0).toUpperCase() : '?';
+      const avatarHtml = showAvatar
+        ? (avatarUrl ? `<img class="avatar" src="${avatarUrl}" alt="${authorName}">` : `<div class="avatar">${initial}</div>`)
+        : '';
+      return `
+        <div class="tracking-commit">
+          ${avatarHtml}
+          <div>
+            <strong>${message}</strong>
+            <div class="event-meta">${authorName} - ${date}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function loadRepoTracking(button) {
+      const token = tokenInput.value.trim();
+      if (!token) {
+        setStatus('Ingresa un token valido para continuar.', true);
+        return;
+      }
+      const owner = button.dataset.owner;
+      const repo = button.dataset.repo;
+      activeRepo = { owner, repo };
+      const tracking = document.getElementById('repoTracking');
+      tracking.classList.remove('d-none');
+      tracking.textContent = 'Cargando seguimiento...';
+      try {
+        const branches = await fetchJson(`https://api.github.com/repos/${owner}/${repo}/branches?per_page=100`, token);
+        const branchNames = branches.map(item => item.name);
+        branchSelect.innerHTML = branchNames.map(name => `<option value="${name}">${name}</option>`).join('');
+
+        if (filterMain.value === 'main' && branchNames.includes('main')) {
+          branchSelect.value = 'main';
+        } else if (!branchNames.includes(branchSelect.value)) {
+          branchSelect.value = branchNames[0] || 'main';
+        }
+
+        const selectedBranch = branchSelect.value || 'main';
+        activeBranch = selectedBranch;
+        const limit = commitLimit.value || '20';
+        const commits = await fetchJson(
+          `https://api.github.com/repos/${owner}/${repo}/commits?per_page=${limit}&sha=${selectedBranch}`,
+          token
+        );
+
+        const showAvatar = toggleAvatars.value === 'show';
+        const commitItems = commits.map(item => buildCommitRow(item, showAvatar)).join('');
+        const branchBadge = `<span class="badge text-bg-light">${selectedBranch}</span>`;
+
+        tracking.innerHTML = `
+          <div class="tracking-card">
+            <div class="d-flex justify-content-between align-items-center">
+              <div><strong>Repositorio:</strong> ${owner}/${repo}</div>
+              ${branchBadge}
+            </div>
+            <div class="event-meta mt-1">Ramas: ${branchNames.join(', ') || 'Sin ramas.'}</div>
+          </div>
+          <div class="tracking-card">
+            <div class="mb-2"><strong>Historial reciente</strong></div>
+            ${commitItems || '<div class="text-muted">Sin commits recientes.</div>'}
+          </div>
+        `;
+
+        activeTreePath = '';
+        await loadRepoTree(owner, repo, selectedBranch, '');
+      } catch (error) {
+        tracking.textContent = 'No se pudo cargar el seguimiento del repositorio.';
+      }
+    }
+
+    function isTextFile(path) {
+      const lower = path.toLowerCase();
+      return textExtensions.some(ext => lower.endsWith(ext));
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes && bytes !== 0) return 'N/A';
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      let i = 0;
+      let value = bytes;
+      while (value >= 1024 && i < sizes.length - 1) {
+        value /= 1024;
+        i += 1;
+      }
+      return `${value.toFixed(value >= 10 || i === 0 ? 0 : 1)} ${sizes[i]}`;
+    }
+
+    async function fetchLastCommit(owner, repo, path) {
+      const token = tokenInput.value.trim();
+      const url = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=1&sha=${activeBranch}&path=${encodeURIComponent(path)}`;
+      const data = await fetchJson(url, token);
+      if (!Array.isArray(data) || data.length === 0) return null;
+      return data[0];
+    }
+
+    function decodeBase64Unicode(base64) {
+      try {
+        const binary = atob(base64.replace(/\s/g, ''));
+        const bytes = Uint8Array.from(binary, ch => ch.charCodeAt(0));
+        return new TextDecoder('utf-8').decode(bytes);
+      } catch (error) {
+        return null;
+      }
+    }
+
+    async function loadFileContent(owner, repo, path) {
+      const token = tokenInput.value.trim();
+      if (!token) {
+        setStatus('Ingresa un token valido para continuar.', true);
+        return;
+      }
+      codeFilename.textContent = `Archivo: ${path.split('/').pop()}`;
+      codeSelectedFooter.textContent = `Seleccionado: ${path}`;
+      codeMeta.innerHTML = '';
+      codePreview.innerHTML = '<span class="muted">Cargando archivo...</span>';
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${activeBranch}`;
+      try {
+        const data = await fetchJson(url, token);
+        if (!data || data.type !== 'file') {
+          codePreview.innerHTML = '<span class="muted">No se pudo cargar el archivo.</span>';
+          return;
+        }
+        const sizeText = formatBytes(data.size || 0);
+        let lastCommit = null;
+        try {
+          lastCommit = await fetchLastCommit(owner, repo, path);
+        } catch (error) {
+          lastCommit = null;
+        }
+        const lastAuthor = lastCommit && lastCommit.commit && lastCommit.commit.author
+          ? lastCommit.commit.author.name
+          : 'N/A';
+        const lastDate = lastCommit && lastCommit.commit && lastCommit.commit.author
+          ? formatDate(lastCommit.commit.author.date)
+          : 'N/A';
+        const lastMessage = lastCommit && lastCommit.commit
+          ? lastCommit.commit.message.split('\n')[0]
+          : 'N/A';
+        codeMeta.innerHTML = `
+          <span><i class="bi bi-diagram-2"></i> Ruta: ${path}</span>
+          <span><i class="bi bi-hdd"></i> Tamano: ${sizeText}</span>
+          <span><i class="bi bi-person"></i> Ultimo autor: ${lastAuthor}</span>
+          <span><i class="bi bi-calendar3"></i> Ultima edicion: ${lastDate}</span>
+        `;
+        if (!isTextFile(path)) {
+          codePreview.innerHTML = '<span class="muted">Vista previa no disponible para este tipo de archivo.</span>';
+          return;
+        }
+        const content = decodeBase64Unicode(data.content || '');
+        if (content === null) {
+          codePreview.innerHTML = '<span class="muted">No se pudo decodificar el archivo.</span>';
+          return;
+        }
+        codePreview.textContent = content;
+      } catch (error) {
+        codePreview.innerHTML = '<span class="muted">No se pudo cargar el archivo.</span>';
+      }
+    }
+
+    async function loadRepoTree(owner, repo, branch, path) {
+      const token = tokenInput.value.trim();
+      if (!token) {
+        setStatus('Ingresa un token valido para continuar.', true);
+        return;
+      }
+      treeList.innerHTML = '<li class="text-muted">Cargando estructura...</li>';
+      const encodedPath = path ? `/${encodeURIComponent(path)}` : '';
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents${encodedPath}?ref=${branch}`;
+      try {
+        const data = await fetchJson(url, token);
+        if (!Array.isArray(data)) {
+          treeList.innerHTML = '<li class="text-muted">Ruta invalida.</li>';
+          return;
+        }
+        treePath.textContent = path ? `/${path}` : 'Raiz';
+        treeBackBtn.classList.toggle('d-none', !path);
+        treeList.innerHTML = '';
+        data
+          .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
+          .forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'tree-item';
+            li.dataset.path = item.path;
+            li.dataset.type = item.type;
+            li.innerHTML = `
+              <span>${item.type === 'dir' ? '📁' : '📄'} ${item.name}</span>
+              <small>${item.type === 'dir' ? 'Carpeta' : 'Archivo'}</small>
+            `;
+            treeList.appendChild(li);
+          });
+      } catch (error) {
+        treeList.innerHTML = '<li class="text-muted">No se pudo cargar la estructura.</li>';
+      }
+    }
+
+
+    repoList.addEventListener('click', (event) => {
+      if (event.target.classList.contains('btn-branches')) {
+        loadRepoDetails(event.target, 'branches');
+      }
+      if (event.target.classList.contains('btn-commits')) {
+        loadRepoDetails(event.target, 'commits');
+      }
+      if (event.target.classList.contains('btn-track')) {
+        loadRepoTracking(event.target);
+      }
+    });
+
+    treeList.addEventListener('click', (event) => {
+      const item = event.target.closest('.tree-item');
+      if (!item || !activeRepo) return;
+      const type = item.dataset.type;
+      const path = item.dataset.path;
+      if (type === 'dir') {
+        activeTreePath = path;
+        loadRepoTree(activeRepo.owner, activeRepo.repo, branchSelect.value || 'main', path);
+        codeFilename.textContent = 'Ningun archivo seleccionado.';
+        codeSelectedFooter.textContent = '';
+        codeMeta.innerHTML = '';
+        codePreview.innerHTML = '<span class="muted">Selecciona un archivo para ver el contenido.</span>';
+      }
+      if (type === 'file') {
+        loadFileContent(activeRepo.owner, activeRepo.repo, path);
+      }
+    });
+
+    treeBackBtn.addEventListener('click', () => {
+      if (!activeRepo) return;
+      const parts = activeTreePath.split('/').filter(Boolean);
+      parts.pop();
+      activeTreePath = parts.join('/');
+      loadRepoTree(activeRepo.owner, activeRepo.repo, branchSelect.value || 'main', activeTreePath);
+    });
+
+
+    function reloadTracking() {
+      if (!activeRepo) return;
+      loadRepoTracking({ dataset: activeRepo });
+    }
+
+    branchSelect.addEventListener('change', reloadTracking);
+    commitLimit.addEventListener('change', reloadTracking);
+    filterMain.addEventListener('change', reloadTracking);
+    toggleAvatars.addEventListener('change', reloadTracking);
+
+    loadReposBtn.addEventListener('click', loadRepos);
+
+    const cachedToken = loadToken();
+    if (cachedToken) {
+      tokenInput.value = cachedToken;
+    }
+  </script>
+</body>
+</html>

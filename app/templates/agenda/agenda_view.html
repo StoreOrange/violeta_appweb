@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Agenda | Violeta Workspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1f1d2b;
+      --muted: #6b7280;
+      --violet: #6d28d9;
+      --violet-dark: #4c1d95;
+      --bg: #f6f4fb;
+      --card: #ffffff;
+      --line: #e7ddf8;
+      --accent: #f59e0b;
+    }
+    body {
+      background: radial-gradient(1000px 500px at 10% -10%, #f0e9ff 0%, #f7f7fb 45%) no-repeat;
+      font-family: "Sora", Arial, sans-serif;
+      color: var(--ink);
+    }
+    .main-header {
+      background: linear-gradient(180deg, #ffffff 0%, #fbf9ff 100%);
+      border-radius: 0 0 22px 22px;
+      box-shadow: 0 12px 30px #b7a6e522;
+      padding: 1.4rem 2.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #ede7fb;
+    }
+    .main-header h1 {
+      margin: 0;
+      font-size: 1.7rem;
+      font-weight: 700;
+    }
+    .main-header p {
+      margin: 0.2rem 0 0;
+      color: var(--muted);
+    }
+    .btn-soft {
+      background: #ede7fb;
+      color: var(--violet-dark);
+      border: none;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 0.6rem 1.2rem;
+    }
+    .agenda-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
+      gap: 1.6rem;
+      padding: 0 2.5rem 2.5rem;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 28px rgba(88, 70, 122, 0.12);
+      padding: 1.4rem 1.6rem;
+    }
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      color: var(--violet-dark);
+      margin-bottom: 1rem;
+    }
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+    .calendar-nav {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .calendar-nav button {
+      border: 1px solid var(--line);
+      background: #f5f1ff;
+      border-radius: 10px;
+      padding: 0.35rem 0.7rem;
+      color: var(--violet-dark);
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+    }
+    .calendar-cell {
+      border: 1px solid #efe8fb;
+      background: #fbfaff;
+      border-radius: 12px;
+      min-height: 96px;
+      padding: 0.5rem;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.16s ease, box-shadow 0.16s ease;
+    }
+    .calendar-cell:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px rgba(86, 52, 139, 0.12);
+    }
+    .calendar-cell.outside {
+      opacity: 0.45;
+      background: #f3eefc;
+    }
+    .calendar-cell.active {
+      border-color: var(--violet);
+      box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.15);
+    }
+    .calendar-day {
+      font-weight: 600;
+      color: var(--violet-dark);
+    }
+    .calendar-dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.2rem;
+      margin-top: 0.3rem;
+    }
+    .calendar-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.8rem;
+    }
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .legend i {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .day-events {
+      margin-top: 1.2rem;
+      background: #fbf8ff;
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      border: 1px dashed #e4d7ff;
+    }
+    .day-events h5 {
+      font-size: 0.95rem;
+      margin: 0 0 0.6rem;
+      color: var(--violet-dark);
+    }
+    .day-event-item {
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #efe8fb;
+    }
+    .day-event-item:last-child {
+      border-bottom: none;
+    }
+    .event-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .agenda-form .form-label {
+      font-weight: 600;
+      color: var(--violet-dark);
+    }
+    .agenda-form .form-control,
+    .agenda-form .form-select {
+      border-radius: 12px;
+      border-color: #e6defa;
+    }
+    .agenda-list {
+      display: grid;
+      gap: 0.8rem;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 0.3rem;
+    }
+    .agenda-item {
+      border: 1px solid #efe8fb;
+      border-radius: 16px;
+      padding: 0.9rem 1rem;
+      background: #fdfbff;
+    }
+    .agenda-item h6 {
+      margin: 0 0 0.25rem;
+      font-weight: 700;
+    }
+    .agenda-item .badge {
+      background: #ede7fb;
+      color: var(--violet-dark);
+      font-weight: 600;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-left: 0.4rem;
+    }
+    .agenda-item small {
+      color: var(--muted);
+    }
+    @media (max-width: 980px) {
+      .agenda-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1.4rem 2rem;
+      }
+      .main-header {
+        padding: 1.2rem 1.6rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="main-header">
+    <div>
+      <h1>Agenda de gestion</h1>
+      <p>Planifica reuniones, citas, recordatorios, visitas y notas del equipo.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="{{ url_for('agenda.export_agenda_pdf') }}" class="btn btn-soft">
+        <i class="bi bi-filetype-pdf"></i> Reporte PDF
+      </a>
+      <a href="{{ url_for('agenda.export_agenda_text') }}" class="btn btn-soft">
+        <i class="bi bi-file-earmark-text"></i> Reporte TXT
+      </a>
+      <a href="{{ url_for('usuario.dashboard') }}" class="btn btn-soft">
+        <i class="bi bi-arrow-left"></i> Volver al dashboard
+      </a>
+    </div>
+  </header>
+
+  <main class="agenda-grid">
+    <section class="card">
+      <div class="card-title">
+        <i class="bi bi-calendar-week"></i> Calendario de agenda
+      </div>
+      <div class="calendar-header">
+        <div>
+          <strong id="calendarMonth"></strong>
+          <div class="text-muted" id="calendarYear"></div>
+        </div>
+        <div class="calendar-nav">
+          <button type="button" id="prevMonth"><i class="bi bi-chevron-left"></i></button>
+          <button type="button" id="todayBtn">Hoy</button>
+          <button type="button" id="nextMonth"><i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="calendar-grid text-center fw-semibold text-muted mb-2">
+        <div>Dom</div><div>Lun</div><div>Mar</div><div>Mie</div><div>Jue</div><div>Vie</div><div>Sab</div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="legend">
+        <span><i style="background:#6d28d9"></i> Reunion</span>
+        <span><i style="background:#f59e0b"></i> Cita</span>
+        <span><i style="background:#0ea5e9"></i> Visita</span>
+        <span><i style="background:#10b981"></i> Trabajo</span>
+        <span><i style="background:#14b8a6"></i> Proceso</span>
+        <span><i style="background:#8b5cf6"></i> Recordatorio</span>
+        <span><i style="background:#64748b"></i> Nota</span>
+      </div>
+      <div class="legend">
+        <span><i style="background:#f59e0b"></i> Pendiente</span>
+        <span><i style="background:#10b981"></i> Confirmado</span>
+        <span><i style="background:#0ea5e9"></i> En curso</span>
+        <span><i style="background:#16a34a"></i> Completado</span>
+        <span><i style="background:#f43f5e"></i> Cancelado</span>
+        <span><i style="background:#64748b"></i> Pasada</span>
+      </div>
+      <div class="day-events">
+        <h5 id="dayEventsTitle">Eventos del dia</h5>
+        <div id="dayEventsList" class="text-muted">Selecciona un dia para ver eventos.</div>
+      </div>
+    </section>
+
+    <section class="card agenda-form">
+      <div class="card-title">
+        <i class="bi bi-clipboard-check"></i> Crear nuevo evento
+      </div>
+      <form method="POST">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Titulo</label>
+            <input type="text" name="titulo" class="form-control" required>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Tipo</label>
+            <select name="tipo" class="form-select">
+              <option>Reunion</option>
+              <option>Cita</option>
+              <option>Visita cliente</option>
+              <option>Trabajo</option>
+              <option>Proceso</option>
+              <option>Recordatorio</option>
+              <option>Nota</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Estado</label>
+            <select name="estado" class="form-select">
+              <option>Pendiente</option>
+              <option>Confirmado</option>
+              <option>En curso</option>
+              <option>Completado</option>
+              <option>Cancelado</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Inicio</label>
+            <input type="datetime-local" name="fecha_inicio" id="fechaInicio" class="form-control" required>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Fin</label>
+            <input type="datetime-local" name="fecha_fin" id="fechaFin" class="form-control">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Proyecto</label>
+            <select name="idproyecto" class="form-select">
+              <option value="">Sin proyecto</option>
+              {% for proyecto in proyectos %}
+                <option value="{{ proyecto.idproyecto }}">{{ proyecto.nombre_proyecto }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Cliente</label>
+            <input type="text" name="cliente" class="form-control">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Contacto</label>
+            <input type="text" name="contacto" class="form-control">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Ubicacion</label>
+            <input type="text" name="ubicacion" class="form-control">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Descripcion</label>
+            <textarea name="descripcion" class="form-control" rows="2"></textarea>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Notas</label>
+            <textarea name="notas" class="form-control" rows="2"></textarea>
+          </div>
+          <div class="col-12 form-check mt-2">
+            <input class="form-check-input" type="checkbox" name="enviar_notificacion" id="enviarNotificacion" checked>
+            <label class="form-check-label" for="enviarNotificacion">
+              Enviar notificacion por correo
+            </label>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary w-100" type="submit">
+              <i class="bi bi-calendar-plus"></i> Guardar evento
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="card-title">
+        <i class="bi bi-journal-text"></i> Proximos eventos
+      </div>
+      <div class="d-flex gap-2 mb-3">
+        <select class="form-select" id="statusFilter">
+          <option value="all">Todos los estados</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="Confirmado">Confirmado</option>
+          <option value="En curso">En curso</option>
+          <option value="Completado">Completado</option>
+          <option value="Cancelado">Cancelado</option>
+          <option value="Pasada">Pasada</option>
+        </select>
+      </div>
+      <div class="agenda-list">
+        {% for a in agendas %}
+        <div class="agenda-item" data-estado="{{ a.estado or 'Pendiente' }}">
+          <div class="d-flex justify-content-between align-items-start gap-2">
+            <div>
+              <h6>{{ a.titulo }}</h6>
+              <span class="badge">{{ a.tipo or 'Evento' }}</span>
+              {% set estado_color = '#94a3b8' %}
+              {% if a.estado == 'Pendiente' %}{% set estado_color = '#f59e0b' %}{% endif %}
+              {% if a.estado == 'Confirmado' %}{% set estado_color = '#10b981' %}{% endif %}
+              {% if a.estado == 'En curso' %}{% set estado_color = '#0ea5e9' %}{% endif %}
+              {% if a.estado == 'Completado' %}{% set estado_color = '#16a34a' %}{% endif %}
+              {% if a.estado == 'Cancelado' %}{% set estado_color = '#f43f5e' %}{% endif %}
+              {% if a.estado == 'Pasada' %}{% set estado_color = '#64748b' %}{% endif %}
+              <span class="status-badge" style="background: {{ estado_color }};">{{ a.estado or 'Pendiente' }}</span>
+              <div class="event-meta">
+                {{ a.fecha_inicio.strftime('%d-%m-%Y %H:%M') if a.fecha_inicio else '' }}
+                {% if a.fecha_fin %} - {{ a.fecha_fin.strftime('%d-%m-%Y %H:%M') }}{% endif %}
+              </div>
+              <small>{{ a.proyecto.nombre_proyecto if a.proyecto else 'Sin proyecto' }}</small>
+              {% if a.ubicacion %}<div class="event-meta">Ubicacion: {{ a.ubicacion }}</div>{% endif %}
+            </div>
+            <form method="POST" action="{{ url_for('agenda.eliminar_agenda_view', idagenda=a.idagenda) }}">
+              <button class="btn btn-outline-danger btn-sm" type="submit">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% else %}
+        <div class="text-muted">No hay eventos registrados.</div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const agendaEvents = {{ agendas_json|tojson }};
+    const colors = {
+      'Reunion': '#6d28d9',
+      'Cita': '#f59e0b',
+      'Visita cliente': '#0ea5e9',
+      'Trabajo': '#10b981',
+      'Proceso': '#14b8a6',
+      'Recordatorio': '#8b5cf6',
+      'Nota': '#64748b'
+    };
+    const statusColors = {
+      'Pendiente': '#f59e0b',
+      'Confirmado': '#10b981',
+      'En curso': '#0ea5e9',
+      'Completado': '#16a34a',
+      'Cancelado': '#f43f5e',
+      'Pasada': '#64748b'
+    };
+
+    const calendarGrid = document.getElementById('calendarGrid');
+    const calendarMonth = document.getElementById('calendarMonth');
+    const calendarYear = document.getElementById('calendarYear');
+    const dayEventsList = document.getElementById('dayEventsList');
+    const dayEventsTitle = document.getElementById('dayEventsTitle');
+    const fechaInicioInput = document.getElementById('fechaInicio');
+    const fechaFinInput = document.getElementById('fechaFin');
+    const statusFilter = document.getElementById('statusFilter');
+
+    let currentDate = new Date();
+    let selectedDateKey = null;
+
+    function buildEventsMap() {
+      const map = {};
+      agendaEvents.forEach(event => {
+        if (!event.fecha_inicio) return;
+        const dateKey = event.fecha_inicio.slice(0, 10);
+        map[dateKey] = map[dateKey] || [];
+        map[dateKey].push(event);
+      });
+      return map;
+    }
+
+    const eventsMap = buildEventsMap();
+
+    function getFilteredEvents(events) {
+      if (!statusFilter || statusFilter.value === 'all') return events;
+      return events.filter(event => (event.estado || 'Pendiente') === statusFilter.value);
+    }
+
+    function renderCalendar(date) {
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      calendarMonth.textContent = date.toLocaleString('es-ES', { month: 'long' });
+      calendarYear.textContent = year;
+      calendarGrid.innerHTML = '';
+
+      const firstDay = new Date(year, month, 1);
+      const startDay = firstDay.getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const prevMonthDays = new Date(year, month, 0).getDate();
+
+      for (let i = 0; i < 42; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-cell';
+        let dayNumber;
+        let cellMonth = month;
+        let cellYear = year;
+
+        if (i < startDay) {
+          dayNumber = prevMonthDays - startDay + i + 1;
+          cell.classList.add('outside');
+          cellMonth = month - 1;
+          if (cellMonth < 0) {
+            cellMonth = 11;
+            cellYear = year - 1;
+          }
+        } else if (i >= startDay + daysInMonth) {
+          dayNumber = i - (startDay + daysInMonth) + 1;
+          cell.classList.add('outside');
+          cellMonth = month + 1;
+          if (cellMonth > 11) {
+            cellMonth = 0;
+            cellYear = year + 1;
+          }
+        } else {
+          dayNumber = i - startDay + 1;
+        }
+
+        const dateKey = new Date(cellYear, cellMonth, dayNumber).toISOString().slice(0, 10);
+        cell.dataset.date = dateKey;
+
+        const dayLabel = document.createElement('div');
+        dayLabel.className = 'calendar-day';
+        dayLabel.textContent = dayNumber;
+        cell.appendChild(dayLabel);
+
+        const dots = document.createElement('div');
+        dots.className = 'calendar-dots';
+        getFilteredEvents(eventsMap[dateKey] || []).slice(0, 6).forEach(event => {
+          const dot = document.createElement('span');
+          dot.className = 'calendar-dot';
+          dot.style.background = statusColors[event.estado] || colors[event.tipo] || '#a78bfa';
+          dots.appendChild(dot);
+        });
+        cell.appendChild(dots);
+
+        cell.addEventListener('click', () => selectDate(dateKey));
+        if (selectedDateKey === dateKey) {
+          cell.classList.add('active');
+        }
+
+        calendarGrid.appendChild(cell);
+      }
+    }
+
+    function selectDate(dateKey) {
+      selectedDateKey = dateKey;
+      const events = getFilteredEvents(eventsMap[dateKey] || []);
+      dayEventsTitle.textContent = `Eventos del ${dateKey.split('-').reverse().join('-')}`;
+      if (fechaInicioInput) {
+        fechaInicioInput.value = `${dateKey}T14:00`;
+      }
+      if (fechaFinInput) {
+        fechaFinInput.value = `${dateKey}T15:00`;
+      }
+
+      if (!events.length) {
+        dayEventsList.textContent = 'No hay eventos programados para este dia.';
+      } else {
+        dayEventsList.innerHTML = events.map(event => {
+          const hora = event.fecha_inicio ? event.fecha_inicio.slice(11, 16) : '';
+          const proyecto = event.proyecto ? `Proyecto: ${event.proyecto}` : 'Sin proyecto';
+          const estado = event.estado ? `Estado: ${event.estado}` : 'Estado: Pendiente';
+          return `
+            <div class="day-event-item">
+              <div><strong>${event.titulo}</strong> <span class="event-meta">(${event.tipo || 'Evento'})</span></div>
+              <div class="event-meta">${hora} - ${proyecto}</div>
+              <div class="event-meta">${estado}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      document.querySelectorAll('.calendar-cell').forEach(cell => {
+        cell.classList.toggle('active', cell.dataset.date === dateKey);
+      });
+    }
+
+    function applyAgendaFilters() {
+      const selected = statusFilter ? statusFilter.value : 'all';
+      document.querySelectorAll('.agenda-item').forEach(item => {
+        const estado = item.dataset.estado || 'Pendiente';
+        item.style.display = (selected === 'all' || estado === selected) ? '' : 'none';
+      });
+      renderCalendar(currentDate);
+      if (selectedDateKey) {
+        selectDate(selectedDateKey);
+      }
+    }
+
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendar(currentDate);
+    });
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendar(currentDate);
+    });
+    document.getElementById('todayBtn').addEventListener('click', () => {
+      currentDate = new Date();
+      renderCalendar(currentDate);
+      selectDate(currentDate.toISOString().slice(0, 10));
+    });
+
+    renderCalendar(currentDate);
+    selectDate(new Date().toISOString().slice(0, 10));
+    if (statusFilter) {
+      statusFilter.addEventListener('change', applyAgendaFilters);
+    }
+    applyAgendaFilters();
+  </script>
+</body>
+</html>

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tareas | Violeta Workspace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1f1d2b;
+            --muted: #6b7280;
+            --violet: #6d28d9;
+            --violet-dark: #4c1d95;
+            --bg: #f6f4fb;
+            --card: #ffffff;
+            --line: #e7ddf8;
+        }
+
+        body {
+            background: radial-gradient(1200px 600px at 10% -10%, #f0e9ff 0%, #f7f7fb 45%) no-repeat;
+            font-family: "Sora", Arial, sans-serif;
+            color: var(--ink);
+        }
+
+        .main-header {
+            background: linear-gradient(180deg, #ffffff 0%, #fbf9ff 100%);
+            border-radius: 0 0 22px 22px;
+            box-shadow: 0 12px 30px #b7a6e522;
+            padding: 1.4rem 2.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ede7fb;
+        }
+
+        .header-title {
+            font-weight: 700;
+            color: var(--violet);
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .btn-dashboard {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            padding: 0.6em 1.4em;
+            font-size: 1.02rem;
+            box-shadow: 0 6px 16px #a58bff33;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        .btn-dashboard:hover {
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px #a58bff44;
+        }
+
+        .container-main {
+            display: grid;
+            grid-template-columns: 520px 1fr;
+            gap: 2rem;
+            align-items: start;
+            padding: 2rem 1rem 3rem;
+            max-width: 1700px;
+            margin: 0 auto;
+        }
+
+        .card-form {
+            background: var(--card);
+            border-radius: 18px;
+            box-shadow: 0 12px 30px #c4b6ea24;
+            padding: 2.1rem 2.2rem;
+            border: 1px solid #f0ecfb;
+        }
+
+        .card-form h3 {
+            font-weight: 700;
+            color: var(--violet);
+            margin-bottom: 0.35rem;
+            text-align: left;
+        }
+
+        .form-subtitle {
+            font-size: 0.9em;
+            color: var(--muted);
+            margin-bottom: 1.4rem;
+        }
+
+        .form-label {
+            margin-top: 0.5em;
+            font-weight: 600;
+            color: var(--violet-dark);
+            font-size: 0.92em;
+        }
+
+        .form-control, .form-select {
+            margin-bottom: 0.7em;
+            border-radius: 10px;
+            border: 1.5px solid #e3dbf7;
+            padding: 0.7em 1em;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 4px 14px #d6ccff55;
+        }
+
+        .btn-violeta {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 12px;
+            padding: 0.75em 1.6em;
+            transition: transform 0.12s ease;
+            margin-top: 1em;
+        }
+
+        .btn-violeta:hover { transform: translateY(-1px); }
+
+        .form-body {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 1.2rem;
+        }
+
+        .section-card {
+            background: #fbf9ff;
+            border: 1px solid #efe8fb;
+            border-radius: 14px;
+            padding: 1rem 1.1rem;
+            box-shadow: inset 0 1px 0 #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .section-card .form-section-title {
+            margin-top: 0;
+            font-size: 0.78em;
+        }
+
+        .form-section-title {
+            font-weight: 700;
+            color: #3f2b7b;
+            font-size: 0.95em;
+            margin: 1.2rem 0 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.4rem 0.8rem;
+        }
+
+        .form-grid .span-2 {
+            grid-column: span 2;
+        }
+
+        .form-hint {
+            font-size: 0.78em;
+            color: var(--muted);
+            margin-top: -6px;
+            margin-bottom: 6px;
+        }
+
+        .preview-card {
+            background: #f8f7ff;
+            border: 1px dashed #dcd2f7;
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
+            margin-top: 1rem;
+        }
+
+        .preview-card h6 {
+            font-weight: 700;
+            color: #4c1d95;
+            margin-bottom: 0.6rem;
+        }
+
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            color: #374151;
+            margin-bottom: 0.3rem;
+        }
+
+        .preview-row span {
+            color: #6b7280;
+        }
+
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .filter-panel {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.2rem 1.4rem;
+            border: 1px solid #f0ecfb;
+            box-shadow: 0 8px 22px #c4b6ea24;
+        }
+
+        .filter-panel.row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .filter-panel.row > [class*="col-"] {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+
+        .kanban-panel {
+            flex: 1;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 12px 30px #bcb5eb24;
+            padding: 2rem;
+            border: 1px solid #f0ecfb;
+        }
+
+        .kanban-panel h4 {
+            color: var(--violet);
+            font-weight: 700;
+            margin-bottom: 1.1em;
+            font-size: 1.05em;
+        }
+
+        .kanban-proyecto {
+            margin-bottom: 2.2em;
+        }
+
+        .kanban-proyecto h5 {
+            color: var(--violet-dark);
+            font-weight: 700;
+            margin-bottom: 0.8em;
+            font-size: 1em;
+        }
+
+        .tareas-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .tarea-card {
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 1rem 1.2rem 1rem 1.2rem;
+            box-shadow: 0 6px 18px #d6ccff1f;
+            position: relative;
+        }
+
+        .tarea-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.6rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .tarea-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            border-radius: 14px 0 0 14px;
+            background: #7C3AED;
+        }
+
+        .tarea-card .tarea-titulo {
+            font-size: 0.98em;
+            font-weight: 700;
+            color: #3f2b7b;
+            margin-bottom: 0;
+            flex: 1;
+        }
+
+        .tarea-card .tarea-meta {
+            font-size: 0.82em;
+            color: var(--muted);
+            margin-bottom: 0.35em;
+        }
+
+        .tarea-card .tarea-descripcion {
+            color: #37264e;
+            font-size: 0.86em;
+            margin-bottom: 0.5em;
+        }
+
+        .tarea-card .badge { font-size: .82em; margin-right: 0.4em; }
+
+        .tarea-card .estado-chip {
+            padding: 0.2em 0.7em;
+            border-radius: 999px;
+            font-size: 0.78em;
+            background: #efe7ff;
+            color: #5b21b6;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .tarea-card .estado-chip[style] { color: #fff !important; }
+
+        .tarea-card .adjunto-block img {
+            max-height: 36px;
+            max-width: 70px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px #0001;
+        }
+
+        .tarea-card .adjunto-block {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast-violeta {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            color: #fff;
+            font-weight: 500;
+            font-size: 1.05em;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px #a091df44;
+        }
+
+        .toast-violeta .btn-close { filter: invert(1); }
+
+        @media (max-width: 1100px) {
+            .container-main {
+                grid-template-columns: 1fr;
+            }
+            .card-form, .kanban-panel { width: 100%; }
+            .form-body { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="main-header">
+    <div class="header-title"><i class="bi bi-stars"></i> Violeta Workspace</div>
+    <a href="{{ url_for('usuario.dashboard') }}" class="btn btn-dashboard">
+        <i class="bi bi-arrow-left"></i> Volver al Dashboard
+    </a>
+</div>
+<div class="container-main">
+    <!-- PANEL DE REGISTRO DE NUEVA TAREA -->
+    <form class="card-form" method="POST" action="{{ url_for('tarea.nueva_tarea') }}" enctype="multipart/form-data" id="formTarea">
+        <h3><i class="bi bi-plus-circle"></i> Nueva Tarea</h3>
+
+        <div class="form-section-title">Contexto</div>
+        <div class="form-grid">
+            <div class="span-2">
+                <label class="form-label" for="idproyecto">Proyecto</label>
+                <select class="form-select" id="idproyecto" name="idproyecto" required onchange="autoFillUsuarioYFecha()">
+                    <option value="">Seleccionar proyecto</option>
+                    {% for proyecto in proyectos %}
+                        <option value="{{ proyecto.idproyecto }}">{{ proyecto.nombre_proyecto }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="span-2">
+                <label class="form-label" for="usuarioAsignadoNombre">Usuario asignado</label>
+                <input type="hidden" id="idusuarioAsignado" name="idusuario_asignado" required>
+                <input type="text" class="form-control" id="usuarioAsignadoNombre" readonly placeholder="Seleccione un proyecto">
+                <div class="form-hint">Se completa automaticamente al elegir proyecto.</div>
+            </div>
+        </div>
+
+        <div class="form-section-title">Fechas</div>
+        <div class="form-grid">
+            <div>
+                <label class="form-label" for="fecha_creacion">Fecha de inicio</label>
+                <input type="date" class="form-control" id="fechaCreacion" name="fecha_creacion" readonly required>
+            </div>
+            <div>
+                <label class="form-label" for="fecha_limite">Fecha limite</label>
+                <input type="date" class="form-control" id="fechaLimite" name="fecha_limite">
+            </div>
+        </div>
+
+        <div class="form-section-title">Detalle</div>
+        <div class="form-grid">
+            <div class="span-2">
+                <label class="form-label" for="titulo">Titulo</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" maxlength="120" required>
+            </div>
+            <div class="span-2">
+                <label class="form-label" for="descripcion">Descripcion</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+            </div>
+        </div>
+
+        <div class="form-section-title">Clasificacion</div>
+        <div class="form-grid">
+            <div>
+                <label class="form-label" for="idtipo_tarea">Tipo de tarea</label>
+                <select class="form-select" id="idtipo_tarea" name="idtipo_tarea" required>
+                    <option value="">Seleccionar tipo</option>
+                    {% for tipo in tipos_tarea %}
+                        <option value="{{ tipo.idtipo_tarea }}">{{ tipo.nombre_tipo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="form-label" for="idprioridad">Prioridad</label>
+                <select class="form-select" id="idprioridad" name="idprioridad" required>
+                    <option value="">Seleccionar prioridad</option>
+                    {% for prioridad in prioridades %}
+                        <option value="{{ prioridad.idprioridad }}">{{ prioridad.nombre_prioridad }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="span-2">
+                <label class="form-label" for="idestado">Estado inicial</label>
+                <select class="form-select" id="idestado" name="idestado" required>
+                    <option value="">Seleccionar estado</option>
+                    {% for estado in estados %}
+                        <option value="{{ estado.idestado }}">{{ estado.nombre_estado }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-section-title">Adjuntos</div>
+        <div class="form-grid">
+            <div class="span-2">
+                <label class="form-label" for="adjunto">Adjuntar archivo</label>
+                <input type="file" class="form-control" id="adjunto" name="adjunto" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.txt">
+            </div>
+            <div class="span-2">
+                <div class="form-check mt-1">
+                    <input class="form-check-input" type="checkbox" name="enviar_notificacion" id="enviarNotificacion" checked>
+                    <label class="form-check-label" for="enviarNotificacion">
+                        Enviar notificacion automatica
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-card" id="previewCard">
+            <h6>Vista previa</h6>
+            <div class="preview-row">Proyecto: <span id="previewProyecto">--</span></div>
+            <div class="preview-row">Asignado: <span id="previewUsuario">--</span></div>
+            <div class="preview-row">Titulo: <span id="previewTitulo">--</span></div>
+            <div class="preview-row">Fechas: <span id="previewFechas">--</span></div>
+            <div class="preview-row">Prioridad: <span id="previewPrioridad">--</span></div>
+            <div class="preview-row">Estado: <span id="previewEstado">--</span></div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" name="accion" value="guardar" class="btn btn-violeta">
+                <i class="bi bi-save"></i> Guardar
+            </button>
+            <button type="submit" name="accion" value="guardar_nueva" class="btn btn-outline-dark">
+                <i class="bi bi-plus-circle"></i> Guardar y nueva
+            </button>
+        </div>
+    </form>
+    <div class="right-panel">
+        <!-- PANEL DE FILTRO POR PROYECTO Y TAREA -->
+        <div class="row align-items-end filter-panel">
+            <div class="col-md-4">
+                <label class="form-label" for="filtroProyecto"><i class="bi bi-folder"></i> Filtrar por Proyecto</label>
+                <select class="form-select" id="filtroProyecto">
+                    <option value="">Todos los proyectos</option>
+                    {% for proyecto in proyectos %}
+                        <option value="{{ proyecto.nombre_proyecto }}">{{ proyecto.nombre_proyecto }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label" for="filtroTarea"><i class="bi bi-list-task"></i> Filtrar por Tarea</label>
+                <select class="form-select" id="filtroTarea" disabled>
+                    <option value="">Seleccione un proyecto primero</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-violeta w-100" id="btnFiltrarTareas" type="button">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+                <button class="btn btn-secondary w-100 mt-2" id="btnResetFiltro" type="button" style="display:none;">
+                    <i class="bi bi-x-circle"></i> Limpiar Filtro
+                </button>
+            </div>
+        </div>
+        <!-- PANEL KANBAN DE TAREAS PENDIENTES -->
+        <div class="kanban-panel">
+            <h4><i class="bi bi-kanban"></i> Tareas Pendientes por Proyecto</h4>
+            <div id="tareasPendientes">
+                {% for proyecto, tareas_grupo in tareas_por_proyecto.items() %}
+                    <div class="kanban-proyecto" data-proyecto="{{ proyecto }}">
+                        <h5><i class="bi bi-folder"></i> {{ proyecto }}</h5>
+                        <div class="tareas-list">
+                            {% for tarea in tareas_grupo %}
+                            <div class="tarea-card" data-tarea="{{ tarea.titulo }}">
+                                <div class="tarea-card-header">
+                                    <div class="tarea-titulo">{{ tarea.titulo }}</div>
+                                    <span class="estado-chip" style="background: {{ tarea.estado.color if tarea.estado and tarea.estado.color else '#d3bfff' }};">
+                                        {{ tarea.estado.nombre_estado if tarea.estado else 'Sin Estado' }}
+                                    </span>
+                                </div>
+                                <div class="tarea-meta">
+                                    Asignado a: <b>{{ tarea.usuario_asignado.nombre if tarea.usuario_asignado else '' }}</b>
+                                </div>
+                                <div class="tarea-descripcion">{{ tarea.descripcion }}</div>
+                                <!-- ========== BLOQUE DE ADJUNTO ========== -->
+                                {% if tarea.adjunto %}
+                                    <div class="adjunto-block">
+                                        {% set tipo = tarea.adjunto.tipo or '' %}
+                                        {% set es_imagen = 'image' in tipo %}
+                                        {% set es_pdf = tipo == 'application/pdf' %}
+                                        {% set es_word = tipo in ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'] %}
+                                        {% set es_excel = tipo in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'] %}
+                                        <span class="badge bg-light text-dark">
+                                            <i class="bi bi-paperclip"></i> Archivo adjunto:
+                                        </span>
+                                        {% if es_imagen %}
+                                            <a href="{{ url_for('tarea.descargar_adjunto', idadjunto=tarea.adjunto.idadjunto) }}" target="_blank">
+                                                <img src="{{ url_for('tarea.descargar_adjunto', idadjunto=tarea.adjunto.idadjunto) }}"
+                                                     alt="Imagen adjunta">
+                                            </a>
+                                        {% elif es_pdf %}
+                                            <a href="{{ url_for('tarea.descargar_adjunto', idadjunto=tarea.adjunto.idadjunto) }}" target="_blank" class="ms-2">
+                                                <i class="bi bi-file-pdf text-danger" style="font-size:1.5em;"></i> PDF
+                                            </a>
+                                        {% elif es_word %}
+                                            <a href="{{ url_for('tarea.descargar_adjunto', idadjunto=tarea.adjunto.idadjunto) }}" target="_blank" class="ms-2">
+                                                <i class="bi bi-file-earmark-word text-primary" style="font-size:1.5em;"></i> Word
+                                            </a>
+                                        {% elif es_excel %}
+                                            <a href="{{ url_for('tarea.descargar_adjunto', idadjunto=tarea.adjunto.idadjunto) }}" target="_blank" class="ms-2">
+                                                <i class="bi bi-file-earmark-excel text-success" style="font-size:1.5em;"></i> Excel
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url_for('tarea.descargar_adjunto', idadjunto=tarea.adjunto.idadjunto) }}" target="_blank" class="ms-2">
+                                                <i class="bi bi-file-earmark" style="font-size:1.5em;"></i> Archivo
+                                            </a>
+                                        {% endif %}
+                                        <a href="{{ url_for('tarea.descargar_adjunto', idadjunto=tarea.adjunto.idadjunto) }}"
+                                           class="btn btn-outline-secondary btn-sm ms-2" target="_blank" title="Descargar adjunto">
+                                            <i class="bi bi-download"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                                <!-- ========== FIN BLOQUE DE ADJUNTO ========== -->
+                                <span class="badge" style="background: {{ tarea.prioridad.color if tarea.prioridad and tarea.prioridad.color else '#a386e6' }}; color: #fff;">
+                                    {{ tarea.prioridad.nombre_prioridad if tarea.prioridad else 'Sin Prioridad' }}
+                                </span>
+                                <span class="badge bg-light text-dark">{{ tarea.fecha_limite.strftime('%d-%m-%Y') if tarea.fecha_limite else '' }}</span>
+                                <!-- BOTÓN PARA VER COMENTARIOS -->
+                                <a href="{{ url_for('comentario.vista_comentarios', idproyecto=tarea.idproyecto, idtarea=tarea.idtarea) }}"
+                                   class="btn btn-outline-primary btn-sm mt-2 w-100">
+                                    <i class="bi bi-chat-dots"></i> Ver Comentarios de esta tarea
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if not tareas_por_proyecto %}
+                <div class="alert alert-info">No hay tareas pendientes.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1200">
+      <div class="toast align-items-center toast-violeta show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="bi bi-check-circle-fill"></i> {{ messages[0] }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endwith %}
+
+<script>
+    // Serializa los datos desde el backend
+    var proyectos = {{ proyectos_json | tojson }};
+    var usuarios = {{ usuarios_json | tojson }};
+    // Rellena el usuario asignado (ID y nombre) y la fecha
+    function autoFillUsuarioYFecha() {
+        var selectProyecto = document.getElementById('idproyecto');
+        var usuarioInputId = document.getElementById('idusuarioAsignado');
+        var usuarioInputNombre = document.getElementById('usuarioAsignadoNombre');
+        var fechaInput = document.getElementById('fechaCreacion');
+        var idproyecto = selectProyecto.value;
+
+        var proyecto = proyectos.find(p => p.idproyecto == idproyecto);
+        if (proyecto) {
+            var usuario = usuarios.find(u => u.idusuario == proyecto.idusuario);
+            usuarioInputId.value = usuario ? usuario.idusuario : '';
+            usuarioInputNombre.value = usuario ? usuario.nombre : '';
+            fechaInput.value = proyecto.fecha_creacion || '';
+        } else {
+            usuarioInputId.value = '';
+            usuarioInputNombre.value = '';
+            fechaInput.value = '';
+        }
+        updatePreview();
+    }
+
+    function updatePreview() {
+        const proyectoSelect = document.getElementById('idproyecto');
+        const prioridadSelect = document.getElementById('idprioridad');
+        const estadoSelect = document.getElementById('idestado');
+        const titulo = document.getElementById('titulo').value;
+        const usuario = document.getElementById('usuarioAsignadoNombre').value;
+        const inicio = document.getElementById('fechaCreacion').value;
+        const fin = document.getElementById('fechaLimite').value;
+
+        document.getElementById('previewProyecto').textContent = proyectoSelect.options[proyectoSelect.selectedIndex]?.text || '--';
+        document.getElementById('previewUsuario').textContent = usuario || '--';
+        document.getElementById('previewTitulo').textContent = titulo || '--';
+        document.getElementById('previewFechas').textContent = (inicio || '--') + ' / ' + (fin || '--');
+        document.getElementById('previewPrioridad').textContent = prioridadSelect.options[prioridadSelect.selectedIndex]?.text || '--';
+        document.getElementById('previewEstado').textContent = estadoSelect.options[estadoSelect.selectedIndex]?.text || '--';
+    }
+
+    document.querySelectorAll('#formTarea input, #formTarea select, #formTarea textarea').forEach((el) => {
+        el.addEventListener('input', updatePreview);
+        el.addEventListener('change', updatePreview);
+    });
+
+    document.getElementById('formTarea').addEventListener('submit', (e) => {
+        const form = e.currentTarget;
+        let valid = true;
+        form.querySelectorAll('[required]').forEach((field) => {
+            if (field.type === 'hidden') return;
+            if (!field.value) {
+                field.classList.add('is-invalid');
+                field.classList.remove('is-valid');
+                valid = false;
+            } else {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            }
+        });
+        if (!valid) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updatePreview();
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('nuevo') === '1') {
+            document.getElementById('formTarea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('titulo').focus();
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    var tareasPorProyecto = {{ tareas_por_proyecto_json | tojson }};
+    const filtroProyecto = document.getElementById('filtroProyecto');
+    const filtroTarea = document.getElementById('filtroTarea');
+    const btnFiltrarTareas = document.getElementById('btnFiltrarTareas');
+    const btnResetFiltro = document.getElementById('btnResetFiltro');
+
+    filtroProyecto.addEventListener('change', function() {
+        let nombreProyecto = this.value;
+        filtroTarea.innerHTML = '';
+        if (nombreProyecto && tareasPorProyecto[nombreProyecto]) {
+            filtroTarea.disabled = false;
+            let tareas = tareasPorProyecto[nombreProyecto];
+            let optionAll = document.createElement('option');
+            optionAll.value = '';
+            optionAll.text = 'Todas las tareas';
+            filtroTarea.appendChild(optionAll);
+            tareas.forEach(t => {
+                let option = document.createElement('option');
+                option.value = t.titulo;
+                option.text = t.titulo;
+                filtroTarea.appendChild(option);
+            });
+        } else {
+            filtroTarea.disabled = true;
+            let option = document.createElement('option');
+            option.value = '';
+            option.text = 'Seleccione un proyecto primero';
+            filtroTarea.appendChild(option);
+        }
+    });
+
+    btnFiltrarTareas.addEventListener('click', function() {
+        let nombreProyecto = filtroProyecto.value;
+        let tituloTarea = filtroTarea.value;
+        document.querySelectorAll('.kanban-proyecto').forEach(div => { div.style.display = 'none'; });
+        if (!nombreProyecto) {
+            document.querySelectorAll('.kanban-proyecto').forEach(div => {
+                div.style.display = '';
+                div.querySelectorAll('.tarea-card').forEach(tc => tc.style.display = '');
+            });
+            btnResetFiltro.style.display = 'none';
+            return;
+        }
+        let proyectoDiv = document.querySelector('.kanban-proyecto[data-proyecto="' + nombreProyecto.replace(/"/g,'\\"') + '"]');
+        if (proyectoDiv) {
+            proyectoDiv.style.display = '';
+            proyectoDiv.querySelectorAll('.tarea-card').forEach(tc => {
+                if (!tituloTarea || tc.getAttribute('data-tarea') === tituloTarea) {
+                    tc.style.display = '';
+                } else {
+                    tc.style.display = 'none';
+                }
+            });
+        }
+        btnResetFiltro.style.display = '';
+    });
+
+    btnResetFiltro.addEventListener('click', function() {
+        filtroProyecto.value = '';
+        filtroTarea.innerHTML = '<option value="">Seleccione un proyecto primero</option>';
+        filtroTarea.disabled = true;
+        document.querySelectorAll('.kanban-proyecto').forEach(div => {
+            div.style.display = '';
+            div.querySelectorAll('.tarea-card').forEach(tc => tc.style.display = '');
+        });
+        btnResetFiltro.style.display = 'none';
+    });
+</script>
+</body>
+</html>

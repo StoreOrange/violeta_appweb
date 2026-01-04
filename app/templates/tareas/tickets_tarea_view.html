@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Seguimiento de Tarea | Tickets | Violeta Workspace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 y Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body { background: #f7f7fb; font-family: 'Inter', Arial, sans-serif; color: #23243a; }
+        .tracker-header {
+            background: #fff; border-radius: 0 0 16px 16px; box-shadow: 0 2px 14px #a091df14;
+            padding: 1.2rem 2rem; margin-bottom: 2rem; border-bottom: 3px solid #ede7fb;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .tracker-header h2 { color: #7C3AED; font-weight: 700; margin: 0; font-size: 1.7rem; }
+        .tracker-header .btn { background: linear-gradient(90deg, #7C3AED 70%, #6B21A8 100%); color: #fff; }
+        .tracker-header .btn:hover { background: #6B21A8; color: #fff; }
+        .tracker-main { max-width: 1200px; margin: 0 auto; padding: 1rem; }
+        .tracker-controls { display: flex; gap: 1.1rem; margin-bottom: 2.1rem; align-items: flex-end; }
+        .tracker-controls select { min-width: 170px; }
+        .ticket-details { background: #fff; border-radius: 13px; box-shadow: 0 2px 16px #d1c7f429; padding: 2rem; margin-bottom: 1.7rem;}
+        .ticket-details h4 { color: #6B21A8; font-weight: 700; }
+        .estado-bar { height: 13px; border-radius: 5px; background: #e8e3fa; overflow: hidden; margin: 0.7em 0 1.3em; }
+        .estado-bar .bar {
+            height: 100%; width: 20%; transition: background 0.5s;
+        }
+        .comentarios-panel { background: #fff; border-radius: 13px; box-shadow: 0 2px 12px #bdb2f41a; padding: 2rem; }
+        .comentario-item {
+            border-left: 5px solid #7C3AED; background: #f7f3fd; border-radius: 6px;
+            margin-bottom: 1.1em; padding: 1em 1.3em 0.8em 1.2em; position: relative;
+        }
+        .comentario-item .comentario-meta { font-size: .93em; color: #9e89cb; margin-bottom: 0.25em; }
+        .comentario-item .comentario-usuario { font-weight: 600; color: #6B21A8; }
+        .comentario-item .comentario-estado {
+            font-size: .92em; border-radius: 7px; background: #e7dcfb; color: #6B21A8; font-weight: 600; padding: .18em .75em; margin-left: 1em;
+        }
+        .comentario-item .comentario-archivo { font-size: .98em; margin-top: .6em; color: #6B21A8; }
+        .add-comentario-form h5 { font-weight: 600; color: #7C3AED; margin-bottom: .7em;}
+        .add-comentario-form textarea { min-height: 80px; }
+        .btn-violeta { background: linear-gradient(90deg, #7C3AED 70%, #6B21A8 100%); color: #fff; font-weight: 600; border-radius: 9px; }
+        .btn-violeta:hover { background: #6B21A8; }
+        @media (max-width: 700px) {
+            .tracker-main, .ticket-details, .comentarios-panel { padding: 1.1em; }
+            .tracker-header { flex-direction: column; gap: 1em; }
+            .tracker-controls { flex-direction: column; gap: 0.6em; }
+        }
+    </style>
+</head>
+<body>
+<div class="tracker-header">
+    <h2><i class="bi bi-ticket-perforated"></i> Seguimiento de Tarea / Tickets</h2>
+    <a href="{{ url_for('usuario.dashboard') }}" class="btn"><i class="bi bi-arrow-left"></i> Dashboard</a>
+</div>
+<div class="tracker-main">
+    <form class="tracker-controls" method="get" action="">
+        <!-- Selecciona Proyecto -->
+        <div>
+            <label for="proyecto" class="form-label">Proyecto</label>
+            <select class="form-select" id="proyecto" name="proyecto" onchange="this.form.submit()">
+                <option value="">Seleccionar...</option>
+                {% for proyecto in proyectos %}
+                    <option value="{{ proyecto.idproyecto }}" {% if proyecto.idproyecto == proyecto_actual_id %}selected{% endif %}>{{ proyecto.nombre_proyecto }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- Selecciona Tarea -->
+        <div>
+            <label for="tarea" class="form-label">Tarea</label>
+            <select class="form-select" id="tarea" name="tarea" onchange="this.form.submit()" {% if not proyecto_actual_id %}disabled{% endif %}>
+                <option value="">Seleccionar...</option>
+                {% for tarea in tareas %}
+                    <option value="{{ tarea.idtarea }}" {% if tarea.idtarea == tarea_actual_id %}selected{% endif %}>
+                        {{ tarea.titulo }} {% if tarea.estado %}- {{ tarea.estado.nombre_estado }}{% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    {% if tarea_actual %}
+    <!-- Detalles y barra de estado -->
+    <div class="ticket-details">
+        <h4><i class="bi bi-clipboard2-data"></i> {{ tarea_actual.titulo }}</h4>
+        <div class="mb-2">Proyecto: <b>{{ tarea_actual.proyecto.nombre_proyecto }}</b></div>
+        <div class="mb-2">Asignado a: <span class="badge bg-light text-dark">{{ tarea_actual.usuario_asignado.nombre }}</span></div>
+        <div class="mb-2">Fecha creación: <b>{{ tarea_actual.fecha_creacion.strftime('%d-%m-%Y') if tarea_actual.fecha_creacion else '' }}</b></div>
+        <div class="mb-2">Estado: <span class="badge" style="background:{{ tarea_actual.estado.color if tarea_actual.estado else '#c2b4eb' }};color:#fff">{{ tarea_actual.estado.nombre_estado if tarea_actual.estado else '' }}</span></div>
+        <!-- Barra de estado -->
+        <div class="estado-bar">
+            <div class="bar" style="width: {{ 100 * (tarea_actual.estado.orden or 1) / (estados|length or 1) }}%; background:{{ tarea_actual.estado.color if tarea_actual.estado else '#b5a6ef' }}"></div>
+        </div>
+        <div class="mb-2">{{ tarea_actual.descripcion }}</div>
+    </div>
+    <!-- Panel de comentarios / historial tipo ticket -->
+    <div class="comentarios-panel mb-4">
+        <h5><i class="bi bi-chat-right-text"></i> Seguimiento & Comentarios</h5>
+        <div>
+            {% for c in comentarios %}
+            <div class="comentario-item">
+                <div class="comentario-meta">
+                    <span class="comentario-usuario">{{ c.usuario.nombre }}</span> &bull;
+                    <span>{{ c.fecha.strftime('%d-%m-%Y %H:%M') }}</span>
+                    <span class="comentario-estado" style="background:{{ c.estado.color if c.estado else '#e1d6fa' }};color:#fff;">
+                        {{ c.estado.nombre_estado if c.estado else '' }}
+                    </span>
+                </div>
+                <div>{{ c.comentario }}</div>
+                {% if c.adjunto %}
+                <div class="comentario-archivo">
+                    <i class="bi bi-paperclip"></i> <a href="{{ url_for('descargar_adjunto', idadjunto=c.adjunto.idadjunto) }}" target="_blank">Archivo adjunto</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% if comentarios|length == 0 %}
+            <div class="alert alert-light">Aún no hay comentarios o tickets sobre esta tarea.</div>
+            {% endif %}
+        </div>
+        <!-- Formulario para agregar comentario, cambiar estado y adjuntar archivo -->
+        <form class="add-comentario-form mt-4" method="post" enctype="multipart/form-data" action="{{ url_for('tarea.comentar_tarea', idtarea=tarea_actual.idtarea) }}">
+            <h5>Nuevo comentario / cambio de estado</h5>
+            <div class="mb-2">
+                <textarea class="form-control" name="comentario" placeholder="Describa el avance, problema, o seguimiento..." required></textarea>
+            </div>
+            <div class="mb-2">
+                <label for="estado" class="form-label">Nuevo estado</label>
+                <select class="form-select" name="estado" id="estado" required>
+                    {% for estado in estados %}
+                        <option value="{{ estado.idestado }}" {% if tarea_actual.estado and estado.idestado == tarea_actual.estado.idestado %}selected{% endif %}>
+                            {{ estado.nombre_estado }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-2">
+                <label for="archivo" class="form-label">Adjuntar archivo (opcional)</label>
+                <input type="file" class="form-control" name="archivo" id="archivo" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.txt">
+            </div>
+            <button type="submit" class="btn btn-violeta mt-2"><i class="bi bi-send"></i> Enviar comentario</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

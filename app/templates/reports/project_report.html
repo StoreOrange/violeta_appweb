@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Report | Violeta Workspace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap local + Tailwind + Google Fonts -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
+
+    <style>
+        body.print-mode .panel-title,
+        body.print-mode .volver-btn,
+        body.print-mode #filters-bar,
+        body.print-mode .predecesor-btn,
+        body.print-mode details,
+        body.print-mode .deps-legend,
+        body.print-mode .deps-info {
+            display: none !important;
+        }
+
+        @media print {
+            .volver-btn,
+            #filters-bar,
+            .predecesor-btn,
+            details,
+            .deps-legend,
+            .deps-info {
+                display: none !important;
+            }
+        }
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: #f7f7fb;
+            margin: 0;
+            color: #22223a;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 22px 14px;
+        }
+
+        .volver-btn {
+            display: inline-block;
+            background: #ede9fe;
+            color: #6D28D9;
+            font-weight: 500;
+            border-radius: 8px;
+            padding: 8px 20px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 7px #bba8f840;
+        }
+
+        .volver-btn:hover {
+            background: #c7b9f7;
+            color: #432874;
+        }
+
+        .panel {
+            background: #fff;
+            border-radius: 13px;
+            box-shadow: 0 2px 22px #8c78ca1c;
+            padding: 20px;
+        }
+
+        .panel-title {
+            font-weight: 700;
+            font-size: 1.25em;
+            color: #7C3AED;
+            margin-bottom: 15px;
+        }
+
+        select {
+            border-radius: 7px;
+            border: 1.2px solid #d1c6ed;
+            padding: 7px 12px;
+            font-size: 1em;
+            background: #f8f7fc;
+        }
+
+        /* GANTT */
+        .gantt-wrapper {
+            --day-width: 52px;
+            --row-min-height: 68px;
+            --grid-line: #e2d7f7;
+            --month-header-height: 34px;
+            --day-header-height: 58px;
+            margin-top: 20px;
+            overflow-x: auto;
+            display: flex;
+            align-items: stretch;
+            border: 1px solid #e0def2;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .gantt-left {
+            --col-tarea: 340px;
+            --col-estado: 150px;
+            --col-predecesor: 220px;
+            --col-duracion: 110px;
+            --col-inicio: 140px;
+            --col-fin: 160px;
+            min-width: 1100px;
+            background: #fff;
+            border-right: 1px solid var(--grid-line);
+        }
+
+        .gantt-left-month-spacer {
+            background: #ede9fe;
+            border-bottom: 1px solid var(--grid-line);
+            height: var(--month-header-height);
+        }
+
+        .gantt-left-table {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .gantt-left-table thead th {
+            background: #f3f0fd;
+            font-weight: 600;
+            color: #4c1d95;
+            height: var(--day-header-height);
+            vertical-align: middle;
+            border-bottom: 1px solid var(--grid-line);
+        }
+
+        .gantt-left-table th,
+        .gantt-left-table td {
+            padding: 8px 12px;
+            font-size: 0.95em;
+            border-right: 1px solid var(--grid-line);
+            overflow: hidden;
+        }
+
+        .gantt-left-table th:last-child,
+        .gantt-left-table td:last-child {
+            border-right: none;
+        }
+
+        .gantt-left-table tbody tr {
+            border-bottom: 1px solid var(--grid-line);
+        }
+
+        .gantt-left-table tbody td {
+            vertical-align: middle;
+            line-height: 1.1;
+        }
+
+        .gantt-left-table .col-tarea {
+            width: var(--col-tarea);
+        }
+
+        .gantt-left-table .col-estado {
+            width: var(--col-estado);
+        }
+
+        .gantt-left-table .col-inicio {
+            width: var(--col-inicio);
+        }
+
+        .gantt-left-table .col-fin {
+            width: var(--col-fin);
+        }
+
+        .gantt-left-table .col-predecesor {
+            width: var(--col-predecesor);
+        }
+
+        .gantt-left-table .col-duracion {
+            width: var(--col-duracion);
+        }
+
+        .gantt-left-table .date-col {
+            text-align: center;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .gantt-left-table .task-text {
+            display: block;
+            line-height: 1.15;
+        }
+
+        .gantt-left-table .task-text strong {
+            display: block;
+            font-weight: 600;
+        }
+
+        .gantt-left-table .task-text small {
+            display: block;
+            color: #666;
+            font-size: 0.78em;
+            line-height: 1.1;
+        }
+
+        .predecesor-btn {
+            margin-top: 6px;
+            width: 100%;
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.78em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .predecesor-help {
+            font-size: 0.72em;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .deps-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .deps-chip {
+            background: #eef2ff;
+            color: #3730a3;
+            border: 1px solid #c7d2fe;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.8em;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .deps-info {
+            margin-top: 8px;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fafafa;
+            font-size: 0.85em;
+            color: #374151;
+            display: none;
+        }
+
+        .deps-info p {
+            margin: 6px 0;
+        }
+
+        .deps-list {
+            max-height: 170px;
+            overflow: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 6px;
+            background: #fdfcff;
+        }
+
+        .dep-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .dep-label {
+            font-size: 0.85em;
+            color: #374151;
+            flex: 1;
+        }
+
+        .dep-settings {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 4px 0 8px 22px;
+        }
+
+        .dep-settings select,
+        .dep-settings input {
+            font-size: 0.8em;
+            padding: 2px 6px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+        }
+
+        .estado {
+            font-size: .85em;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-weight: 500;
+            width: fit-content;
+        }
+
+        .estado-pendiente { background: #e5e7eb; color: #374151; }
+        .estado-en-progreso { background: #ede9fe; color: #6D28D9; }
+        .estado-completada { background: #dcfce7; color: #166534; }
+        .estado-retrasada { background: #fee2e2; color: #991b1b; }
+
+        .gantt-right {
+            overflow-x: auto;
+            white-space: nowrap;
+            background: #fff;
+            flex: 1 1 auto;
+            min-width: 320px;
+            position: relative;
+        }
+
+        .gantt-header {
+            display: flex;
+            background: #f3f0fd;
+            border-bottom: 1px solid var(--grid-line);
+            height: var(--day-header-height);
+        }
+
+        .gantt-header-months {
+            display: flex;
+            background: #ede9fe;
+            border-bottom: 1px solid var(--grid-line);
+            height: var(--month-header-height);
+        }
+
+        .gantt-month {
+            text-align: center;
+            font-weight: 600;
+            font-size: .85em;
+            padding: 8px 0;
+            border-right: 1px solid var(--grid-line);
+            color: #4c1d95;
+            background: #efe8ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gantt-day {
+            width: var(--day-width);
+            text-align: center;
+            font-size: .75em;
+            padding: 6px 0 8px;
+            border-right: 1px solid var(--grid-line);
+            color: #4c1d95;
+            line-height: 1.1;
+            height: var(--day-header-height);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .gantt-day .gantt-num {
+            font-weight: 600;
+            font-size: .95em;
+            display: block;
+            letter-spacing: .2px;
+        }
+
+        .gantt-day .gantt-initial {
+            display: block;
+            font-size: .85em;
+            opacity: .9;
+        }
+
+        .gantt-row {
+            display: flex;
+            min-height: var(--row-min-height);
+            border-bottom: 1px solid var(--grid-line);
+            position: relative;
+            background: #fff;
+        }
+
+        .gantt-cell {
+            width: var(--day-width);
+            position: relative;
+            border-right: 1px solid var(--grid-line);
+            background: transparent;
+            z-index: 1;
+        }
+
+        .gantt-day.weekend,
+        .gantt-cell.weekend {
+            background: #f6e8ff;
+        }
+
+        .gantt-bar-span {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 18px;
+            border-radius: 7px;
+            z-index: 2;
+            background: #9ca3af;
+        }
+
+        .gantt-links {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .bar-pendiente { background: #9ca3af; }
+        .bar-en-progreso { background: #7C3AED; }
+        .bar-completada { background: #22c55e; }
+        .bar-retrasada { background: #ef4444; }
+
+        .estado i {
+            margin-right: 6px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+
+    <body{% if print_mode %} class="print-mode"{% endif %}>
+<div class="main-container">
+
+    <a class="volver-btn" href="{{ url_for('usuario.dashboard') }}">
+        <i class="bi bi-arrow-left"></i> Volver al panel principal
+    </a>
+
+    <div class="panel">
+        <div class="panel-title">
+            <i class="bi bi-bar-chart-line"></i> Project Report
+        </div>
+        <div id="filters-bar" style="margin: 10px 0 14px; display: flex; gap: 12px; flex-wrap: wrap; align-items: end;">
+            <div>
+                <label style="display:block; font-size:0.8em; color:#6b7280; margin-bottom:4px;">Estado</label>
+                <select id="filtro-estado" style="min-width:200px;">
+                    <option value="">Todos</option>
+                    {% for e in tareas | map(attribute='estado_nombre') | unique %}
+                    <option value="{{ e|lower }}">{{ e }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label style="display:block; font-size:0.8em; color:#6b7280; margin-bottom:4px;">Inicio desde</label>
+                <input id="filtro-inicio-desde" type="date" class="form-control form-control-sm" style="min-width:170px;">
+            </div>
+            <div>
+                <label style="display:block; font-size:0.8em; color:#6b7280; margin-bottom:4px;">Fin hasta</label>
+                <input id="filtro-fin-hasta" type="date" class="form-control form-control-sm" style="min-width:170px;">
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button id="btn-aplicar-filtros" class="btn btn-sm btn-primary">Aplicar filtros</button>
+                <button id="btn-limpiar-filtros" class="btn btn-sm btn-outline-secondary">Limpiar</button>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <a class="btn btn-sm btn-success" href="{{ url_for('reports.export_excel', proyecto_id=proyecto_seleccionado) }}">
+                    <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+                </a>
+                <a class="btn btn-sm btn-danger" href="{{ url_for('reports.export_pdf', proyecto_id=proyecto_seleccionado) }}">
+                    <i class="bi bi-file-earmark-pdf"></i> Exportar PDF
+                </a>
+                <a class="btn btn-sm btn-dark" target="_blank" href="{{ url_for('reports.project_report', proyecto_id=proyecto_seleccionado, print=1) }}">
+                    <i class="bi bi-printer"></i> Exportar Gantt (PDF)
+                </a>
+            </div>
+        </div>
+        <div style="margin: 6px 0 12px; font-size: 0.85em; color: #6b7280;">
+            <strong>Dependencias:</strong>
+            <div class="deps-legend">
+                <button class="deps-chip" data-dep="FS">FS</button>
+                <button class="deps-chip" data-dep="SS">SS</button>
+                <button class="deps-chip" data-dep="FF">FF</button>
+                <button class="deps-chip" data-dep="SF">SF</button>
+                <button class="deps-chip" data-dep="LAG">Lag</button>
+            </div>
+            <div class="deps-info" id="deps-info"></div>
+        </div>
+        <div style="margin: 6px 0 12px; font-size: 0.85em; color: #6b7280;">
+            <strong>Dependencias:</strong>
+            FS = Fin-Inicio, SS = Inicio-Inicio, FF = Fin-Fin, SF = Inicio-Fin.
+            Lag: +3d espera 3 dias, -2d adelanta 2 dias.
+        </div>
+
+        <!-- Selector de proyecto -->
+        <form method="get">
+            <select name="proyecto_id" onchange="this.form.submit()">
+                <option value="">Seleccione un proyecto</option>
+                {% for p in proyectos %}
+                <option value="{{ p.idproyecto }}"
+                    {% if proyecto_seleccionado == p.idproyecto %}selected{% endif %}>
+                    {{ p.nombre_proyecto }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        {% if tareas %}
+
+        <div class="gantt-wrapper">
+
+            <!-- IZQUIERDA -->
+            <div class="gantt-left">
+                <div class="gantt-left-month-spacer"></div>
+                <table class="table table-sm gantt-left-table">
+                    <thead>
+                        <tr>
+                            <th class="col-tarea">Tarea</th>
+                            <th class="col-estado">Estado</th>
+                            <th class="col-predecesor date-col">Predecesor</th>
+                            <th class="col-duracion date-col">Duracion</th>
+                            <th class="col-inicio date-col">Inicio</th>
+                            <th class="col-fin date-col">Fin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in tareas %}
+                        <tr data-task-id="{{ t.id }}" data-estado="{{ t.estado_nombre|lower }}" data-inicio="{{ t.fecha_inicio.isoformat() if t.fecha_inicio else '' }}" data-fin="{{ t.fecha_fin.isoformat() if t.fecha_fin else '' }}">
+                            <td class="col-tarea">
+                                <span class="task-text">
+                                    <strong>{{ t.titulo }}</strong>
+                                    <small>{{ t.descripcion }}</small>
+                                </span>
+                            </td>
+                            <td class="col-estado">
+                                <span class="estado estado-{{ t.estado_clase }}"{% if t.estado_color %} style="background: {{ t.estado_color }}; color: {{ t.estado_texto }};"{% endif %}>
+                                    {% if t.estado_clase == 'por-hacer' %}
+                                        <i class="bi bi-circle"></i>
+                                    {% elif t.estado_clase == 'en-progreso' %}
+                                        <i class="bi bi-play-circle-fill"></i>
+                                    {% elif t.estado_clase == 'en-revision' %}
+                                        <i class="bi bi-eye-fill"></i>
+                                    {% elif t.estado_clase == 'en-pruebas-locales' %}
+                                        <i class="bi bi-shield-check"></i>
+                                    {% elif t.estado_clase == 'bloqueada' %}
+                                        <i class="bi bi-slash-circle-fill"></i>
+                                    {% elif t.estado_clase == 'en-espera' %}
+                                        <i class="bi bi-pause-circle-fill"></i>
+                                    {% elif t.estado_clase == 'incompleta' %}
+                                        <i class="bi bi-exclamation-diamond-fill"></i>
+                                    {% elif t.estado_clase == 'faltan-datos' %}
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    {% elif t.estado_clase == 'completada' %}
+                                        <i class="bi bi-check2-circle"></i>
+                                    {% elif t.estado_clase == 'archivada' %}
+                                        <i class="bi bi-archive-fill"></i>
+                                    {% else %}
+                                        <i class="bi bi-question-circle-fill"></i>
+                                    {% endif %}
+                                    {{ t.estado_nombre }}
+                                </span>
+                            </td>
+                            <td class="col-predecesor">
+                                <details>
+                                    <summary style="cursor:pointer; font-size:0.85em;">Seleccionar dependencias</summary>
+                                    <div class="deps-list" data-task-id="{{ t.id }}">
+                                        {% for p in tareas %}
+                                            {% if p.id != t.id %}
+                                            <div class="dep-item">
+                                                <input type="checkbox" class="dep-check" data-task-id="{{ t.id }}" data-pred-id="{{ p.id }}">
+                                                <span class="dep-label">{{ p.id }} - {{ p.titulo }}</span>
+                                            </div>
+                                            <div class="dep-settings" data-task-id="{{ t.id }}" data-pred-id="{{ p.id }}" style="display:none;">
+                                                <select class="dep-type">
+                                                    <option value="FS">FS</option>
+                                                    <option value="SS">SS</option>
+                                                    <option value="FF">FF</option>
+                                                    <option value="SF">SF</option>
+                                                </select>
+                                                <input class="dep-lag" type="number" value="0" step="1" style="width:70px;">
+                                                <span style="font-size:0.8em;">dias</span>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </details>
+                                <button class="predecesor-btn" data-task-id="{{ t.id }}">Recalcular y guardar</button>
+                            </td>
+                            <td class="col-duracion date-col">
+                                {% if t.duracion %}
+                                    {{ t.duracion }} dia{{ 's' if t.duracion != 1 else '' }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td class="col-inicio date-col">{{ t.fecha_inicio.strftime('%d/%m/%Y') if t.fecha_inicio else '-' }}</td>
+                            <td class="col-fin date-col">
+                                {{ t.fecha_fin.strftime('%d/%m/%Y') if t.fecha_fin else '-' }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- DERECHA -->
+            <div class="gantt-right" style="min-width: calc(var(--day-width) * {{ calendario|length }});">
+                <svg class="gantt-links"></svg>
+
+                {% set day_initials = ['L','M','M','J','V','S','D'] %}
+                {% set month_names = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'] %}
+                {% set ns = namespace(blocks=[], current_month=None, current_count=0) %}
+                {% for d in calendario %}
+                    {% if ns.current_month is none %}
+                        {% set ns.current_month = d.month %}
+                        {% set ns.current_count = 1 %}
+                    {% elif d.month == ns.current_month %}
+                        {% set ns.current_count = ns.current_count + 1 %}
+                    {% else %}
+                        {% set ns.blocks = ns.blocks + [{'month': ns.current_month, 'count': ns.current_count}] %}
+                        {% set ns.current_month = d.month %}
+                        {% set ns.current_count = 1 %}
+                    {% endif %}
+                {% endfor %}
+                {% if ns.current_month is not none %}
+                    {% set ns.blocks = ns.blocks + [{'month': ns.current_month, 'count': ns.current_count}] %}
+                {% endif %}
+
+                <div class="gantt-header-months">
+                    {% for b in ns.blocks %}
+                    <div class="gantt-month" style="width: calc({{ b.count }} * var(--day-width));">
+                        {{ month_names[b.month - 1] }}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="gantt-header">
+                    {% for d in calendario %}
+                    <div class="gantt-day {% if d.weekday() >= 5 %}weekend{% endif %}">
+                        <span class="gantt-num">{{ d.strftime('%d') }}</span>
+                        <span class="gantt-initial">{{ day_initials[d.weekday()] }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% for t in tareas %}
+                <div class="gantt-row" data-task-id="{{ t.id }}" data-estado="{{ t.estado_nombre }}" data-inicio="{{ t.fecha_inicio.isoformat() if t.fecha_inicio else '' }}" data-fin="{{ t.fecha_fin.isoformat() if t.fecha_fin else '' }}">
+                    {% if t.fecha_inicio and t.fecha_fin and calendario %}
+                    {% set raw_start = (t.fecha_inicio - calendario[0]).days %}
+                    {% set raw_end = (t.fecha_fin - calendario[0]).days %}
+                    {% set start_index = 0 if raw_start < 0 else raw_start %}
+                    {% set max_index = calendario|length - 1 %}
+                    {% set end_index = max_index if raw_end > max_index else raw_end %}
+                    {% set duration = end_index - start_index + 1 %}
+                    {% set valid_states = ['pendiente','en-progreso','completada','retrasada'] %}
+                    {% set bar_class = t.estado_clase if t.estado_clase in valid_states else 'pendiente' %}
+                    {% if duration > 0 %}
+                    <div
+                        class="gantt-bar-span bar-{{ bar_class }}"
+                        data-task-id="{{ t.id }}"
+                        style="left: calc(var(--day-width) * {{ start_index }}); width: calc(var(--day-width) * {{ duration }});{% if t.estado_color %} background: {{ t.estado_color }};{% endif %}"
+                    ></div>
+                    {% endif %}
+                    {% endif %}
+                    {% for d in calendario %}
+                    <div class="gantt-cell {% if d.weekday() >= 5 %}weekend{% endif %}">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        {% else %}
+        <p style="margin-top:15px;color:#888;">
+            Seleccione un proyecto para visualizar el reporte.
+        </p>
+        {% endif %}
+</div>
+</div>
+<script id="gantt-deps" type="application/json">{{ dependencias|tojson }}</script>
+<script>
+    function syncGanttRowHeights() {
+        const tableBody = document.querySelector(".gantt-left-table tbody");
+        const ganttRows = document.querySelectorAll(".gantt-right .gantt-row");
+        if (!tableBody || ganttRows.length === 0) return;
+
+        const rows = tableBody.querySelectorAll("tr");
+        const count = Math.min(rows.length, ganttRows.length);
+
+        for (let i = 0; i < count; i++) {
+            const rowHeight = rows[i].offsetHeight;
+            ganttRows[i].style.height = rowHeight + "px";
+            ganttRows[i].style.minHeight = rowHeight + "px";
+        }
+    }
+
+    function drawGanttLinks() {
+        const container = document.querySelector(".gantt-right");
+        const svg = document.querySelector(".gantt-links");
+        if (!container || !svg) return;
+
+        const dataTag = document.getElementById("gantt-deps");
+        if (!dataTag) return;
+
+        let deps = [];
+        try {
+            deps = JSON.parse(dataTag.textContent || "[]");
+        } catch (err) {
+            return;
+        }
+
+        const bars = {};
+        document.querySelectorAll(".gantt-bar-span[data-task-id]").forEach((bar) => {
+            bars[bar.dataset.taskId] = bar;
+        });
+
+        svg.innerHTML = "";
+        svg.setAttribute("width", container.scrollWidth);
+        svg.setAttribute("height", container.scrollHeight);
+
+        const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+        const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+        marker.setAttribute("id", "arrow");
+        marker.setAttribute("viewBox", "0 0 10 10");
+        marker.setAttribute("refX", "9");
+        marker.setAttribute("refY", "5");
+        marker.setAttribute("markerWidth", "6");
+        marker.setAttribute("markerHeight", "6");
+        marker.setAttribute("orient", "auto-start-reverse");
+
+        const arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        arrowPath.setAttribute("d", "M 0 0 L 10 5 L 0 10 z");
+        arrowPath.setAttribute("fill", "#6b7280");
+        marker.appendChild(arrowPath);
+        defs.appendChild(marker);
+        svg.appendChild(defs);
+
+        const containerRect = container.getBoundingClientRect();
+
+        deps.forEach((dep) => {
+            const pred = bars[String(dep.predecesor_id)];
+            const succ = bars[String(dep.tarea_id)];
+            if (!pred || !succ) return;
+
+            const predRect = pred.getBoundingClientRect();
+            const succRect = succ.getBoundingClientRect();
+
+            const x1 = predRect.right - containerRect.left + container.scrollLeft;
+            const y1 = predRect.top - containerRect.top + container.scrollTop + predRect.height / 2;
+            const x2 = succRect.left - containerRect.left + container.scrollLeft;
+            const y2 = succRect.top - containerRect.top + container.scrollTop + succRect.height / 2;
+
+            const midX = x1 + 10;
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", `M ${x1} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${x2 - 6} ${y2}`);
+            path.setAttribute("fill", "none");
+            path.setAttribute("stroke", "#6b7280");
+            path.setAttribute("stroke-width", "1.5");
+            path.setAttribute("marker-end", "url(#arrow)");
+            svg.appendChild(path);
+        });
+    }
+
+    window.addEventListener("load", () => {
+        syncGanttRowHeights();
+        setTimeout(syncGanttRowHeights, 50);
+        setTimeout(drawGanttLinks, 60);
+    });
+
+    window.addEventListener("resize", () => {
+        requestAnimationFrame(syncGanttRowHeights);
+        requestAnimationFrame(drawGanttLinks);
+    });
+
+    const tableBody = document.querySelector(".gantt-left-table tbody");
+    if (tableBody && "ResizeObserver" in window) {
+        const ro = new ResizeObserver(() => {
+            requestAnimationFrame(syncGanttRowHeights);
+            requestAnimationFrame(drawGanttLinks);
+        });
+        ro.observe(tableBody);
+    }
+
+    const depsData = (() => {
+        try {
+            return JSON.parse(document.getElementById("gantt-deps").textContent || "[]");
+        } catch (err) {
+            return [];
+        }
+    })();
+
+    const depMap = {};
+    depsData.forEach((d) => {
+        const key = `${d.tarea_id}:${d.predecesor_id}`;
+        depMap[key] = d;
+    });
+
+    document.querySelectorAll(".dep-check").forEach((chk) => {
+        const taskId = chk.dataset.taskId;
+        const predId = chk.dataset.predId;
+        const key = `${taskId}:${predId}`;
+        const setting = document.querySelector(`.dep-settings[data-task-id="${taskId}"][data-pred-id="${predId}"]`);
+        const dep = depMap[key];
+        if (dep) {
+            chk.checked = true;
+            if (setting) {
+                setting.style.display = "flex";
+                setting.querySelector(".dep-type").value = dep.tipo || "FS";
+                setting.querySelector(".dep-lag").value = dep.lag_dias || 0;
+            }
+        }
+    });
+
+    document.querySelectorAll(".dep-check").forEach((chk) => {
+        chk.addEventListener("change", (e) => {
+            const taskId = e.currentTarget.dataset.taskId;
+            const predId = e.currentTarget.dataset.predId;
+            const setting = document.querySelector(`.dep-settings[data-task-id="${taskId}"][data-pred-id="${predId}"]`);
+            if (setting) {
+                setting.style.display = e.currentTarget.checked ? "flex" : "none";
+            }
+        });
+    });
+
+    document.querySelectorAll(".predecesor-btn").forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+            const taskId = e.currentTarget.dataset.taskId;
+            const checks = document.querySelectorAll(`.dep-check[data-task-id="${taskId}"]:checked`);
+            const deps = [];
+            checks.forEach((chk) => {
+                const predId = chk.dataset.predId;
+                const setting = document.querySelector(`.dep-settings[data-task-id="${taskId}"][data-pred-id="${predId}"]`);
+                const tipo = setting ? setting.querySelector(".dep-type").value : "FS";
+                const lag = setting ? parseInt(setting.querySelector(".dep-lag").value || "0", 10) : 0;
+                deps.push({ idpredecesor: Number(predId), tipo, lag_dias: lag });
+            });
+
+            const payload = {
+                proyecto_id: {{ proyecto_seleccionado or 'null' }},
+                tarea_id: Number(taskId),
+                deps
+            };
+
+            try {
+                const resp = await fetch("{{ url_for('reports.update_dependencies') }}", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await resp.json();
+                if (!data.ok) {
+                    alert(data.message || "No se pudo guardar.");
+                    return;
+                }
+                location.reload();
+            } catch (err) {
+                alert("Error al guardar predecesores.");
+            }
+        });
+    });
+
+    const depInfoMap = {
+        FS: `<p><strong>FS (Fin-Inicio)</strong> – La tarea siguiente empieza cuando la predecesora termina.</p>
+             <p>Ejemplo: 1FS → No diseñas la BD hasta terminar requisitos.</p>`,
+        SS: `<p><strong>SS (Inicio-Inicio)</strong> – La tarea siguiente empieza cuando la predecesora empieza.</p>
+             <p>Ejemplo: 3SS → Reportes pueden iniciar al empezar facturacion.</p>`,
+        FF: `<p><strong>FF (Fin-Fin)</strong> – La tarea siguiente termina cuando la predecesora termina.</p>
+             <p>Ejemplo: 5FF → Capacitacion termina cuando pruebas finalizan.</p>`,
+        SF: `<p><strong>SF (Inicio-Fin)</strong> – La tarea siguiente termina cuando la predecesora empieza.</p>
+             <p>Ejemplo: 8SF → Sistema antiguo termina al arrancar el nuevo.</p>`,
+        LAG: `<p><strong>Lag (retraso/adelanto)</strong> – +5d espera 5 dias, -3d adelanta 3 dias.</p>
+              <p>Ejemplo: 1FS+5d o 3FS-3d.</p>`
+    };
+
+    const depsInfoBox = document.getElementById("deps-info");
+    document.querySelectorAll(".deps-chip").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const key = btn.dataset.dep;
+            if (!depsInfoBox) return;
+            const nextHtml = depInfoMap[key] || "";
+            if (depsInfoBox.style.display === "block" && depsInfoBox.innerHTML === nextHtml) {
+                depsInfoBox.style.display = "none";
+                return;
+            }
+            depsInfoBox.innerHTML = nextHtml;
+            depsInfoBox.style.display = "block";
+        });
+    });
+
+    function parseDate(value) {
+        if (!value) return null;
+        const parts = value.split("-");
+        if (parts.length !== 3) return null;
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    function applyFilters() {
+        const estado = (document.getElementById("filtro-estado").value || "").toLowerCase();
+        const inicioDesde = parseDate(document.getElementById("filtro-inicio-desde").value);
+        const finHasta = parseDate(document.getElementById("filtro-fin-hasta").value);
+
+        document.querySelectorAll(".gantt-left-table tbody tr").forEach((row) => {
+            const rowEstado = (row.dataset.estado || "").toLowerCase();
+            const rowInicio = parseDate(row.dataset.inicio);
+            const rowFin = parseDate(row.dataset.fin);
+
+            let visible = true;
+            if (estado && rowEstado !== estado) visible = false;
+            if (inicioDesde && (!rowInicio || rowInicio < inicioDesde)) visible = false;
+            if (finHasta && (!rowFin || rowFin > finHasta)) visible = false;
+
+            row.style.display = visible ? "" : "none";
+
+            const taskId = row.dataset.taskId;
+            const ganttRow = document.querySelector(`.gantt-right .gantt-row[data-task-id="${taskId}"]`);
+            if (ganttRow) ganttRow.style.display = visible ? "" : "none";
+        });
+
+        syncGanttRowHeights();
+        drawGanttLinks();
+    }
+
+    function clearFilters() {
+        document.getElementById("filtro-estado").value = "";
+        document.getElementById("filtro-inicio-desde").value = "";
+        document.getElementById("filtro-fin-hasta").value = "";
+        document.querySelectorAll(".gantt-left-table tbody tr, .gantt-right .gantt-row").forEach((row) => {
+            row.style.display = "";
+        });
+        syncGanttRowHeights();
+        drawGanttLinks();
+    }
+
+    document.getElementById("btn-aplicar-filtros").addEventListener("click", applyFilters);
+    document.getElementById("btn-limpiar-filtros").addEventListener("click", clearFilters);
+</script>
+{% if print_mode %}
+<script>
+    window.addEventListener("load", () => {
+        setTimeout(() => window.print(), 400);
+    });
+</script>
+{% endif %}
+</body>
+</html>

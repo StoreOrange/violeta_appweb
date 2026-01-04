@@ -1,0 +1,7 @@
+[smtp]
+host = "smtp.zoho.com"
+port = 587
+user = "orangetectec@zohomail.com"
+password = "Lucifer2025"
+sender_name = "Violeta Workspace"
+use_tls = true

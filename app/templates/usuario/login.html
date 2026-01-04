@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Acceso | Gestion de Software</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+      :root {
+        --ink: #0b0f1a;
+        --muted: #7c8296;
+        --brand: #1c2c5b;
+        --brand-strong: #102046;
+        --accent: #f59e0b;
+        --surface: #f7f8fc;
+      }
+      body {
+        background:
+          radial-gradient(circle at 15% 20%, rgba(245, 158, 11, 0.18), transparent 45%),
+          radial-gradient(circle at 85% 0%, rgba(28, 44, 91, 0.22), transparent 40%),
+          linear-gradient(135deg, #0f172a, #1e293b);
+        font-family: "Sora", "Segoe UI", Arial, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        color: #f8fafc;
+      }
+      .login-shell {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1.2rem;
+      }
+      .login-card {
+        background: var(--surface);
+        border-radius: 22px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.4);
+        padding: 2.6rem 2.4rem;
+        width: min(980px, 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .brand-panel {
+        border-radius: 18px;
+        background: linear-gradient(140deg, #0f172a, #1e293b 60%, #1c2c5b);
+        color: #e2e8f0;
+        padding: 2.2rem;
+        min-height: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+      .brand-panel::after {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.45), transparent 70%);
+        top: -60px;
+        right: -60px;
+        opacity: 0.8;
+      }
+      .brand-title {
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-bottom: 0.6rem;
+      }
+      .brand-subtitle {
+        font-size: 0.95rem;
+        color: #cbd5f5;
+        margin-bottom: 1.5rem;
+      }
+      .badge-soft {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(245, 158, 11, 0.18);
+        color: #facc15;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.9rem;
+        margin-top: 1.8rem;
+      }
+      .metric-card {
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        padding: 0.8rem 1rem;
+      }
+      .metric-card .value {
+        font-weight: 700;
+        font-size: 1.2rem;
+      }
+      .metric-card .label {
+        font-size: 0.78rem;
+        color: #cbd5f5;
+      }
+      .form-panel {
+        padding: 0.2rem 0 0.2rem 1.8rem;
+      }
+      .form-title {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--ink);
+      }
+      .form-subtitle {
+        color: var(--muted);
+        margin-bottom: 1.6rem;
+        font-size: 0.95rem;
+      }
+      .form-control {
+        border-radius: 12px;
+        border: 1px solid #d7dbe8;
+        padding: 0.7rem 0.9rem;
+      }
+      .form-control:focus {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 0.2rem rgba(28, 44, 91, 0.12);
+      }
+      .btn-primary {
+        background: var(--brand);
+        border: none;
+        border-radius: 999px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        box-shadow: 0 10px 20px rgba(16, 32, 70, 0.18);
+      }
+      .btn-primary:hover {
+        background: var(--brand-strong);
+      }
+      .login-error {
+        background: #fde8e8;
+        color: #b42318;
+        border-radius: 10px;
+        padding: 0.6rem 0.9rem;
+        font-size: 0.9rem;
+        border: 1px solid #f8caca;
+      }
+      @media (max-width: 991px) {
+        .form-panel { padding-left: 0; margin-top: 1.8rem; }
+        .login-card { padding: 2rem 1.5rem; }
+      }
+    </style>
+</head>
+<body>
+    <div class="login-shell">
+        <div class="login-card">
+            <div class="row g-4 align-items-stretch">
+                <div class="col-lg-6">
+                    <div class="brand-panel h-100">
+                        <div class="badge-soft"><i class="bi bi-command"></i> Gestion de software</div>
+                        <div class="brand-title mt-3">Violeta Workspace</div>
+                        <div class="brand-subtitle">
+                            Consolida proyectos, tareas y entregas en un solo lugar. Control total del ciclo de vida.
+                        </div>
+                        <div class="metrics">
+                            <div class="metric-card">
+                                <div class="value">24/7</div>
+                                <div class="label">Monitoreo operativo</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="value">98%</div>
+                                <div class="label">SLA interno</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="value">+120</div>
+                                <div class="label">Deploys mensuales</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="value">360</div>
+                                <div class="label">Tableros activos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-panel h-100 d-flex flex-column justify-content-center">
+                        <div class="form-title">Acceso seguro</div>
+                        <div class="form-subtitle">Inicia sesion con tu correo o usuario autorizado.</div>
+                        <form method="POST" action="{{ url_for('usuario.login') }}">
+                            {% if error %}
+                                <div class="login-error mb-3">{{ error }}</div>
+                            {% endif %}
+                            <div class="mb-3">
+                                <label class="form-label">Correo o usuario</label>
+                                <input type="text" name="identificador" class="form-control" placeholder="nombre@empresa.com" required autofocus>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Contrasena</label>
+                                <input type="password" name="password" class="form-control" placeholder="Ingresa tu clave" required>
+                            </div>
+                            <button class="btn btn-primary w-100" type="submit">
+                                Entrar al panel <i class="bi bi-arrow-right-circle ms-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

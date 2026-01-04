@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Notificaciones | Violeta Workspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1f1d2b;
+      --muted: #6b7280;
+      --violet: #6d28d9;
+      --violet-dark: #4c1d95;
+      --bg: #f6f2fb;
+      --card: #ffffff;
+      --line: #e6defa;
+      --soft: #f1ecff;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
+    body {
+      margin: 0;
+      font-family: "Sora", Arial, sans-serif;
+      background: radial-gradient(1000px 520px at 12% -12%, #efe7ff 0%, #f7f5fb 55%) no-repeat;
+      color: var(--ink);
+    }
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px 22px;
+      box-shadow: 0 12px 30px rgba(88, 70, 122, 0.12);
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .header p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .btn-soft {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--soft);
+      color: var(--violet-dark);
+      border-radius: 999px;
+      padding: 8px 18px;
+      text-decoration: none;
+      font-weight: 600;
+      border: none;
+    }
+    .filters {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 16px 18px;
+      box-shadow: 0 10px 24px rgba(88, 70, 122, 0.08);
+      margin-bottom: 18px;
+    }
+    .filters form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+    label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: block;
+    }
+    input[type="date"], select, input[type="text"] {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: #faf8ff;
+      color: var(--ink);
+    }
+    .filters .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--violet);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 9px 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--violet-dark);
+      border-radius: 12px;
+      padding: 9px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(260px, 0.9fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px 18px 20px;
+      box-shadow: 0 12px 24px rgba(88, 70, 122, 0.08);
+    }
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: var(--violet-dark);
+      margin-bottom: 12px;
+    }
+    .meta-line {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .search-inline {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .search-inline input {
+      flex: 1;
+    }
+    .table-wrap {
+      overflow: auto;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      background: #fff;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #efe8fb;
+      vertical-align: top;
+    }
+    th {
+      background: #f5f0ff;
+      color: var(--violet-dark);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #ede7fb;
+      color: var(--violet-dark);
+      margin-right: 6px;
+      margin-top: 4px;
+    }
+    .pill.tipo {
+      background: #ede7fb;
+      color: var(--violet-dark);
+    }
+    .pill.estado {
+      background: #e0f2fe;
+      color: #0c4a6e;
+    }
+    .pill.estado.no-leida {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .pill.dest {
+      background: #f3f0ff;
+      color: #4c1d95;
+    }
+    .btn-resend {
+      border: none;
+      background: #ede7fb;
+      color: var(--violet-dark);
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    .tarea-card {
+      background: #f4efff;
+      border: 1px solid #e6defa;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .tarea-card .titulo { font-weight: 600; }
+    .tarea-card .proyecto { color: var(--violet-dark); font-size: 0.9rem; }
+    .tarea-card .fecha { color: var(--muted); font-size: 0.85rem; }
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <div class="header">
+      <div>
+        <h1>Notificaciones del sistema</h1>
+        <p>Control por tipo, fecha y destinatarios. Por defecto se muestran los ultimos 3 dias.</p>
+      </div>
+      <a class="btn-soft" href="{{ url_for('usuario.dashboard') }}">
+        <i class="bi bi-arrow-left"></i> Volver al panel
+      </a>
+    </div>
+
+    <div class="filters">
+      <form method="GET">
+        <div>
+          <label>Fecha inicio</label>
+          <input type="date" name="fecha_inicio" value="{{ fecha_inicio.strftime('%Y-%m-%d') if fecha_inicio else '' }}">
+        </div>
+        <div>
+          <label>Fecha fin</label>
+          <input type="date" name="fecha_fin" value="{{ fecha_fin.strftime('%Y-%m-%d') if fecha_fin else '' }}">
+        </div>
+        <div>
+          <label>Tipo</label>
+          <select name="tipo">
+            <option value="">Todos</option>
+            {% for tipo in tipos %}
+              <option value="{{ tipo }}" {% if tipo_sel == tipo %}selected{% endif %}>{{ tipo }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="actions">
+          <button class="btn-primary" type="submit"><i class="bi bi-funnel"></i> Aplicar</button>
+          <a class="btn-outline" href="{{ url_for('notificacion.vista_notificaciones') }}">Limpiar</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="layout">
+      <div class="panel">
+        <div class="panel-title"><i class="bi bi-bell"></i> Registro de notificaciones</div>
+        <div class="meta-line">Rango activo: {{ fecha_inicio.strftime('%Y-%m-%d') if fecha_inicio else 'Sin inicio' }} - {{ fecha_fin.strftime('%Y-%m-%d') if fecha_fin else 'Sin fin' }}</div>
+        <div class="search-inline">
+          <input type="text" placeholder="Buscar por mensaje, proyecto o destinatario..." id="buscarNotif" oninput="filtrarNotificaciones()">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Mensaje</th>
+                <th>Proyecto</th>
+                <th>Tipo</th>
+                <th>Destinatarios</th>
+                <th>Fecha envio</th>
+                <th>Estado</th>
+                <th>Accion</th>
+              </tr>
+            </thead>
+            <tbody id="notificacionesList">
+              {% for notif in notificaciones %}
+              <tr data-text="{{ (notif.mensaje or '') }} {{ (notif.tarea.proyecto.nombre_proyecto if notif.tarea and notif.tarea.proyecto else '') }} {{ notif.destinatarios or '' }}">
+                <td>{{ notif.mensaje }}</td>
+                <td>
+                  {% if notif.tarea and notif.tarea.proyecto %}
+                    {{ notif.tarea.proyecto.nombre_proyecto }}
+                  {% else %}
+                    <span class="pill">Sin proyecto</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if notif.tipo %}
+                    <span class="pill tipo">{{ notif.tipo }}</span>
+                  {% else %}
+                    <span class="pill">General</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if notif.destinatarios %}
+                    {% for correo in notif.destinatarios.split(',') %}
+                      {% if correo.strip() %}
+                        <span class="pill dest">{{ correo.strip() }}</span>
+                      {% endif %}
+                    {% endfor %}
+                  {% else %}
+                    <span class="pill">Sin destinatarios</span>
+                  {% endif %}
+                </td>
+                <td>{{ notif.fecha_envio.strftime('%Y-%m-%d %H:%M') if notif.fecha_envio else '' }}</td>
+                <td>
+                  {% if notif.leida %}
+                    <span class="pill estado">Leida</span>
+                  {% else %}
+                    <span class="pill estado no-leida">No leida</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <form method="POST" action="{{ url_for('notificacion.reenviar_notificacion', idnotificacion=notif.idnotificacion) }}">
+                    <button type="submit" class="btn-resend"><i class="bi bi-send"></i> Reenviar</button>
+                  </form>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="7" style="color:#8c819d; text-align:center; padding:18px;">No hay notificaciones en este rango.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title"><i class="bi bi-kanban"></i> Tareas pendientes</div>
+        <div class="search-inline">
+          <input type="text" placeholder="Buscar tarea o proyecto..." id="buscarTarea" oninput="filtrarTareas()">
+        </div>
+        <div id="tareasList">
+          {% for tarea in tareas_pendientes %}
+          <div class="tarea-card">
+            <div class="titulo">{{ tarea.titulo }}</div>
+            <div class="proyecto">{{ tarea.proyecto.nombre_proyecto if tarea.proyecto else 'Sin proyecto' }}</div>
+            <div class="fecha"><i class="bi bi-calendar"></i> {{ tarea.fecha_limite or tarea.fecha_creacion.strftime('%Y-%m-%d') }}</div>
+          </div>
+          {% else %}
+          <div style="color:#aaa;">No hay tareas pendientes</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function filtrarTareas() {
+      var input = document.getElementById('buscarTarea').value.toLowerCase();
+      var list = document.getElementById('tareasList').getElementsByClassName('tarea-card');
+      for (var i = 0; i < list.length; i++) {
+        var text = list[i].innerText.toLowerCase();
+        list[i].style.display = text.includes(input) ? '' : 'none';
+      }
+    }
+    function filtrarNotificaciones() {
+      var input = document.getElementById('buscarNotif').value.toLowerCase();
+      var list = document.getElementById('notificacionesList').getElementsByTagName('tr');
+      for (var i = 0; i < list.length; i++) {
+        var text = (list[i].dataset.text || '').toLowerCase();
+        list[i].style.display = text.includes(input) ? '' : 'none';
+      }
+    }
+  </script>
+</body>
+</html>

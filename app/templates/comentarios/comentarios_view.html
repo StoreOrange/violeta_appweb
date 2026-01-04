@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Comentarios a Tareas | Violeta Workspace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1: #f6f1e9;
+            --bg-2: #e9f2ff;
+            --ink: #1e1f2b;
+            --muted: #6f6b83;
+            --brand: #2651d8;
+            --brand-dark: #1c3fa8;
+            --accent: #ff9156;
+            --panel: #ffffff;
+            --panel-soft: #f3f6ff;
+            --border: #e2e7f4;
+            --shadow: 0 12px 30px rgba(27, 33, 74, 0.12);
+        }
+        body {
+            background: radial-gradient(circle at 20% 10%, #fff3e2 0, transparent 40%),
+                        radial-gradient(circle at 85% 0%, #e6ecff 0, transparent 42%),
+                        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+            font-family: "Space Grotesk", "Segoe UI", Arial, sans-serif;
+            color: var(--ink);
+            min-height: 100vh;
+        }
+        .main-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 0 0 24px 24px;
+            box-shadow: var(--shadow);
+            padding: 1.6rem 2.6rem 1.4rem 2.6rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #f1e4d4;
+        }
+        .header-title {
+            font-weight: 700;
+            color: var(--brand-dark);
+            font-size: 2rem;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .header-title i {
+            background: var(--panel-soft);
+            border-radius: 12px;
+            padding: 0.4rem 0.55rem;
+            color: var(--brand);
+        }
+        .btn-dashboard {
+            background: linear-gradient(120deg, var(--brand), var(--accent));
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 999px;
+            padding: 0.55em 1.6em;
+            font-size: 1rem;
+            box-shadow: 0 12px 24px rgba(38, 81, 216, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-dashboard:hover {
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 16px 26px rgba(38, 81, 216, 0.28);
+        }
+        .container-main {
+            display: grid;
+            grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+            gap: 2.2rem;
+            align-items: start;
+            padding: 2rem 1.2rem 3rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .card-form {
+            background: var(--panel);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            padding: 2.1rem 2.2rem;
+            position: sticky;
+            top: 1.5rem;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+        }
+        .card-form h3 {
+            font-weight: 700;
+            color: var(--brand-dark);
+            margin-bottom: 1.3em;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .card-form h3 i {
+            background: var(--panel-soft);
+            padding: 0.35rem 0.55rem;
+            border-radius: 10px;
+            color: var(--brand);
+        }
+        .form-label {
+            margin-top: 0.8em;
+            font-weight: 600;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+        .form-control, .form-select {
+            margin-bottom: 0.7em;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            padding: 0.65em 1em;
+            background: #fbfcff;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 0.2rem rgba(38, 81, 216, 0.15);
+        }
+        .btn-primary {
+            background: var(--brand);
+            border: none;
+            border-radius: 12px;
+            padding: 0.7rem 1rem;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(38, 81, 216, 0.2);
+        }
+        .btn-primary:hover { background: var(--brand-dark); }
+        .kanban-panel {
+            flex: 1;
+            background: var(--panel);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            padding: 2rem 2.2rem 2.4rem;
+            animation: rise 0.5s ease both;
+        }
+        .kanban-panel h4 {
+            color: var(--brand-dark);
+            font-weight: 700;
+            margin-bottom: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .kanban-panel h4 i {
+            color: var(--brand);
+            background: var(--panel-soft);
+            padding: 0.35rem 0.55rem;
+            border-radius: 10px;
+        }
+        .cabecera-tarea {
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 1.2em 1.5em 1.1em 1.5em;
+            margin-bottom: 1.4em;
+            display: grid;
+            gap: 0.5rem;
+        }
+        .card-form::-webkit-scrollbar { width: 8px; }
+        .card-form::-webkit-scrollbar-thumb {
+            background: #cfd7f6;
+            border-radius: 999px;
+        }
+        .cabecera-tarea .titulo { font-weight: 700; font-size: 1.2em; }
+        .cabecera-tarea .descripcion { font-size: 1em; color: var(--muted); }
+        .cabecera-tarea .fecha { font-size: 0.95em; color: var(--brand-dark); }
+        .comentario-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 1.1rem 1.4rem 1rem 1.4rem;
+            margin-bottom: 1.1rem;
+            box-shadow: 0 8px 20px rgba(27, 33, 74, 0.08);
+        }
+        .comentario-meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            font-size: 0.95em;
+            color: var(--muted);
+        }
+        .avatar {
+            height: 36px;
+            width: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd5b0, #b7c6ff);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-dark);
+            font-weight: 700;
+            margin-right: 0.4rem;
+        }
+        .comentario-contenido { margin-top: 0.7em; font-size: 1.02em; }
+        .comentario-footer {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            margin-top: 0.9rem;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+        .comentario-footer i { color: var(--brand); }
+        .action-btn {
+            border: none;
+            background: transparent;
+            color: inherit;
+            padding: 0.2rem 0.4rem;
+            border-radius: 999px;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .action-btn:hover { background: #f0f3ff; color: var(--brand-dark); }
+        .action-btn.heart-active i { color: #e63946; }
+        .action-btn.heart-active { animation: heart-pop 0.3s ease; }
+        .reaction-row {
+            display: flex;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+        .reaction-btn {
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--muted);
+            border-radius: 999px;
+            padding: 0.15rem 0.6rem;
+            font-size: 0.85rem;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .reaction-btn:hover { transform: translateY(-1px); border-color: var(--brand); color: var(--brand-dark); }
+        .diff-modal .modal-content {
+            border-radius: 18px;
+            border: none;
+            box-shadow: 0 18px 40px rgba(27, 33, 74, 0.2);
+        }
+        .diff-modal .modal-header {
+            background: var(--panel-soft);
+            border-bottom: 1px solid var(--border);
+        }
+        .diff-box {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 14px;
+            padding: 1rem;
+            font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9rem;
+            line-height: 1.45;
+            max-height: 360px;
+            overflow: auto;
+        }
+        .diff-line {
+            display: block;
+            padding: 0.15rem 0.4rem;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+        .diff-line.add { background: rgba(34, 197, 94, 0.15); color: #bbf7d0; }
+        .diff-line.del { background: rgba(239, 68, 68, 0.15); color: #fecaca; }
+        .diff-line.meta { background: rgba(148, 163, 184, 0.12); color: #cbd5f5; }
+        .diff-empty { color: #94a3b8; }
+        .reply-context {
+            display: none;
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 0.7rem 0.9rem;
+            background: #fbfcff;
+            margin-bottom: 0.6rem;
+        }
+        .reply-context strong {
+            font-weight: 700;
+            color: var(--brand-dark);
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+        .reply-context .original {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+        .reply-highlight {
+            color: var(--brand-dark);
+            font-weight: 700;
+        }
+        .reply-quote {
+            color: var(--muted);
+            border-left: 3px solid var(--border);
+            padding-left: 0.6rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+        @keyframes heart-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        .adjunto-link { font-size: 0.94em; color: var(--brand-dark); }
+        .adjunto-img {
+            max-height: 44px;
+            max-width: 90px;
+            border-radius: 8px;
+            vertical-align: middle;
+            margin-right: 4px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+        .badge { font-size: 0.82em; }
+        .estado-bar {
+            display: inline-block;
+            min-width: 120px;
+            font-weight: 600;
+            padding: 0.3em 1em;
+            border-radius: 999px;
+        }
+        .comentario-fecha { font-size: 0.93em; color: var(--brand-dark); font-weight: 500; margin-left: 0.4em; }
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 992px) {
+            .container-main { grid-template-columns: 1fr; }
+            .card-form { position: static; }
+            .main-header { flex-direction: column; gap: 1rem; text-align: center; }
+            .card-form { max-height: none; overflow: visible; }
+        }
+    </style>
+</head>
+<body>
+<div class="main-header">
+    <div class="header-title"><i class="bi bi-chat-left-text"></i> Seguimiento de Tarea / Tickets</div>
+    <a href="{{ url_for('usuario.dashboard') }}" class="btn btn-dashboard">
+        <i class="bi bi-arrow-left"></i> Volver al Dashboard
+    </a>
+</div>
+<div class="container-main">
+    <!-- PANEL NUEVO COMENTARIO -->
+    <form class="card-form" method="POST" enctype="multipart/form-data">
+        <h3><i class="bi bi-plus-circle"></i> Nuevo Comentario</h3>
+        <label class="form-label" for="proyecto">Proyecto</label>
+        <select class="form-select" id="proyecto" name="proyecto" onchange="filtrarTareasPorProyecto(this.value)" required>
+            <option value="">Seleccionar proyecto</option>
+            {% for proyecto in proyectos %}
+                <option value="{{ proyecto.idproyecto }}" {% if idproyecto and proyecto.idproyecto == idproyecto %}selected{% endif %}>{{ proyecto.nombre_proyecto }}</option>
+            {% endfor %}
+        </select>
+        <label class="form-label" for="idtarea">Tarea</label>
+        <select class="form-select" id="idtarea" name="idtarea" required>
+            <option value="">Seleccionar tarea</option>
+            {% for tarea in tareas %}
+                <option value="{{ tarea.idtarea }}" {% if idtarea and tarea.idtarea == idtarea %}selected{% endif %}>{{ tarea.titulo }}</option>
+            {% endfor %}
+        </select>
+        {% if tarea_sel %}
+            <label class="form-label" for="idestado">Estado de la tarea</label>
+            <select class="form-select" id="idestado" name="idestado">
+                {% for estado in estados %}
+                    <option value="{{ estado.idestado }}" {% if tarea_sel.idestado == estado.idestado %}selected{% endif %}>{{ estado.nombre_estado }}</option>
+                {% endfor %}
+            </select>
+            <label class="form-label">Estado actual:</label>
+            <div class="mb-2">
+                <span class="estado-bar" style="background: {{ tarea_sel.estado.color if tarea_sel.estado else '#d3bfff' }};">
+                    {{ tarea_sel.estado.nombre_estado if tarea_sel.estado else 'Sin Estado' }}
+                </span>
+            </div>
+        {% endif %}
+        <label class="form-label" for="fecha">Fecha del comentario</label>
+        <input type="datetime-local" class="form-control" id="fecha" name="fecha"
+            value="{{ now|default('', true) }}" required>
+        <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" id="notificar_email" name="notificar_email" checked>
+            <label class="form-check-label" for="notificar_email">Notificar por correo automaticamente</label>
+        </div>
+        <label class="form-label" for="comentario">Comentario</label>
+        <div id="replyContext" class="reply-context">
+            <strong id="replyHeader"></strong>
+            <div class="original" id="replyOriginal"></div>
+        </div>
+        <textarea class="form-control" id="comentario" name="comentario" rows="3" required></textarea>
+        <!-- Input para archivo adjunto (nuevo y fundamental) -->
+        <label class="form-label" for="adjunto">Adjunto (opcional)</label>
+        <input type="file" class="form-control" id="adjunto" name="adjunto" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.txt">
+        <button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-send"></i> Registrar comentario</button>
+    </form>
+
+    <!-- PANEL HISTORIAL DE COMENTARIOS Y CABECERA DE TAREA -->
+    <div class="kanban-panel">
+        <h4>
+            <i class="bi bi-list-ul"></i> Historial de Comentarios
+            {% if tarea_sel %}- {{ tarea_sel.titulo }}{% endif %}
+        </h4>
+        {% if tarea_sel %}
+            <!-- CABECERA DE LA TAREA SELECCIONADA -->
+            <div class="cabecera-tarea">
+                <div class="titulo"><i class="bi bi-flag"></i> {{ tarea_sel.titulo }}</div>
+                <div class="descripcion">{{ tarea_sel.descripcion }}</div>
+                <div class="fecha">
+                    <i class="bi bi-calendar"></i>
+                    Creada el {{ tarea_sel.fecha_creacion.strftime('%d-%m-%Y %H:%M') if tarea_sel.fecha_creacion else '' }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <span class="estado-bar" style="background: {{ tarea_sel.estado.color if tarea_sel.estado else '#d3bfff' }};">
+                    Estado actual: {{ tarea_sel.estado.nombre_estado if tarea_sel.estado else 'Sin Estado' }}
+                </span>
+            </div>
+        {% endif %}
+        {% if comentarios %}
+            {% for coment in comentarios|reverse %}
+            <div class="comentario-card">
+                <div class="comentario-meta">
+                    <span class="avatar"><i class="bi bi-person"></i></span>
+                    <b>
+                    {% for usuario in usuarios %}
+                        {% if usuario.idusuario == coment.idusuario %}
+                            {{ usuario.nombre }}
+                        {% endif %}
+                    {% endfor %}
+                    </b>
+                    <span class="comentario-fecha">
+                        <i class="bi bi-clock"></i>
+                        {{ coment.fecha.strftime('%d-%m-%Y %H:%M') if coment.fecha else '' }}
+                    </span>
+                    <span class="badge bg-light text-dark ms-2">#{{ coment.idcomentario }}</span>
+                    {% if coment.estado %}
+                        <span class="badge" style="background: {{ coment.estado.color }};">{{ coment.estado.nombre_estado }}</span>
+                    {% endif %}
+                </div>
+                <div class="comentario-contenido" data-comentario-texto="{{ coment.comentario }}">{{ coment.comentario }}</div>
+                {% if coment.idadjunto and coment.adjunto %}
+                    <div class="mt-2">
+                        {% set tipo = coment.adjunto.tipo or '' %}
+                        {% set es_imagen = 'image' in tipo %}
+                        {% set es_pdf = tipo == 'application/pdf' %}
+                        {% set es_word = tipo in ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'] %}
+                        {% set es_excel = tipo in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'] %}
+                        <span class="badge bg-light text-dark">
+                            <i class="bi bi-paperclip"></i> Archivo adjunto:
+                        </span>
+                        {% if es_imagen %}
+                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver imagen">
+                                <img src="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" alt="Imagen adjunta" class="adjunto-img">
+                            </a>
+                        {% elif es_pdf %}
+                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver PDF">
+                                <i class="bi bi-file-pdf text-danger" style="font-size:1.45em;"></i> PDF
+                            </a>
+                        {% elif es_word %}
+                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver Word">
+                                <i class="bi bi-file-earmark-word text-primary" style="font-size:1.45em;"></i> Word
+                            </a>
+                        {% elif es_excel %}
+                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver Excel">
+                                <i class="bi bi-file-earmark-excel text-success" style="font-size:1.45em;"></i> Excel
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver/Descargar">
+                                <i class="bi bi-file-earmark" style="font-size:1.4em;"></i> Archivo
+                            </a>
+                        {% endif %}
+                        <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}"
+                            class="btn btn-outline-secondary btn-sm ms-2" target="_blank" title="Descargar adjunto">
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </div>
+                {% endif %}
+                <div class="comentario-footer">
+                    <button class="action-btn js-heart" type="button" aria-label="Reaccionar con corazon">
+                        <i class="bi bi-heart-fill"></i> Reaccionar
+                    </button>
+                    <button class="action-btn js-reply" type="button"
+                        data-comentario-id="{{ coment.idcomentario }}"
+                        data-comentario-fecha="{{ coment.fecha.strftime('%d-%m-%Y %H:%M') if coment.fecha else '' }}"
+                        data-comentario-usuario="{% for usuario in usuarios %}{% if usuario.idusuario == coment.idusuario %}{{ usuario.nombre }}{% endif %}{% endfor %}"
+                        data-comentario-texto="{{ coment.comentario }}">
+                        <i class="bi bi-reply"></i> Responder
+                    </button>
+                    <button class="action-btn js-diff d-none" type="button"
+                        data-comentario-id="{{ coment.idcomentario }}"
+                        data-comentario-texto="{{ coment.comentario }}">
+                        <i class="bi bi-file-diff"></i> Ver cambios
+                    </button>
+                    <button class="action-btn js-bookmark" type="button" aria-label="Guardar">
+                        <i class="bi bi-bookmark"></i> Guardar
+                    </button>
+                </div>
+                <div class="reaction-row">
+                    <button class="reaction-btn js-reaction" type="button" data-reaction="smile">
+                        <i class="bi bi-emoji-smile"></i> Me gusta
+                    </button>
+                    <button class="reaction-btn js-reaction" type="button" data-reaction="ok">
+                        <i class="bi bi-hand-thumbs-up"></i> OK
+                    </button>
+                    <button class="reaction-btn js-reaction" type="button" data-reaction="idea">
+                        <i class="bi bi-lightbulb"></i> Idea
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-secondary">No hay comentarios para esta tarea.</p>
+        {% endif %}
+    </div>
+</div>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1200">
+      <div class="toast align-items-center text-bg-success show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="bi bi-check-circle-fill"></i> {{ messages[0] }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endwith %}
+<div class="modal fade diff-modal" id="diffModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-code-slash"></i> Cambios detectados</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-muted mb-2" id="diffSubtitle"></div>
+        <div id="diffContent" class="diff-box"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    function escapeHtml(value) {
+        var div = document.createElement('div');
+        div.textContent = value;
+        return div.innerHTML;
+    }
+    function extractDiff(raw) {
+        if (!raw) return null;
+        var diffBlock = null;
+        var diffFence = raw.match(/```diff([\s\S]*?)```/i);
+        if (diffFence && diffFence[1]) {
+            diffBlock = diffFence[1].trim();
+        } else {
+            var lines = raw.split('\n');
+            var hits = lines.filter(function(line) {
+                return line.startsWith('+++') || line.startsWith('---') || line.startsWith('@@') || line.startsWith('+') || line.startsWith('-');
+            });
+            if (hits.length >= 2) {
+                diffBlock = raw.trim();
+            }
+        }
+        return diffBlock;
+    }
+    function renderDiff(diffText) {
+        var container = document.getElementById('diffContent');
+        container.innerHTML = '';
+        if (!diffText) {
+            container.innerHTML = '<div class="diff-empty">No se encontraron cambios en este comentario.</div>';
+            return;
+        }
+        diffText.split('\n').forEach(function(line) {
+            var span = document.createElement('span');
+            span.classList.add('diff-line');
+            if (line.startsWith('+++') || line.startsWith('---') || line.startsWith('@@') || line.startsWith('diff')) {
+                span.classList.add('meta');
+            } else if (line.startsWith('+')) {
+                span.classList.add('add');
+            } else if (line.startsWith('-')) {
+                span.classList.add('del');
+            }
+            span.textContent = line || ' ';
+            container.appendChild(span);
+        });
+    }
+    function filtrarTareasPorProyecto(idproyecto) {
+        window.location.href = "?idproyecto=" + idproyecto;
+    }
+    document.getElementById('idtarea').addEventListener('change', function() {
+        var idproyecto = document.getElementById('proyecto').value;
+        window.location.href = "?idproyecto=" + idproyecto + "&idtarea=" + this.value;
+    });
+    document.querySelectorAll('.js-reply').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var comentarioId = this.dataset.comentarioId || '';
+            var comentarioFecha = this.dataset.comentarioFecha || '';
+            var comentarioUsuario = this.dataset.comentarioUsuario || '';
+            var comentarioTexto = this.dataset.comentarioTexto || '';
+            var header = 'Respondiendo comentarios del Ticket #' + comentarioId +
+                ' de la fecha ' + comentarioFecha + ', respondiendo al usuario ' + comentarioUsuario + ':';
+            var replyContext = document.getElementById('replyContext');
+            var replyHeader = document.getElementById('replyHeader');
+            var replyOriginal = document.getElementById('replyOriginal');
+            replyHeader.textContent = header;
+            replyOriginal.textContent = comentarioTexto;
+            replyContext.style.display = 'block';
+            var textarea = document.getElementById('comentario');
+            if (textarea) {
+                textarea.value = header + '\n' + comentarioTexto + '\n\nRespondiendo lo siguiente:\n';
+                textarea.focus();
+            }
+        });
+    });
+    document.querySelectorAll('.js-heart').forEach(function(button) {
+        button.addEventListener('click', function() {
+            button.classList.toggle('heart-active');
+        });
+    });
+    document.querySelectorAll('.js-reaction').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var label = this.textContent.trim();
+            var heartButton = this.closest('.comentario-card').querySelector('.js-heart');
+            if (heartButton) {
+                heartButton.classList.add('heart-active');
+                heartButton.innerHTML = '<i class="bi bi-heart-fill"></i> ' + label;
+            }
+        });
+    });
+    document.querySelectorAll('.comentario-contenido').forEach(function(el) {
+        var raw = el.textContent || '';
+        if (raw.indexOf('Respondiendo lo siguiente:') !== -1) {
+            var parts = raw.split('Respondiendo lo siguiente:');
+            var headerText = parts[0].trim();
+            var replyText = parts.slice(1).join('Respondiendo lo siguiente:').trim();
+            var headerHtml = headerText ? '<span class="reply-highlight">' + headerText + '</span>' : '';
+            var replyHtml = replyText ? '<span class="reply-quote">Respondiendo lo siguiente:\n' + replyText + '</span>' : '';
+            el.innerHTML = headerHtml + replyHtml;
+        }
+    });
+    document.querySelectorAll('.js-diff').forEach(function(button) {
+        var raw = button.dataset.comentarioTexto || '';
+        var diff = extractDiff(raw);
+        if (diff) {
+            button.classList.remove('d-none');
+        }
+        button.addEventListener('click', function() {
+            var comentarioId = this.dataset.comentarioId || '';
+            var diffText = extractDiff(raw);
+            document.getElementById('diffSubtitle').textContent = 'Comentario #' + comentarioId;
+            renderDiff(diffText);
+            var modal = new bootstrap.Modal(document.getElementById('diffModal'));
+            modal.show();
+        });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
