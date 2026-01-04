@@ -168,16 +168,53 @@
     .tab-pane {
       padding-top: 1rem;
     }
+    .tab-content {
+      margin-top: 0.4rem;
+    }
     .tab-page {
       background: #fff;
       border: 1px solid #efe8fb;
       border-radius: 20px;
       padding: 1.6rem;
       box-shadow: 0 14px 28px rgba(31, 21, 68, 0.08);
+      display: grid;
+      gap: 1.2rem;
+    }
+    .tab-page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .tab-page-header h4 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--violet-dark);
+    }
+    .pill-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .pill-tabs .nav-link {
+      border: none;
+      border-radius: 999px;
+      padding: 0.45rem 1rem;
+      font-weight: 600;
+      color: var(--violet-dark);
+      background: #f3edff;
+    }
+    .pill-tabs .nav-link.active {
+      background: var(--violet);
+      color: #fff;
     }
     .tab-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.4rem;
       align-items: start;
     }
@@ -185,9 +222,9 @@
       background: #fff;
       border: 1px solid #efe8fb;
       border-radius: 16px;
-      padding: 1.4rem 1.6rem;
+      padding: 1.6rem 1.8rem;
       box-shadow: 0 12px 24px rgba(31, 21, 68, 0.08);
-      margin-bottom: 1.4rem;
+      margin-bottom: 0;
     }
     .tab-pane .panel-section h5 {
       font-size: 0.95rem;
@@ -202,6 +239,7 @@
       display: grid;
       grid-template-columns: 300px minmax(0, 1fr);
       gap: 1.4rem;
+      margin-bottom: 1.2rem;
     }
     .jira-sidebar {
       background: #fbf8ff;
@@ -383,6 +421,26 @@
       .jira-layout { grid-template-columns: 1fr; }
       .tab-page { padding: 1.2rem; }
       .tab-grid { grid-template-columns: 1fr; }
+      .jira-main { padding: 1rem; }
+      .jira-sidebar { padding: 1rem; }
+      .nav-tabs { flex-wrap: wrap; gap: 0.4rem; }
+      .nav-tabs .nav-link { white-space: nowrap; }
+      .backlog-table { display: block; overflow-x: auto; }
+      .backlog-table thead, .backlog-table tbody { width: 100%; }
+      .table-scrum { display: block; overflow-x: auto; }
+      .jira-board { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+      .burndown-box { overflow-x: auto; }
+    }
+    @media (max-width: 640px) {
+      .main-header h1 { font-size: 1.4rem; }
+      .main-header p { font-size: 0.9rem; }
+      .card { padding: 1.2rem; }
+      .panel-section { padding: 1.1rem; }
+      .tab-page { padding: 1.1rem; }
+      .pill-tabs .nav-link { width: 100%; text-align: center; }
+      .jira-subtabs { flex-wrap: wrap; }
+      .backlog-item { flex-direction: column; align-items: flex-start; }
+      .board-task { font-size: 0.8rem; }
     }
   </style>
 </head>
@@ -410,9 +468,36 @@
       <div class="tab-content" id="scrumTabsContent">
         <div class="tab-pane fade show active" id="pane-gestion" role="tabpanel">
           <div class="tab-page">
-            <div class="tab-grid">
-              <div class="panel-section">
-            <h5><i class="bi bi-plus-circle"></i> Crear sprint</h5>
+            <div class="tab-page-header">
+              <div>
+                <h4>Gestor de Sprint</h4>
+                <p class="text-muted mb-0">Crea sprints, agrupa tareas y organiza el planning desde un solo lugar.</p>
+              </div>
+            </div>
+            <ul class="nav nav-pills pill-tabs" id="gestionTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="tab-sprint" data-bs-toggle="tab" data-bs-target="#pane-sprint" type="button" role="tab">Sprint</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-grupo" data-bs-toggle="tab" data-bs-target="#pane-grupo" type="button" role="tab">Grupos</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-tareas" data-bs-toggle="tab" data-bs-target="#pane-tareas" type="button" role="tab">Asignar tareas</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-planning" data-bs-toggle="tab" data-bs-target="#pane-planning" type="button" role="tab">Planning</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-roles" data-bs-toggle="tab" data-bs-target="#pane-roles" type="button" role="tab">Roles</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-retro" data-bs-toggle="tab" data-bs-target="#pane-retro" type="button" role="tab">Retrospectiva</button>
+              </li>
+            </ul>
+            <div class="tab-content" id="gestionTabsContent">
+              <div class="tab-pane fade show active" id="pane-sprint" role="tabpanel">
+                <div class="panel-section">
+                  <h5><i class="bi bi-plus-circle"></i> Crear sprint</h5>
             <form method="POST">
               <input type="hidden" name="accion" value="crear_sprint">
               <div class="row g-3">
@@ -433,19 +518,19 @@
                   <label class="form-label">Objetivo</label>
                   <textarea name="objetivo" class="form-control" rows="2"></textarea>
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                   <label class="form-label">Inicio</label>
                   <input type="date" name="fecha_inicio" class="form-control" required>
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                   <label class="form-label">Fin</label>
                   <input type="date" name="fecha_fin" class="form-control" required>
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                   <label class="form-label">Capacidad</label>
                   <input type="number" name="capacidad" class="form-control" min="1">
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                   <label class="form-label">Estado</label>
                   <select name="estado" class="form-select">
                     <option>Planeado</option>
@@ -461,9 +546,11 @@
                 </div>
               </div>
             </form>
-          </div>
-              <div class="panel-section">
-            <h5><i class="bi bi-diagram-3"></i> Crear grupos de sprint</h5>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="pane-grupo" role="tabpanel">
+                <div class="panel-section">
+                  <h5><i class="bi bi-diagram-3"></i> Crear grupos de sprint</h5>
             <form method="POST">
               <input type="hidden" name="accion" value="crear_grupo">
               <div class="row g-3">
@@ -484,7 +571,7 @@
                   <label class="form-label">Descripcion</label>
                   <textarea name="descripcion_grupo" class="form-control" rows="2"></textarea>
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                   <label class="form-label">Orden</label>
                   <input type="number" name="orden_grupo" class="form-control" min="1">
                 </div>
@@ -495,9 +582,11 @@
                 </div>
               </div>
             </form>
-          </div>
-              <div class="panel-section">
-            <h5><i class="bi bi-link-45deg"></i> Asignar tareas reales</h5>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="pane-tareas" role="tabpanel">
+                <div class="panel-section">
+                  <h5><i class="bi bi-link-45deg"></i> Asignar tareas reales</h5>
             <form method="POST">
               <input type="hidden" name="accion" value="asignar_tareas">
               <div class="row g-3">
@@ -546,9 +635,11 @@
                 </div>
               </div>
             </form>
-          </div>
-              <div class="panel-section">
-            <h5><i class="bi bi-bullseye"></i> Sprint Planning (Goal y DoD)</h5>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="pane-planning" role="tabpanel">
+                <div class="panel-section">
+                  <h5><i class="bi bi-bullseye"></i> Sprint Planning (Goal y DoD)</h5>
             <form method="POST">
               <input type="hidden" name="accion" value="actualizar_sprint_plan">
               <div class="row g-3">
@@ -569,7 +660,7 @@
                   <label class="form-label">Definition of Done</label>
                   <textarea name="definicion_done" class="form-control" rows="2"></textarea>
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                   <label class="form-label">Capacidad (puntos)</label>
                   <input type="number" name="capacidad" class="form-control" min="1">
                 </div>
@@ -580,9 +671,11 @@
                 </div>
               </div>
             </form>
-          </div>
-              <div class="panel-section">
-            <h5><i class="bi bi-people"></i> Roles Scrum</h5>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="pane-roles" role="tabpanel">
+                <div class="panel-section">
+                  <h5><i class="bi bi-people"></i> Roles Scrum</h5>
             <form method="POST">
               <input type="hidden" name="accion" value="asignar_roles">
               <div class="row g-3">
@@ -618,9 +711,11 @@
                 </div>
               </div>
             </form>
-          </div>
-              <div class="panel-section">
-            <h5><i class="bi bi-chat-square-dots"></i> Retrospectiva</h5>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="pane-retro" role="tabpanel">
+                <div class="panel-section">
+                  <h5><i class="bi bi-chat-square-dots"></i> Retrospectiva</h5>
             <form method="POST">
               <input type="hidden" name="accion" value="crear_retro">
               <div class="row g-3">
@@ -644,6 +739,7 @@
                 </div>
               </div>
             </form>
+                </div>
               </div>
             </div>
           </div>
@@ -651,6 +747,12 @@
 
         <div class="tab-pane fade" id="pane-seguimiento" role="tabpanel">
           <div class="tab-page">
+            <div class="tab-page-header">
+              <div>
+                <h4>Seguimiento por proyecto</h4>
+                <p class="text-muted mb-0">Visualiza backlog, tablero y metricas de avance por sprint.</p>
+              </div>
+            </div>
             <div class="jira-layout">
             <aside class="jira-sidebar">
               <h6>Proyecto</h6>
@@ -780,6 +882,7 @@
     const burndownCanvas = document.getElementById('burndownCanvas');
 
     function filterTasksByProject() {
+      if (!sprintSelect || !taskList) return;
       const selected = sprintSelect.options[sprintSelect.selectedIndex];
       const proyecto = selected ? selected.dataset.proyecto : '';
       taskList.querySelectorAll('.task-item').forEach(item => {
@@ -796,9 +899,9 @@
     }
 
     function filterGroupsBySprint() {
+      if (!sprintSelect || !grupoSelect) return;
       const selected = sprintSelect.options[sprintSelect.selectedIndex];
       const sprintId = selected ? selected.value : '';
-      if (!grupoSelect) return;
       grupoSelect.querySelectorAll('option').forEach(option => {
         if (!option.value) return;
         const allowed = option.dataset.sprint === sprintId;
@@ -810,6 +913,7 @@
     }
 
     function filterTasksBySearch() {
+      if (!taskSearch || !taskList) return;
       const value = (taskSearch.value || '').toLowerCase();
       taskList.querySelectorAll('.task-item').forEach(item => {
         const titulo = item.dataset.titulo || '';
@@ -826,10 +930,12 @@
       });
     }
 
-    sprintSelect.addEventListener('change', () => {
-      filterTasksByProject();
-      filterGroupsBySprint();
-    });
+    if (sprintSelect) {
+      sprintSelect.addEventListener('change', () => {
+        filterTasksByProject();
+        filterGroupsBySprint();
+      });
+    }
     if (taskSearch) {
       taskSearch.addEventListener('input', filterTasksBySearch);
     }

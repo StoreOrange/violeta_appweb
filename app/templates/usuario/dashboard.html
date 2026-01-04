@@ -420,12 +420,15 @@
       }
       @media (max-width: 720px) {
         html, body { font-size: 13px;}
+        body {
+          background: linear-gradient(180deg, #f7f3ff 0%, #f0e9ff 55%, #f7f7fb 100%);
+        }
         .content-shell { padding: 1.2rem 1.1rem 2rem; }
         .sidebar { width: var(--sidebar-width); min-width: var(--sidebar-width); }
         .sidebar h2, .sidebar .sidebar-label { display: inline; }
         .main-content { padding: 0; }
         .page-header { flex-direction: column; align-items: flex-start; }
-        .header-bar { justify-content: space-between; }
+        .header-bar { justify-content: space-between; padding: 0.7rem 1rem; }
         .collapse-btn { display: none; }
         .sidebar {
           position: fixed;
@@ -448,7 +451,7 @@
         body.sidebar-open .sidebar-overlay { display: block; }
         body.sidebar-open { overflow: hidden; }
         .menu-btn {
-          display: inline-flex;
+          display: inline-flex !important;
           align-items: center;
           justify-content: center;
           width: 38px;
@@ -459,12 +462,41 @@
           color: var(--brand-dark);
           box-shadow: 0 10px 20px rgba(46, 16, 82, 0.12);
         }
+        .menu-fab { display: inline-flex !important; }
+        .page-header h1 { font-size: 1.5rem; }
+        .page-header p { font-size: 0.92rem; }
+        .quick-actions { width: 100%; }
+        .quick-actions .btn { width: 100%; justify-content: center; }
+        .kpi-grid { grid-template-columns: 1fr; }
+        .kpi-card { padding: 1rem 1.1rem; }
+        .grid-2 { grid-template-columns: 1fr; }
+        .card { padding: 1.1rem; }
+        .list-item { flex-direction: column; align-items: flex-start; }
+        .estado-header { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+        .estado-tareas { gap: 0.3rem; }
       }
       .menu-btn {
         display: none;
         border: none;
         background: transparent;
       }
+      .menu-fab {
+        display: none;
+        position: fixed;
+        left: 16px;
+        bottom: 18px;
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background: var(--brand);
+        color: #fff;
+        border: none;
+        box-shadow: 0 14px 28px rgba(59, 21, 136, 0.35);
+        align-items: center;
+        justify-content: center;
+        z-index: 40;
+      }
+      .menu-fab i { font-size: 1.3rem; }
     </style>
 </head>
 <body>
@@ -649,6 +681,9 @@
     </div>
   </div>
 </div>
+<button class="menu-fab" type="button" onclick="toggleMobileMenu()" aria-label="Abrir menu">
+  <i class="bi bi-list"></i>
+</button>
 <script>
   function toggleSidebar() {
     var sidebar = document.getElementById('sidebar');

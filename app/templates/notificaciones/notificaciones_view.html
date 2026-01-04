@@ -86,6 +86,10 @@
       margin-bottom: 4px;
       display: block;
     }
+    .label-icon {
+      margin-right: 0.35rem;
+      color: var(--violet-dark);
+    }
     input[type="date"], select, input[type="text"] {
       width: 100%;
       border-radius: 12px;
@@ -258,15 +262,15 @@
     <div class="filters">
       <form method="GET">
         <div>
-          <label>Fecha inicio</label>
+          <label><i class="bi bi-calendar-event label-icon"></i>Fecha inicio</label>
           <input type="date" name="fecha_inicio" value="{{ fecha_inicio.strftime('%Y-%m-%d') if fecha_inicio else '' }}">
         </div>
         <div>
-          <label>Fecha fin</label>
+          <label><i class="bi bi-calendar-check label-icon"></i>Fecha fin</label>
           <input type="date" name="fecha_fin" value="{{ fecha_fin.strftime('%Y-%m-%d') if fecha_fin else '' }}">
         </div>
         <div>
-          <label>Tipo</label>
+          <label><i class="bi bi-funnel label-icon"></i>Tipo</label>
           <select name="tipo">
             <option value="">Todos</option>
             {% for tipo in tipos %}

@@ -109,6 +109,10 @@
     .modal-content input:focus, .modal-content textarea:focus {
       border-color: var(--violeta-main);
     }
+    .label-icon {
+      margin-right: 0.35rem;
+      color: var(--violeta-main);
+    }
     .modal-actions {
       display: flex; justify-content: flex-end; gap: .7em; margin-top: .7em;
     }
@@ -176,8 +180,10 @@
   <div class="modal-content">
     <h3>Nuevo Tipo de Tarea</h3>
     <form method="post" action="{{ url_for('tipo_tarea.nuevo_tipo_tarea') }}">
+      <label><i class="bi bi-type label-icon"></i>Nombre</label>
       <input type="text" name="nombre_tipo" placeholder="Nombre del tipo" required maxlength="50">
-      <textarea name="descripcion" rows="2" placeholder="Descripción (opcional)"></textarea>
+      <label><i class="bi bi-card-text label-icon"></i>Descripcion</label>
+      <textarea name="descripcion" rows="2" placeholder="Descripcion (opcional)"></textarea>
       <div class="modal-actions">
         <button type="button" onclick="cerrarModalNuevo()">Cancelar</button>
         <button type="submit" class="btn-violeta">Crear</button>
@@ -192,8 +198,10 @@
     <h3>Editar Tipo de Tarea</h3>
     <form id="formEditar" method="post">
       <input type="hidden" id="edit_idtipo_tarea" name="idtipo_tarea">
+      <label><i class="bi bi-type label-icon"></i>Nombre</label>
       <input type="text" id="edit_nombre_tipo" name="nombre_tipo" placeholder="Nombre del tipo" required maxlength="50">
-      <textarea id="edit_descripcion" name="descripcion" rows="2" placeholder="Descripción (opcional)"></textarea>
+      <label><i class="bi bi-card-text label-icon"></i>Descripcion</label>
+      <textarea id="edit_descripcion" name="descripcion" rows="2" placeholder="Descripcion (opcional)"></textarea>
       <div class="modal-actions">
         <button type="button" onclick="cerrarModalEditar()">Cancelar</button>
         <button type="submit" class="btn-violeta">Guardar</button>

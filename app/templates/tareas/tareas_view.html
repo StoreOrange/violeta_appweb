@@ -100,6 +100,10 @@
             color: var(--violet-dark);
             font-size: 0.92em;
         }
+        .label-icon {
+            margin-right: 0.35rem;
+            color: var(--violet-dark);
+        }
 
         .form-control, .form-select {
             margin-bottom: 0.7em;
@@ -365,11 +369,32 @@
             }
             .header-title { font-size: 1.4rem; }
             .container-main { padding: 1.2rem 0.9rem 2rem; }
-            .card-form, .kanban-panel { padding: 1.4rem; }
+            .card-form, .kanban-panel { padding: 1.1rem; }
             .form-grid { grid-template-columns: 1fr; }
             .form-grid .span-2 { grid-column: span 1; }
             .form-actions { grid-template-columns: 1fr; }
             .tareas-list { grid-template-columns: 1fr; }
+            .card-form h3 { font-size: 1.1rem; }
+            .form-label { font-size: 0.86em; }
+            .form-control, .form-select {
+                padding: 0.55em 0.8em;
+                font-size: 0.9em;
+            }
+            .btn-violeta, .btn-dashboard {
+                font-size: 0.9rem;
+                padding: 0.55em 1.2em;
+            }
+            .tarea-card { padding: 0.85rem 0.95rem; }
+            .tarea-card .tarea-titulo { font-size: 0.92em; }
+            .tarea-card .tarea-meta,
+            .tarea-card .tarea-descripcion { font-size: 0.82em; }
+        }
+        @media (max-width: 520px) {
+            .header-title { font-size: 1.2rem; }
+            .container-main { padding: 1rem 0.7rem 1.6rem; }
+            .card-form, .kanban-panel { padding: 0.95rem; }
+            .tarea-card { padding: 0.75rem 0.85rem; }
+            .tarea-card .estado-chip { font-size: 0.72em; }
         }
     </style>
 </head>
@@ -388,7 +413,7 @@
         <div class="form-section-title">Contexto</div>
         <div class="form-grid">
             <div class="span-2">
-                <label class="form-label" for="idproyecto">Proyecto</label>
+                <label class="form-label" for="idproyecto"><i class="bi bi-kanban label-icon"></i>Proyecto</label>
                 <select class="form-select" id="idproyecto" name="idproyecto" required onchange="autoFillUsuarioYFecha()">
                     <option value="">Seleccionar proyecto</option>
                     {% for proyecto in proyectos %}
@@ -397,7 +422,7 @@
                 </select>
             </div>
             <div class="span-2">
-                <label class="form-label" for="usuarioAsignadoNombre">Usuario asignado</label>
+                <label class="form-label" for="usuarioAsignadoNombre"><i class="bi bi-person-badge label-icon"></i>Usuario asignado</label>
                 <input type="hidden" id="idusuarioAsignado" name="idusuario_asignado" required>
                 <input type="text" class="form-control" id="usuarioAsignadoNombre" readonly placeholder="Seleccione un proyecto">
                 <div class="form-hint">Se completa automaticamente al elegir proyecto.</div>
@@ -407,11 +432,11 @@
         <div class="form-section-title">Fechas</div>
         <div class="form-grid">
             <div>
-                <label class="form-label" for="fecha_creacion">Fecha de inicio</label>
+                <label class="form-label" for="fecha_creacion"><i class="bi bi-calendar-event label-icon"></i>Fecha de inicio</label>
                 <input type="date" class="form-control" id="fechaCreacion" name="fecha_creacion" readonly required>
             </div>
             <div>
-                <label class="form-label" for="fecha_limite">Fecha limite</label>
+                <label class="form-label" for="fecha_limite"><i class="bi bi-calendar-check label-icon"></i>Fecha limite</label>
                 <input type="date" class="form-control" id="fechaLimite" name="fecha_limite">
             </div>
         </div>
@@ -419,11 +444,11 @@
         <div class="form-section-title">Detalle</div>
         <div class="form-grid">
             <div class="span-2">
-                <label class="form-label" for="titulo">Titulo</label>
+                <label class="form-label" for="titulo"><i class="bi bi-type label-icon"></i>Titulo</label>
                 <input type="text" class="form-control" id="titulo" name="titulo" maxlength="120" required>
             </div>
             <div class="span-2">
-                <label class="form-label" for="descripcion">Descripcion</label>
+                <label class="form-label" for="descripcion"><i class="bi bi-card-text label-icon"></i>Descripcion</label>
                 <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
             </div>
         </div>
@@ -431,7 +456,7 @@
         <div class="form-section-title">Clasificacion</div>
         <div class="form-grid">
             <div>
-                <label class="form-label" for="idtipo_tarea">Tipo de tarea</label>
+                <label class="form-label" for="idtipo_tarea"><i class="bi bi-tag label-icon"></i>Tipo de tarea</label>
                 <select class="form-select" id="idtipo_tarea" name="idtipo_tarea" required>
                     <option value="">Seleccionar tipo</option>
                     {% for tipo in tipos_tarea %}
@@ -440,7 +465,7 @@
                 </select>
             </div>
             <div>
-                <label class="form-label" for="idprioridad">Prioridad</label>
+                <label class="form-label" for="idprioridad"><i class="bi bi-flag label-icon"></i>Prioridad</label>
                 <select class="form-select" id="idprioridad" name="idprioridad" required>
                     <option value="">Seleccionar prioridad</option>
                     {% for prioridad in prioridades %}
@@ -449,7 +474,7 @@
                 </select>
             </div>
             <div class="span-2">
-                <label class="form-label" for="idestado">Estado inicial</label>
+                <label class="form-label" for="idestado"><i class="bi bi-check2-circle label-icon"></i>Estado inicial</label>
                 <select class="form-select" id="idestado" name="idestado" required>
                     <option value="">Seleccionar estado</option>
                     {% for estado in estados %}
@@ -462,7 +487,7 @@
         <div class="form-section-title">Adjuntos</div>
         <div class="form-grid">
             <div class="span-2">
-                <label class="form-label" for="adjunto">Adjuntar archivo</label>
+                <label class="form-label" for="adjunto"><i class="bi bi-paperclip label-icon"></i>Adjuntar archivo</label>
                 <input type="file" class="form-control" id="adjunto" name="adjunto" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.txt">
             </div>
             <div class="span-2">

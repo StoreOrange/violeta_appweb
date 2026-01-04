@@ -51,6 +51,21 @@
       border-radius: 999px;
       padding: 0.6rem 1.2rem;
     }
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .mobile-actions {
+      display: none;
+      margin-top: 1rem;
+    }
+    .mobile-actions .btn-soft {
+      width: 100%;
+      justify-content: center;
+      font-size: 0.82rem;
+      padding: 0.45rem 0.85rem;
+    }
     .agenda-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
@@ -77,6 +92,10 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 0.8rem;
+    }
+    .calendar-scroll {
+      overflow-x: hidden;
+      padding-bottom: 0.2rem;
     }
     .calendar-nav {
       display: flex;
@@ -177,6 +196,10 @@
       font-weight: 600;
       color: var(--violet-dark);
     }
+    .label-icon {
+      margin-right: 0.35rem;
+      color: var(--violet-dark);
+    }
     .agenda-form .form-control,
     .agenda-form .form-select {
       border-radius: 12px;
@@ -229,14 +252,33 @@
         align-items: flex-start;
         gap: 0.8rem;
       }
+      .main-header .btn-soft {
+        width: 100%;
+        justify-content: center;
+      }
+      .calendar-nav {
+        flex-wrap: wrap;
+      }
     }
     @media (max-width: 640px) {
       .agenda-grid { padding: 0 1rem 1.6rem; }
       .card { padding: 1rem; }
       .calendar-header { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
       .calendar-grid { gap: 0.35rem; }
-      .calendar-cell { min-height: 78px; }
+      .calendar-cell { min-height: 64px; padding: 0.35rem; }
+      .calendar-day { font-size: 0.85rem; }
       .legend { font-size: 0.78rem; }
+      .agenda-form .col-6 { width: 100%; }
+      .agenda-list { max-height: none; }
+      .calendar-dot { width: 7px; height: 7px; }
+      .header-actions { display: none; }
+      .mobile-actions { display: grid; gap: 0.6rem; }
+    }
+    @media (max-width: 520px) {
+      .calendar-grid { gap: 0.25rem; }
+      .calendar-cell { min-height: 56px; padding: 0.3rem; }
+      .calendar-day { font-size: 0.78rem; }
+      .calendar-dot { width: 6px; height: 6px; }
     }
   </style>
 </head>
@@ -246,7 +288,7 @@
       <h1>Agenda de gestion</h1>
       <p>Planifica reuniones, citas, recordatorios, visitas y notas del equipo.</p>
     </div>
-    <div class="d-flex gap-2 flex-wrap">
+    <div class="header-actions">
       <a href="{{ url_for('agenda.export_agenda_pdf') }}" class="btn btn-soft">
         <i class="bi bi-filetype-pdf"></i> Reporte PDF
       </a>
@@ -275,10 +317,12 @@
           <button type="button" id="nextMonth"><i class="bi bi-chevron-right"></i></button>
         </div>
       </div>
-      <div class="calendar-grid text-center fw-semibold text-muted mb-2">
-        <div>Dom</div><div>Lun</div><div>Mar</div><div>Mie</div><div>Jue</div><div>Vie</div><div>Sab</div>
+      <div class="calendar-scroll">
+        <div class="calendar-grid text-center fw-semibold text-muted mb-2">
+          <div>Dom</div><div>Lun</div><div>Mar</div><div>Mie</div><div>Jue</div><div>Vie</div><div>Sab</div>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
       </div>
-      <div class="calendar-grid" id="calendarGrid"></div>
       <div class="legend">
         <span><i style="background:#6d28d9"></i> Reunion</span>
         <span><i style="background:#f59e0b"></i> Cita</span>
@@ -309,11 +353,11 @@
       <form method="POST">
         <div class="row g-3">
           <div class="col-12">
-            <label class="form-label">Titulo</label>
+            <label class="form-label"><i class="bi bi-type label-icon"></i>Titulo</label>
             <input type="text" name="titulo" class="form-control" required>
           </div>
           <div class="col-6">
-            <label class="form-label">Tipo</label>
+            <label class="form-label"><i class="bi bi-bookmark label-icon"></i>Tipo</label>
             <select name="tipo" class="form-select">
               <option>Reunion</option>
               <option>Cita</option>
@@ -325,7 +369,7 @@
             </select>
           </div>
           <div class="col-6">
-            <label class="form-label">Estado</label>
+            <label class="form-label"><i class="bi bi-check2-circle label-icon"></i>Estado</label>
             <select name="estado" class="form-select">
               <option>Pendiente</option>
               <option>Confirmado</option>
@@ -335,15 +379,15 @@
             </select>
           </div>
           <div class="col-6">
-            <label class="form-label">Inicio</label>
+            <label class="form-label"><i class="bi bi-calendar-event label-icon"></i>Inicio</label>
             <input type="datetime-local" name="fecha_inicio" id="fechaInicio" class="form-control" required>
           </div>
           <div class="col-6">
-            <label class="form-label">Fin</label>
+            <label class="form-label"><i class="bi bi-calendar-check label-icon"></i>Fin</label>
             <input type="datetime-local" name="fecha_fin" id="fechaFin" class="form-control">
           </div>
           <div class="col-12">
-            <label class="form-label">Proyecto</label>
+            <label class="form-label"><i class="bi bi-kanban label-icon"></i>Proyecto</label>
             <select name="idproyecto" class="form-select">
               <option value="">Sin proyecto</option>
               {% for proyecto in proyectos %}
@@ -352,28 +396,29 @@
             </select>
           </div>
           <div class="col-6">
-            <label class="form-label">Cliente</label>
+            <label class="form-label"><i class="bi bi-person-badge label-icon"></i>Cliente</label>
             <input type="text" name="cliente" class="form-control">
           </div>
           <div class="col-6">
-            <label class="form-label">Contacto</label>
+            <label class="form-label"><i class="bi bi-telephone label-icon"></i>Contacto</label>
             <input type="text" name="contacto" class="form-control">
           </div>
           <div class="col-12">
-            <label class="form-label">Ubicacion</label>
+            <label class="form-label"><i class="bi bi-geo-alt label-icon"></i>Ubicacion</label>
             <input type="text" name="ubicacion" class="form-control">
           </div>
           <div class="col-12">
-            <label class="form-label">Descripcion</label>
+            <label class="form-label"><i class="bi bi-card-text label-icon"></i>Descripcion</label>
             <textarea name="descripcion" class="form-control" rows="2"></textarea>
           </div>
           <div class="col-12">
-            <label class="form-label">Notas</label>
+            <label class="form-label"><i class="bi bi-journal-text label-icon"></i>Notas</label>
             <textarea name="notas" class="form-control" rows="2"></textarea>
           </div>
           <div class="col-12 form-check mt-2">
             <input class="form-check-input" type="checkbox" name="enviar_notificacion" id="enviarNotificacion" checked>
             <label class="form-check-label" for="enviarNotificacion">
+              <i class="bi bi-bell label-icon"></i>
               Enviar notificacion por correo
             </label>
           </div>
@@ -384,6 +429,17 @@
           </div>
         </div>
       </form>
+      <div class="mobile-actions">
+        <a href="{{ url_for('agenda.export_agenda_pdf') }}" class="btn btn-soft">
+          <i class="bi bi-filetype-pdf"></i> Reporte PDF
+        </a>
+        <a href="{{ url_for('agenda.export_agenda_text') }}" class="btn btn-soft">
+          <i class="bi bi-file-earmark-text"></i> Reporte TXT
+        </a>
+        <a href="{{ url_for('usuario.dashboard') }}" class="btn btn-soft">
+          <i class="bi bi-arrow-left"></i> Volver al dashboard
+        </a>
+      </div>
     </section>
 
     <section class="card">

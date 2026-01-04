@@ -77,6 +77,10 @@
             border-color: var(--brand);
             box-shadow: 0 0 0 0.2rem rgba(91, 33, 182, 0.15);
         }
+        .label-icon {
+            margin-right: 0.35rem;
+            color: var(--brand-dark);
+        }
         .btn-primary {
             background: var(--brand);
             border: none;
@@ -175,19 +179,19 @@
         <div class="section-title"><i class="bi bi-person-plus"></i> Nuevo usuario</div>
         <form method="POST" action="{{ url_for('usuario.nuevo_usuario') }}" class="row g-3">
             <div class="col-md-4">
-                <label for="nombre" class="form-label">Nombre</label>
+                <label for="nombre" class="form-label"><i class="bi bi-person label-icon"></i>Nombre</label>
                 <input type="text" name="nombre" id="nombre" class="form-control" required>
             </div>
             <div class="col-md-4">
-                <label for="correo" class="form-label">Correo</label>
+                <label for="correo" class="form-label"><i class="bi bi-envelope label-icon"></i>Correo</label>
                 <input type="email" name="correo" id="correo" class="form-control" required>
             </div>
             <div class="col-md-4">
-                <label for="password" class="form-label">Contrasena</label>
+                <label for="password" class="form-label"><i class="bi bi-lock label-icon"></i>Contrasena</label>
                 <input type="password" name="password" id="password" class="form-control" required>
             </div>
             <div class="col-md-4">
-                <label for="idroll" class="form-label">Rol</label>
+                <label for="idroll" class="form-label"><i class="bi bi-shield-check label-icon"></i>Rol</label>
                 <select name="idroll" id="idroll" class="form-select" required>
                     {% for rol in roles %}
                         <option value="{{ rol.idroll }}">{{ rol.nombre_roll }}</option>

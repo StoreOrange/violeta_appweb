@@ -41,6 +41,7 @@
         .add-comentario-form textarea { min-height: 80px; }
         .btn-violeta { background: linear-gradient(90deg, #7C3AED 70%, #6B21A8 100%); color: #fff; font-weight: 600; border-radius: 9px; }
         .btn-violeta:hover { background: #6B21A8; }
+        .label-icon { margin-right: 0.35rem; color: #6B21A8; }
         @media (max-width: 700px) {
             .tracker-main, .ticket-details, .comentarios-panel { padding: 1.1em; }
             .tracker-header { flex-direction: column; gap: 1em; }
@@ -57,7 +58,7 @@
     <form class="tracker-controls" method="get" action="">
         <!-- Selecciona Proyecto -->
         <div>
-            <label for="proyecto" class="form-label">Proyecto</label>
+            <label for="proyecto" class="form-label"><i class="bi bi-kanban label-icon"></i>Proyecto</label>
             <select class="form-select" id="proyecto" name="proyecto" onchange="this.form.submit()">
                 <option value="">Seleccionar...</option>
                 {% for proyecto in proyectos %}
@@ -67,7 +68,7 @@
         </div>
         <!-- Selecciona Tarea -->
         <div>
-            <label for="tarea" class="form-label">Tarea</label>
+            <label for="tarea" class="form-label"><i class="bi bi-list-task label-icon"></i>Tarea</label>
             <select class="form-select" id="tarea" name="tarea" onchange="this.form.submit()" {% if not proyecto_actual_id %}disabled{% endif %}>
                 <option value="">Seleccionar...</option>
                 {% for tarea in tareas %}
@@ -125,7 +126,7 @@
                 <textarea class="form-control" name="comentario" placeholder="Describa el avance, problema, o seguimiento..." required></textarea>
             </div>
             <div class="mb-2">
-                <label for="estado" class="form-label">Nuevo estado</label>
+                <label for="estado" class="form-label"><i class="bi bi-check2-circle label-icon"></i>Nuevo estado</label>
                 <select class="form-select" name="estado" id="estado" required>
                     {% for estado in estados %}
                         <option value="{{ estado.idestado }}" {% if tarea_actual.estado and estado.idestado == tarea_actual.estado.idestado %}selected{% endif %}>
@@ -135,7 +136,7 @@
                 </select>
             </div>
             <div class="mb-2">
-                <label for="archivo" class="form-label">Adjuntar archivo (opcional)</label>
+                <label for="archivo" class="form-label"><i class="bi bi-paperclip label-icon"></i>Adjuntar archivo (opcional)</label>
                 <input type="file" class="form-control" name="archivo" id="archivo" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.txt">
             </div>
             <button type="submit" class="btn btn-violeta mt-2"><i class="bi bi-send"></i> Enviar comentario</button>
