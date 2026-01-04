@@ -174,6 +174,11 @@
       .content-shell {
         padding: 1.8rem 1.8rem 2.6rem;
       }
+      .quick-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+      }
       .page-header {
         display: flex;
         justify-content: space-between;
@@ -415,11 +420,48 @@
       }
       @media (max-width: 720px) {
         html, body { font-size: 13px;}
-        .sidebar { width: var(--sidebar-width-collapsed); min-width: var(--sidebar-width-collapsed); }
-        .sidebar h2, .sidebar .sidebar-label { display: none; }
+        .content-shell { padding: 1.2rem 1.1rem 2rem; }
+        .sidebar { width: var(--sidebar-width); min-width: var(--sidebar-width); }
+        .sidebar h2, .sidebar .sidebar-label { display: inline; }
         .main-content { padding: 0; }
         .page-header { flex-direction: column; align-items: flex-start; }
         .header-bar { justify-content: space-between; }
+        .collapse-btn { display: none; }
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100vh;
+          transform: translateX(-110%);
+          transition: transform 0.2s ease;
+        }
+        body.sidebar-open .sidebar { transform: translateX(0); }
+        .sidebar-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(18, 12, 38, 0.45);
+          backdrop-filter: blur(2px);
+          display: none;
+          z-index: 5;
+        }
+        body.sidebar-open .sidebar-overlay { display: block; }
+        .menu-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 38px;
+          height: 38px;
+          border-radius: 12px;
+          border: 1px solid #e5def6;
+          background: #fff;
+          color: var(--brand-dark);
+          box-shadow: 0 10px 20px rgba(46, 16, 82, 0.12);
+        }
+      }
+      .menu-btn {
+        display: none;
+        border: none;
+        background: transparent;
       }
     </style>
 </head>
@@ -459,8 +501,12 @@
       </li>
     </ul>
   </nav>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <div class="main-content">
     <div class="header-bar">
+      <button class="menu-btn" type="button" onclick="toggleMobileMenu()">
+        <i class="bi bi-list"></i>
+      </button>
       <div class="user-menu" id="userMenu">
         <div class="user-avatar" onclick="toggleDropdown()">
           <i class="bi bi-person"></i>
@@ -611,6 +657,15 @@
   }
   function toggleDropdown() {
     document.getElementById('userMenu').classList.toggle('open');
+  }
+  function toggleMobileMenu() {
+    document.body.classList.toggle('sidebar-open');
+  }
+  var sidebarOverlay = document.getElementById('sidebarOverlay');
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', function() {
+      document.body.classList.remove('sidebar-open');
+    });
   }
   document.getElementById('configBtn').addEventListener('click', function(e){
     e.preventDefault();

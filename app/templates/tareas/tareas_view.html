@@ -356,6 +356,21 @@
             .card-form, .kanban-panel { width: 100%; }
             .form-body { grid-template-columns: 1fr; }
         }
+        @media (max-width: 720px) {
+            .main-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+                padding: 1.1rem 1.4rem;
+            }
+            .header-title { font-size: 1.4rem; }
+            .container-main { padding: 1.2rem 0.9rem 2rem; }
+            .card-form, .kanban-panel { padding: 1.4rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-grid .span-2 { grid-column: span 1; }
+            .form-actions { grid-template-columns: 1fr; }
+            .tareas-list { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>

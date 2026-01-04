@@ -166,6 +166,7 @@
       border-collapse: collapse;
       font-size: 0.9rem;
       background: #fff;
+      min-width: 820px;
     }
     th, td {
       padding: 10px 12px;
@@ -230,6 +231,15 @@
     .tarea-card .fecha { color: var(--muted); font-size: 0.85rem; }
     @media (max-width: 980px) {
       .layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .main-container { padding: 20px 12px 32px; }
+      .header { padding: 16px; }
+      .filters form { grid-template-columns: 1fr; }
+      .filters .actions { width: 100%; }
+      .filters .actions .btn-primary,
+      .filters .actions .btn-outline { width: 100%; }
+      table { min-width: 760px; }
     }
   </style>
 </head>
