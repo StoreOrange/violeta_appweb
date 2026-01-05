@@ -422,10 +422,14 @@
                 </select>
             </div>
             <div class="span-2">
-                <label class="form-label" for="usuarioAsignadoNombre"><i class="bi bi-person-badge label-icon"></i>Usuario asignado</label>
-                <input type="hidden" id="idusuarioAsignado" name="idusuario_asignado" required>
-                <input type="text" class="form-control" id="usuarioAsignadoNombre" readonly placeholder="Seleccione un proyecto">
-                <div class="form-hint">Se completa automaticamente al elegir proyecto.</div>
+                <label class="form-label" for="idusuario_asignado"><i class="bi bi-person-badge label-icon"></i>Usuario asignado</label>
+                <select class="form-select" id="idusuario_asignado" name="idusuario_asignado" required>
+                    <option value="">Seleccionar usuario</option>
+                    {% for usuario in usuarios %}
+                        <option value="{{ usuario.idusuario }}">{{ usuario.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <div class="form-hint">Puedes cambiar el usuario asignado antes de guardar.</div>
             </div>
         </div>
 
@@ -647,23 +651,22 @@
     // Serializa los datos desde el backend
     var proyectos = {{ proyectos_json | tojson }};
     var usuarios = {{ usuarios_json | tojson }};
-    // Rellena el usuario asignado (ID y nombre) y la fecha
+    // Rellena la fecha y preselecciona el usuario del proyecto
     function autoFillUsuarioYFecha() {
         var selectProyecto = document.getElementById('idproyecto');
-        var usuarioInputId = document.getElementById('idusuarioAsignado');
-        var usuarioInputNombre = document.getElementById('usuarioAsignadoNombre');
+        var usuarioSelect = document.getElementById('idusuario_asignado');
         var fechaInput = document.getElementById('fechaCreacion');
         var idproyecto = selectProyecto.value;
 
         var proyecto = proyectos.find(p => p.idproyecto == idproyecto);
         if (proyecto) {
             var usuario = usuarios.find(u => u.idusuario == proyecto.idusuario);
-            usuarioInputId.value = usuario ? usuario.idusuario : '';
-            usuarioInputNombre.value = usuario ? usuario.nombre : '';
+            if (usuario) {
+                usuarioSelect.value = usuario.idusuario;
+            }
             fechaInput.value = proyecto.fecha_creacion || '';
         } else {
-            usuarioInputId.value = '';
-            usuarioInputNombre.value = '';
+            usuarioSelect.value = '';
             fechaInput.value = '';
         }
         updatePreview();
@@ -674,7 +677,8 @@
         const prioridadSelect = document.getElementById('idprioridad');
         const estadoSelect = document.getElementById('idestado');
         const titulo = document.getElementById('titulo').value;
-        const usuario = document.getElementById('usuarioAsignadoNombre').value;
+        const usuarioSelect = document.getElementById('idusuario_asignado');
+        const usuario = usuarioSelect.options[usuarioSelect.selectedIndex]?.text || '';
         const inicio = document.getElementById('fechaCreacion').value;
         const fin = document.getElementById('fechaLimite').value;
 
