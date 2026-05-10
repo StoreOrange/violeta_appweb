@@ -5,19 +5,16 @@ from app.crud.tarea_crud import listar_tareas, obtener_tarea_por_id, actualizar_
 from app.crud.usuario_crud import listar_usuarios, obtener_usuario_por_id
 from app.crud.adjunto_crud import listar_adjuntos, crear_adjunto, obtener_adjunto_por_id, eliminar_adjunto
 from app.crud.estado_crud import listar_estados
-from app.utils.email import get_active_recipient_emails, send_new_comment_email
+from app.utils.email import get_task_involved_recipient_emails, send_new_comment_email
+from app.utils.uploads import validate_upload, save_upload
 from datetime import datetime
-from werkzeug.utils import secure_filename
 import os
-from uuid import uuid4
 
 comentario_bp = Blueprint('comentario', __name__, url_prefix='/comentarios')
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads_adjuntos')
-ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt'}
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def _get_current_user_id():
+    return session.get('user_id') or session.get('idusuario') or 1
 
 @comentario_bp.route('/', methods=['GET', 'POST'])
 def vista_comentarios():
@@ -42,21 +39,33 @@ def vista_comentarios():
     # --- REGISTRO DE NUEVO COMENTARIO CON ARCHIVO ---
     if request.method == 'POST':
         form = request.form
-        comentario = form.get('comentario')
+        comentario = (form.get('comentario') or '').strip()
         idtarea_form = form.get('idtarea')
         idestado = form.get('idestado')
-        idusuario = session.get('idusuario') or 1
+        idusuario = _get_current_user_id()
         notificar_email = form.get('notificar_email') == 'on'
+
+        if not idtarea_form:
+            flash('Debes seleccionar una tarea para registrar el comentario.')
+            return redirect(url_for('comentario.vista_comentarios', idproyecto=idproyecto))
+
+        if not idestado:
+            flash('Debes seleccionar un estado para registrar el avance del ticket.')
+            return redirect(url_for('comentario.vista_comentarios', idproyecto=idproyecto, idtarea=idtarea_form))
+
+        if not comentario:
+            flash('Debes escribir un comentario para registrar el avance del ticket.')
+            return redirect(url_for('comentario.vista_comentarios', idproyecto=idproyecto, idtarea=idtarea_form))
 
         # --- MANEJO DE ARCHIVO ADJUNTO ---
         idadjunto = None
         file = request.files.get('adjunto')  # <input name="adjunto">
-        if file and file.filename and allowed_file(file.filename):
-            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            unique_prefix = str(uuid4())[:8]
-            filename = f"{unique_prefix}_{secure_filename(file.filename)}"
-            ruta_archivo = os.path.join(UPLOAD_FOLDER, filename)
-            file.save(ruta_archivo)
+        if file and file.filename:
+            is_valid, error_message = validate_upload(file)
+            if not is_valid:
+                flash(error_message)
+                return redirect(url_for('comentario.vista_comentarios', idproyecto=idproyecto, idtarea=idtarea_form))
+            ruta_archivo = save_upload(file)
             adjunto_obj = crear_adjunto(
                 ruta_archivo=ruta_archivo,
                 tipo=file.mimetype,
@@ -81,6 +90,10 @@ def vista_comentarios():
             fecha = datetime.now()
 
         tarea_actual = obtener_tarea_por_id(idtarea_form)
+        if not tarea_actual:
+            flash('La tarea seleccionada no existe o ya no esta disponible.')
+            return redirect(url_for('comentario.vista_comentarios', idproyecto=idproyecto))
+
         comentario_anterior = None
         if tarea_actual and tarea_actual.comentarios:
             comentario_anterior = max(
@@ -100,7 +113,7 @@ def vista_comentarios():
         )
         if notificar_email:
             try:
-                recipients = get_active_recipient_emails()
+                recipients = get_task_involved_recipient_emails(tarea_actual, include_commenters=True)
                 if recipients and tarea_actual:
                     autor = obtener_usuario_por_id(idusuario)
                     ok, error = send_new_comment_email(

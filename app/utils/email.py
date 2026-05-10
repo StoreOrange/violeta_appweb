@@ -5,11 +5,54 @@ from email.message import EmailMessage
 
 from flask import current_app
 
-from app.models import CorreosDestino
+from app.models import CorreosDestino, Usuario
 
 
 def get_active_recipient_emails():
     return [d.correo for d in CorreosDestino.query.filter_by(activo=True).all()]
+
+
+def _clean_email(value):
+    if not value:
+        return None
+    email = value.strip().lower()
+    return email or None
+
+
+def _dedupe_emails(emails):
+    unique = []
+    seen = set()
+    for email in emails:
+        normalized = _clean_email(email)
+        if normalized and normalized not in seen:
+            seen.add(normalized)
+            unique.append(normalized)
+    return unique
+
+
+def get_task_involved_recipient_emails(tarea, include_commenters=False):
+    recipients = []
+
+    if tarea.equipo_desarrollo:
+        recipients.extend(
+            u.correo for u in Usuario.query.filter_by(activo=True).all() if u.correo
+        )
+    else:
+        if tarea.usuario_asignado and tarea.usuario_asignado.correo:
+            recipients.append(tarea.usuario_asignado.correo)
+
+    if tarea.creador and tarea.creador.correo:
+        recipients.append(tarea.creador.correo)
+
+    if tarea.proyecto and tarea.proyecto.usuario and tarea.proyecto.usuario.correo:
+        recipients.append(tarea.proyecto.usuario.correo)
+
+    if include_commenters:
+        for comentario in tarea.comentarios:
+            if comentario.usuario and comentario.usuario.correo:
+                recipients.append(comentario.usuario.correo)
+
+    return _dedupe_emails(recipients)
 
 
 def send_password_change_code_email(usuario, codigo):
@@ -114,7 +157,9 @@ def send_new_task_email(tarea, recipients):
 
     subject = f"Nueva tarea: {tarea.titulo}"
     proyecto = tarea.proyecto.nombre_proyecto if tarea.proyecto else 'Sin proyecto'
-    asignado = tarea.usuario_asignado.nombre if tarea.usuario_asignado else 'Sin asignar'
+    asignado = tarea.nombre_responsable if hasattr(tarea, 'nombre_responsable') else (
+        tarea.usuario_asignado.nombre if tarea.usuario_asignado else 'Sin asignar'
+    )
     fecha_fin = tarea.fecha_limite.strftime('%Y-%m-%d') if tarea.fecha_limite else 'Sin fecha'
     descripcion = tarea.descripcion.strip() if tarea.descripcion else 'Sin descripcion'
     descripcion_html = html.escape(descripcion).replace('\n', '<br>')

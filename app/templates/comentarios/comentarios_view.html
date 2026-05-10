@@ -7,247 +7,602 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/corporate.css') }}" rel="stylesheet">
     <style>
         :root {
-            --bg-1: #f6f1e9;
-            --bg-2: #e9f2ff;
-            --ink: #1e1f2b;
+            --ink: #181729;
             --muted: #6f6b83;
-            --brand: #2651d8;
-            --brand-dark: #1c3fa8;
+            --brand: #2452d6;
+            --brand-dark: #1a3ea6;
             --accent: #ff9156;
             --panel: #ffffff;
-            --panel-soft: #f3f6ff;
-            --border: #e2e7f4;
-            --shadow: 0 12px 30px rgba(27, 33, 74, 0.12);
+            --panel-soft: #f4f7ff;
+            --panel-alt: #fbf8ff;
+            --border: #dde5f6;
+            --border-soft: #ece4fb;
+            --shadow-lg: 0 22px 46px rgba(33, 39, 84, 0.12);
+            --shadow-md: 0 14px 28px rgba(33, 39, 84, 0.10);
         }
+
         body {
-            background: radial-gradient(circle at 20% 10%, #fff3e2 0, transparent 40%),
-                        radial-gradient(circle at 85% 0%, #e6ecff 0, transparent 42%),
-                        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+            background:
+                radial-gradient(circle at 15% 8%, #fff2df 0, transparent 34%),
+                radial-gradient(circle at 88% 0%, #e7eeff 0, transparent 36%),
+                linear-gradient(135deg, #f6f1e9, #eaf1ff);
             font-family: "Space Grotesk", "Segoe UI", Arial, sans-serif;
             color: var(--ink);
             min-height: 100vh;
         }
+
+        .page-shell {
+            max-width: 1660px;
+            margin: 0 auto;
+            padding: 0 1rem 2.5rem;
+        }
+
         .main-header {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border-radius: 0 0 24px 24px;
-            box-shadow: var(--shadow);
-            padding: 1.6rem 2.6rem 1.4rem 2.6rem;
-            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.86);
+            backdrop-filter: blur(14px);
+            border-radius: 0 0 28px 28px;
+            box-shadow: var(--shadow-lg);
+            padding: 1.55rem 1.9rem;
+            margin-bottom: 1.3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid #f1e4d4;
+            gap: 1.4rem;
+            border: 1px solid rgba(233, 223, 245, 0.8);
         }
+
+        .header-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
         .header-title {
             font-weight: 700;
             color: var(--brand-dark);
             font-size: 2rem;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.7rem;
         }
+
         .header-title i {
-            background: var(--panel-soft);
-            border-radius: 12px;
-            padding: 0.4rem 0.55rem;
-            color: var(--brand);
+            width: 48px;
+            height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2f63ee, #ff9156);
+            color: #fff;
+            box-shadow: 0 12px 24px rgba(47, 99, 238, 0.22);
         }
+
+        .header-subtitle {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
         .btn-dashboard {
             background: linear-gradient(120deg, var(--brand), var(--accent));
             color: #fff;
             font-weight: 600;
             border: none;
-            border-radius: 999px;
-            padding: 0.55em 1.6em;
-            font-size: 1rem;
+            border-radius: 14px;
+            padding: 0.65em 1.35em;
+            font-size: 0.98rem;
             box-shadow: 0 12px 24px rgba(38, 81, 216, 0.2);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
         .btn-dashboard:hover {
             color: #fff;
             transform: translateY(-1px);
             box-shadow: 0 16px 26px rgba(38, 81, 216, 0.28);
         }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .overview-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(232, 223, 245, 0.9);
+            border-radius: 20px;
+            padding: 1rem 1.1rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .overview-label {
+            color: var(--muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.35rem;
+        }
+
+        .overview-value {
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--brand-dark);
+            line-height: 1;
+        }
+
+        .overview-note {
+            margin-top: 0.45rem;
+            color: #5f5b73;
+            font-size: 0.86rem;
+        }
+
         .container-main {
             display: grid;
-            grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
-            gap: 2.2rem;
+            grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
+            gap: 1.8rem;
             align-items: start;
-            padding: 2rem 1.2rem 3rem;
-            max-width: 1600px;
-            margin: 0 auto;
         }
+
         .card-form {
             background: var(--panel);
-            border-radius: 22px;
-            box-shadow: var(--shadow);
-            padding: 2.1rem 2.2rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            padding: 1.35rem;
             position: sticky;
-            top: 1.5rem;
-            max-height: calc(100vh - 140px);
-            overflow-y: auto;
+            top: 1rem;
+            border: 1px solid var(--border-soft);
         }
+
         .card-form h3 {
             font-weight: 700;
             color: var(--brand-dark);
-            margin-bottom: 1.3em;
+            margin-bottom: 0.3rem;
             text-align: left;
             display: flex;
             align-items: center;
             gap: 0.6rem;
         }
+
         .card-form h3 i {
             background: var(--panel-soft);
-            padding: 0.35rem 0.55rem;
-            border-radius: 10px;
+            padding: 0.4rem 0.55rem;
+            border-radius: 12px;
             color: var(--brand);
         }
+
+        .form-subtitle {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-section {
+            background: linear-gradient(180deg, #ffffff 0%, #fcfbff 100%);
+            border: 1px solid var(--border-soft);
+            border-radius: 18px;
+            padding: 0.95rem 1rem;
+            margin-bottom: 0.95rem;
+        }
+
+        .section-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #5d4d83;
+            margin-bottom: 0.7rem;
+        }
+
         .form-label {
-            margin-top: 0.8em;
+            margin-top: 0.45em;
             font-weight: 600;
             color: var(--muted);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
+
         .form-control, .form-select {
             margin-bottom: 0.7em;
-            border-radius: 12px;
+            border-radius: 14px;
             border: 1.5px solid var(--border);
             padding: 0.65em 1em;
             background: #fbfcff;
         }
+
         .form-control:focus, .form-select:focus {
             border-color: var(--brand);
-            box-shadow: 0 0 0 0.2rem rgba(38, 81, 216, 0.15);
+            box-shadow: 0 0 0 0.2rem rgba(38, 81, 216, 0.14);
         }
+
         .label-icon {
             margin-right: 0.35rem;
             color: var(--brand);
         }
+
+        .estado-preview {
+            margin-top: 0.4rem;
+        }
+
+        .estado-bar {
+            display: inline-block;
+            min-width: 120px;
+            font-weight: 600;
+            padding: 0.35em 1em;
+            border-radius: 999px;
+            color: #fff;
+        }
+
+        .reply-context {
+            display: none;
+            border: 1px dashed var(--border);
+            border-radius: 14px;
+            padding: 0.8rem 0.9rem;
+            background: #fbfcff;
+            margin-bottom: 0.7rem;
+        }
+
+        .reply-context strong {
+            font-weight: 700;
+            color: var(--brand-dark);
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        .reply-context .original {
+            color: var(--muted);
+            font-size: 0.93rem;
+        }
+
+        .state-help {
+            margin-top: 0.55rem;
+            padding: 0.75rem 0.85rem;
+            border-radius: 14px;
+            background: #f8faff;
+            border: 1px solid var(--border);
+            color: #49506d;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        .emoji-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin: 0.55rem 0 0.85rem;
+        }
+
+        .emoji-btn {
+            border: 1px solid var(--border);
+            background: #fff;
+            color: #334155;
+            border-radius: 999px;
+            padding: 0.32rem 0.58rem;
+            font-size: 0.92rem;
+            line-height: 1;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .emoji-btn:hover {
+            transform: translateY(-1px);
+            border-color: var(--brand);
+            background: #eef3ff;
+        }
+
         .btn-primary {
             background: var(--brand);
             border: none;
-            border-radius: 12px;
-            padding: 0.7rem 1rem;
+            border-radius: 14px;
+            padding: 0.8rem 1rem;
             font-weight: 600;
             box-shadow: 0 10px 20px rgba(38, 81, 216, 0.2);
         }
-        .btn-primary:hover { background: var(--brand-dark); }
-        .kanban-panel {
-            flex: 1;
+
+        .btn-primary:hover {
+            background: var(--brand-dark);
+        }
+
+        .board-panel {
             background: var(--panel);
             border-radius: 24px;
-            box-shadow: var(--shadow);
-            padding: 2rem 2.2rem 2.4rem;
-            animation: rise 0.5s ease both;
+            box-shadow: var(--shadow-lg);
+            padding: 1.5rem;
+            border: 1px solid rgba(232, 223, 245, 0.9);
+            animation: rise 0.45s ease both;
         }
-        .kanban-panel h4 {
+
+        .board-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .board-title {
             color: var(--brand-dark);
             font-weight: 700;
-            margin-bottom: 1.3em;
+            font-size: 1.18rem;
             display: flex;
             align-items: center;
             gap: 0.6rem;
+            margin-bottom: 0.25rem;
         }
-        .kanban-panel h4 i {
-            color: var(--brand);
+
+        .board-title i {
             background: var(--panel-soft);
+            color: var(--brand);
             padding: 0.35rem 0.55rem;
             border-radius: 10px;
         }
-        .cabecera-tarea {
-            background: var(--panel-soft);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 1.2em 1.5em 1.1em 1.5em;
-            margin-bottom: 1.4em;
-            display: grid;
-            gap: 0.5rem;
+
+        .board-subtitle {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin: 0;
         }
-        .card-form::-webkit-scrollbar { width: 8px; }
-        .card-form::-webkit-scrollbar-thumb {
-            background: #cfd7f6;
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.45rem 0.75rem;
             border-radius: 999px;
+            background: #eef3ff;
+            color: var(--brand-dark);
+            font-size: 0.78rem;
+            font-weight: 700;
         }
-        .cabecera-tarea .titulo { font-weight: 700; font-size: 1.2em; }
-        .cabecera-tarea .descripcion { font-size: 1em; color: var(--muted); }
-        .cabecera-tarea .fecha { font-size: 0.95em; color: var(--brand-dark); }
+
+        .ticket-summary {
+            background: linear-gradient(135deg, #f7f4ff 0%, #f6fbff 100%);
+            border: 1px solid var(--border-soft);
+            border-radius: 20px;
+            padding: 1.1rem 1.15rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .ticket-summary-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: flex-start;
+            margin-bottom: 0.85rem;
+        }
+
+        .ticket-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2b2350;
+            margin-bottom: 0.35rem;
+        }
+
+        .ticket-description {
+            color: var(--muted);
+            line-height: 1.55;
+            margin-bottom: 0;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.8rem;
+        }
+
+        .summary-item {
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(223, 214, 244, 0.9);
+            border-radius: 16px;
+            padding: 0.8rem 0.85rem;
+        }
+
+        .summary-label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-value {
+            font-size: 0.9rem;
+            color: #312852;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .timeline {
+            position: relative;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #cad6f5, #e7def8);
+        }
+
         .comentario-card {
+            position: relative;
             background: #ffffff;
             border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 1.1rem 1.4rem 1rem 1.4rem;
-            margin-bottom: 1.1rem;
-            box-shadow: 0 8px 20px rgba(27, 33, 74, 0.08);
+            border-radius: 20px;
+            padding: 1rem 1.1rem 1rem 4.1rem;
+            box-shadow: 0 10px 22px rgba(27, 33, 74, 0.08);
         }
+
+        .timeline-dot {
+            position: absolute;
+            left: 12px;
+            top: 18px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2d61ea, #ff9156);
+            border: 4px solid #f6f8ff;
+            box-shadow: 0 0 0 1px #d5ddf3;
+        }
+
         .comentario-meta {
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 0.45rem;
-            font-size: 0.95em;
+            gap: 0.5rem;
+            font-size: 0.92rem;
             color: var(--muted);
+            margin-bottom: 0.5rem;
         }
+
         .avatar {
-            height: 36px;
-            width: 36px;
-            border-radius: 50%;
+            height: 38px;
+            width: 38px;
+            border-radius: 14px;
             background: linear-gradient(135deg, #ffd5b0, #b7c6ff);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             color: var(--brand-dark);
             font-weight: 700;
-            margin-right: 0.4rem;
         }
-        .comentario-contenido { margin-top: 0.7em; font-size: 1.02em; }
+
+        .comentario-author {
+            color: #261f42;
+            font-weight: 700;
+        }
+
+        .comentario-fecha {
+            font-size: 0.88rem;
+            color: var(--brand-dark);
+            font-weight: 500;
+        }
+
+        .comentario-contenido {
+            margin-top: 0.55rem;
+            font-size: 0.98rem;
+            line-height: 1.65;
+            color: #2d2544;
+            white-space: pre-wrap;
+        }
+
         .comentario-footer {
             display: flex;
-            gap: 0.8rem;
+            gap: 0.6rem;
             align-items: center;
-            margin-top: 0.9rem;
+            flex-wrap: wrap;
+            margin-top: 0.95rem;
             color: var(--muted);
-            font-size: 0.92rem;
+            font-size: 0.9rem;
         }
-        .comentario-footer i { color: var(--brand); }
+
         .action-btn {
-            border: none;
-            background: transparent;
-            color: inherit;
-            padding: 0.2rem 0.4rem;
+            border: 1px solid transparent;
+            background: #f8faff;
+            color: #4e5270;
+            padding: 0.4rem 0.7rem;
             border-radius: 999px;
-            transition: background 0.2s ease, color 0.2s ease;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
-        .action-btn:hover { background: #f0f3ff; color: var(--brand-dark); }
-        .action-btn.heart-active i { color: #e63946; }
-        .action-btn.heart-active { animation: heart-pop 0.3s ease; }
+
+        .action-btn:hover {
+            background: #eef3ff;
+            color: var(--brand-dark);
+            border-color: #d3def7;
+        }
+
+        .action-btn i {
+            color: var(--brand);
+            margin-right: 0.2rem;
+        }
+
+        .action-btn.heart-active i {
+            color: #e63946;
+        }
+
+        .action-btn.heart-active {
+            animation: heart-pop 0.3s ease;
+        }
+
         .reaction-row {
             display: flex;
-            gap: 0.4rem;
-            margin-top: 0.5rem;
+            gap: 0.45rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
         }
+
         .reaction-btn {
             border: 1px solid var(--border);
             background: #fff;
             color: var(--muted);
             border-radius: 999px;
-            padding: 0.15rem 0.6rem;
-            font-size: 0.85rem;
+            padding: 0.18rem 0.65rem;
+            font-size: 0.82rem;
             transition: transform 0.2s ease, border-color 0.2s ease;
         }
-        .reaction-btn:hover { transform: translateY(-1px); border-color: var(--brand); color: var(--brand-dark); }
+
+        .reaction-btn:hover {
+            transform: translateY(-1px);
+            border-color: var(--brand);
+            color: var(--brand-dark);
+        }
+
+        .attachment-block {
+            margin-top: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .adjunto-img {
+            max-height: 48px;
+            max-width: 96px;
+            border-radius: 10px;
+            vertical-align: middle;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state {
+            background: linear-gradient(180deg, #fcfbff 0%, #f8fbff 100%);
+            border: 1px dashed var(--border-soft);
+            border-radius: 18px;
+            padding: 2rem 1.2rem;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .reply-highlight {
+            color: var(--brand-dark);
+            font-weight: 700;
+            display: block;
+        }
+
+        .reply-quote {
+            color: var(--muted);
+            border-left: 3px solid var(--border);
+            padding-left: 0.7rem;
+            margin-top: 0.45rem;
+            display: block;
+        }
+
         .diff-modal .modal-content {
             border-radius: 18px;
             border: none;
             box-shadow: 0 18px 40px rgba(27, 33, 74, 0.2);
         }
+
         .diff-modal .modal-header {
             background: var(--panel-soft);
             border-bottom: 1px solid var(--border);
         }
+
         .diff-box {
             background: #0f172a;
             color: #e2e8f0;
@@ -259,280 +614,369 @@
             max-height: 360px;
             overflow: auto;
         }
+
         .diff-line {
             display: block;
             padding: 0.15rem 0.4rem;
             border-radius: 6px;
             white-space: pre-wrap;
         }
+
         .diff-line.add { background: rgba(34, 197, 94, 0.15); color: #bbf7d0; }
         .diff-line.del { background: rgba(239, 68, 68, 0.15); color: #fecaca; }
         .diff-line.meta { background: rgba(148, 163, 184, 0.12); color: #cbd5f5; }
         .diff-empty { color: #94a3b8; }
-        .reply-context {
-            display: none;
-            border: 1px dashed var(--border);
-            border-radius: 12px;
-            padding: 0.7rem 0.9rem;
-            background: #fbfcff;
-            margin-bottom: 0.6rem;
-        }
-        .reply-context strong {
-            font-weight: 700;
-            color: var(--brand-dark);
-            display: block;
-            margin-bottom: 0.35rem;
-        }
-        .reply-context .original {
-            color: var(--muted);
-            font-size: 0.95rem;
-        }
-        .reply-highlight {
-            color: var(--brand-dark);
-            font-weight: 700;
-        }
-        .reply-quote {
-            color: var(--muted);
-            border-left: 3px solid var(--border);
-            padding-left: 0.6rem;
-            margin-top: 0.3rem;
-            display: block;
-        }
+
         @keyframes heart-pop {
             0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
+            50% { transform: scale(1.12); }
             100% { transform: scale(1); }
         }
-        .adjunto-link { font-size: 0.94em; color: var(--brand-dark); }
-        .adjunto-img {
-            max-height: 44px;
-            max-width: 90px;
-            border-radius: 8px;
-            vertical-align: middle;
-            margin-right: 4px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-        }
-        .badge { font-size: 0.82em; }
-        .estado-bar {
-            display: inline-block;
-            min-width: 120px;
-            font-weight: 600;
-            padding: 0.3em 1em;
-            border-radius: 999px;
-        }
-        .comentario-fecha { font-size: 0.93em; color: var(--brand-dark); font-weight: 500; margin-left: 0.4em; }
+
         @keyframes rise {
             from { opacity: 0; transform: translateY(14px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @media (max-width: 992px) {
-            .container-main { grid-template-columns: 1fr; }
-            .card-form { position: static; }
-            .main-header { flex-direction: column; gap: 1rem; text-align: center; }
-            .card-form { max-height: none; overflow: visible; }
+
+        @media (max-width: 1100px) {
+            .overview-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .container-main {
+                grid-template-columns: 1fr;
+            }
+
+            .card-form {
+                position: static;
+            }
         }
-        @media (max-width: 640px) {
-            .main-header { padding: 1.2rem 1.4rem; }
-            .header-title { font-size: 1.5rem; }
-            .container-main { padding: 1.2rem 0.9rem 2rem; }
-            .card-form, .kanban-panel { padding: 1.4rem; }
-            .comentario-footer { flex-wrap: wrap; }
-            .diff-box { font-size: 0.82rem; }
-            .btn-dashboard, .btn-primary { font-size: 0.9rem; padding: 0.6rem 1rem; }
-            .cabecera-tarea { padding: 0.9rem 1rem; }
-            .cabecera-tarea .titulo { font-size: 1.05rem; }
-            .comentario-card { padding: 0.9rem 1rem; }
-            .comentario-contenido { font-size: 0.95rem; }
-            .form-label { font-size: 0.9rem; }
-            .form-control, .form-select { padding: 0.55em 0.85em; font-size: 0.92rem; }
+
+        @media (max-width: 720px) {
+            .main-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1.15rem 1.2rem;
+            }
+
+            .header-title {
+                font-size: 1.45rem;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .board-topbar,
+            .ticket-summary-top,
+            .summary-grid {
+                display: block;
+            }
+
+            .summary-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                margin-top: 0.8rem;
+            }
+
+            .comentario-card {
+                padding: 0.95rem 0.95rem 0.95rem 3.3rem;
+            }
+
+            .timeline::before {
+                left: 18px;
+            }
+
+            .timeline-dot {
+                left: 6px;
+            }
         }
+
         @media (max-width: 520px) {
-            .main-header { padding: 1rem 1.1rem; }
-            .header-title { font-size: 1.25rem; }
-            .container-main { padding: 1rem 0.7rem 1.6rem; }
-            .card-form, .kanban-panel { padding: 1.05rem; }
-            .comentario-meta { font-size: 0.85rem; }
-            .comentario-footer { font-size: 0.85rem; }
+            .page-shell {
+                padding: 0 0.7rem 1.6rem;
+            }
+
+            .header-title {
+                font-size: 1.2rem;
+            }
+
+            .card-form,
+            .board-panel {
+                padding: 1rem;
+            }
+
+            .comentario-footer {
+                font-size: 0.84rem;
+            }
         }
     </style>
 </head>
-<body>
-<div class="main-header">
-    <div class="header-title"><i class="bi bi-chat-left-text"></i> Seguimiento de Tarea / Tickets</div>
-    <a href="{{ url_for('usuario.dashboard') }}" class="btn btn-dashboard">
-        <i class="bi bi-arrow-left"></i> Volver al Dashboard
-    </a>
-</div>
-<div class="container-main">
-    <!-- PANEL NUEVO COMENTARIO -->
-    <form class="card-form" method="POST" enctype="multipart/form-data">
-        <h3><i class="bi bi-plus-circle"></i> Nuevo Comentario</h3>
-        <label class="form-label" for="proyecto"><i class="bi bi-kanban label-icon"></i>Proyecto</label>
-        <select class="form-select" id="proyecto" name="proyecto" onchange="filtrarTareasPorProyecto(this.value)" required>
-            <option value="">Seleccionar proyecto</option>
-            {% for proyecto in proyectos %}
-                <option value="{{ proyecto.idproyecto }}" {% if idproyecto and proyecto.idproyecto == idproyecto %}selected{% endif %}>{{ proyecto.nombre_proyecto }}</option>
-            {% endfor %}
-        </select>
-        <label class="form-label" for="idtarea"><i class="bi bi-list-task label-icon"></i>Tarea</label>
-        <select class="form-select" id="idtarea" name="idtarea" required>
-            <option value="">Seleccionar tarea</option>
-            {% for tarea in tareas %}
-                <option value="{{ tarea.idtarea }}" {% if idtarea and tarea.idtarea == idtarea %}selected{% endif %}>{{ tarea.titulo }}</option>
-            {% endfor %}
-        </select>
-        {% if tarea_sel %}
-            <label class="form-label" for="idestado"><i class="bi bi-check2-circle label-icon"></i>Estado de la tarea</label>
-            <select class="form-select" id="idestado" name="idestado">
-                {% for estado in estados %}
-                    <option value="{{ estado.idestado }}" {% if tarea_sel.idestado == estado.idestado %}selected{% endif %}>{{ estado.nombre_estado }}</option>
-                {% endfor %}
-            </select>
-            <label class="form-label">Estado actual:</label>
-            <div class="mb-2">
-                <span class="estado-bar" style="background: {{ tarea_sel.estado.color if tarea_sel.estado else '#d3bfff' }};">
-                    {{ tarea_sel.estado.nombre_estado if tarea_sel.estado else 'Sin Estado' }}
-                </span>
-            </div>
-        {% endif %}
-        <label class="form-label" for="fecha"><i class="bi bi-calendar-event label-icon"></i>Fecha del comentario</label>
-        <input type="datetime-local" class="form-control" id="fecha" name="fecha"
-            value="{{ now|default('', true) }}" required>
-        <div class="form-check mt-2">
-            <input class="form-check-input" type="checkbox" id="notificar_email" name="notificar_email" checked>
-            <label class="form-check-label" for="notificar_email">Notificar por correo automaticamente</label>
+<body class="violeta-corp">
+<div class="page-shell">
+    <div class="main-header">
+        <div class="header-copy">
+            <div class="header-title"><i class="bi bi-chat-left-text"></i> Centro de Tickets</div>
+            <div class="header-subtitle">Gestiona respuestas, seguimiento y cambios de estado con una vista mas limpia y facil de escanear.</div>
         </div>
-        <label class="form-label" for="comentario"><i class="bi bi-chat-square-text label-icon"></i>Comentario</label>
-        <div id="replyContext" class="reply-context">
-            <strong id="replyHeader"></strong>
-            <div class="original" id="replyOriginal"></div>
-        </div>
-        <textarea class="form-control" id="comentario" name="comentario" rows="3" required></textarea>
-        <!-- Input para archivo adjunto (nuevo y fundamental) -->
-        <label class="form-label" for="adjunto"><i class="bi bi-paperclip label-icon"></i>Adjunto (opcional)</label>
-        <input type="file" class="form-control" id="adjunto" name="adjunto" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.txt">
-        <button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-send"></i> Registrar comentario</button>
-    </form>
+        <a href="{{ url_for('usuario.dashboard') }}" class="btn btn-dashboard">
+            <i class="bi bi-arrow-left"></i> Volver al Dashboard
+        </a>
+    </div>
 
-    <!-- PANEL HISTORIAL DE COMENTARIOS Y CABECERA DE TAREA -->
-    <div class="kanban-panel">
-        <h4>
-            <i class="bi bi-list-ul"></i> Historial de Comentarios
-            {% if tarea_sel %}- {{ tarea_sel.titulo }}{% endif %}
-        </h4>
-        {% if tarea_sel %}
-            <!-- CABECERA DE LA TAREA SELECCIONADA -->
-            <div class="cabecera-tarea">
-                <div class="titulo"><i class="bi bi-flag"></i> {{ tarea_sel.titulo }}</div>
-                <div class="descripcion">{{ tarea_sel.descripcion }}</div>
-                <div class="fecha">
-                    <i class="bi bi-calendar"></i>
-                    Creada el {{ tarea_sel.fecha_creacion.strftime('%d-%m-%Y %H:%M') if tarea_sel.fecha_creacion else '' }}
-                </div>
-            </div>
-            <div class="mb-3">
-                <span class="estado-bar" style="background: {{ tarea_sel.estado.color if tarea_sel.estado else '#d3bfff' }};">
-                    Estado actual: {{ tarea_sel.estado.nombre_estado if tarea_sel.estado else 'Sin Estado' }}
-                </span>
-            </div>
-        {% endif %}
-        {% if comentarios %}
-            {% for coment in comentarios|reverse %}
-            <div class="comentario-card">
-                <div class="comentario-meta">
-                    <span class="avatar"><i class="bi bi-person"></i></span>
-                    <b>
-                    {% for usuario in usuarios %}
-                        {% if usuario.idusuario == coment.idusuario %}
-                            {{ usuario.nombre }}
-                        {% endif %}
+    <div class="overview-grid">
+        <div class="overview-card">
+            <div class="overview-label">Proyectos visibles</div>
+            <div class="overview-value">{{ proyectos|length }}</div>
+            <div class="overview-note">Contextos listos para navegar tickets.</div>
+        </div>
+        <div class="overview-card">
+            <div class="overview-label">Tareas filtradas</div>
+            <div class="overview-value">{{ tareas|length }}</div>
+            <div class="overview-note">Relacionadas con el proyecto activo.</div>
+        </div>
+        <div class="overview-card">
+            <div class="overview-label">Comentarios</div>
+            <div class="overview-value">{{ comentarios|length }}</div>
+            <div class="overview-note">Historial cargado para la tarea seleccionada.</div>
+        </div>
+        <div class="overview-card">
+            <div class="overview-label">Estados</div>
+            <div class="overview-value">{{ estados|length }}</div>
+            <div class="overview-note">Control del avance del ticket.</div>
+        </div>
+    </div>
+
+    <div class="container-main">
+        <form class="card-form" method="POST" enctype="multipart/form-data">
+            <h3><i class="bi bi-plus-circle"></i> Nuevo Comentario</h3>
+            <div class="form-subtitle">Registra seguimiento, responde tickets y adjunta evidencia sin salir de la misma vista.</div>
+
+            <div class="form-section">
+                <div class="section-title">Contexto</div>
+                <label class="form-label" for="proyecto"><i class="bi bi-kanban label-icon"></i>Proyecto</label>
+                <select class="form-select" id="proyecto" name="proyecto" onchange="filtrarTareasPorProyecto(this.value)" required>
+                    <option value="">Seleccionar proyecto</option>
+                    {% for proyecto in proyectos %}
+                        <option value="{{ proyecto.idproyecto }}" {% if idproyecto and proyecto.idproyecto == idproyecto %}selected{% endif %}>{{ proyecto.nombre_proyecto }}</option>
                     {% endfor %}
-                    </b>
-                    <span class="comentario-fecha">
-                        <i class="bi bi-clock"></i>
-                        {{ coment.fecha.strftime('%d-%m-%Y %H:%M') if coment.fecha else '' }}
-                    </span>
-                    <span class="badge bg-light text-dark ms-2">#{{ coment.idcomentario }}</span>
-                    {% if coment.estado %}
-                        <span class="badge" style="background: {{ coment.estado.color }};">{{ coment.estado.nombre_estado }}</span>
-                    {% endif %}
-                </div>
-                <div class="comentario-contenido" data-comentario-texto="{{ coment.comentario }}">{{ coment.comentario }}</div>
-                {% if coment.idadjunto and coment.adjunto %}
-                    <div class="mt-2">
-                        {% set tipo = coment.adjunto.tipo or '' %}
-                        {% set es_imagen = 'image' in tipo %}
-                        {% set es_pdf = tipo == 'application/pdf' %}
-                        {% set es_word = tipo in ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'] %}
-                        {% set es_excel = tipo in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'] %}
-                        <span class="badge bg-light text-dark">
-                            <i class="bi bi-paperclip"></i> Archivo adjunto:
+                </select>
+
+                <label class="form-label" for="idtarea"><i class="bi bi-list-task label-icon"></i>Tarea</label>
+                <select class="form-select" id="idtarea" name="idtarea" required>
+                    <option value="">Seleccionar tarea</option>
+                    {% for tarea in tareas %}
+                        <option value="{{ tarea.idtarea }}" {% if idtarea and tarea.idtarea == idtarea %}selected{% endif %}>{{ tarea.titulo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">Seguimiento</div>
+                <label class="form-label" for="idestado"><i class="bi bi-check2-circle label-icon"></i>Estado del comentario</label>
+                <select class="form-select" id="idestado" name="idestado" required>
+                    <option value="">Seleccionar estado del avance</option>
+                    {% for estado in estados %}
+                        <option value="{{ estado.idestado }}" {% if tarea_sel and tarea_sel.idestado == estado.idestado %}selected{% endif %}>{{ estado.nombre_estado }}</option>
+                    {% endfor %}
+                </select>
+                {% if tarea_sel %}
+                    <div class="estado-preview">
+                        <span class="estado-bar" style="background: {{ tarea_sel.estado.color if tarea_sel.estado else '#d3bfff' }};">
+                            {{ tarea_sel.estado.nombre_estado if tarea_sel.estado else 'Sin Estado' }}
                         </span>
-                        {% if es_imagen %}
-                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver imagen">
-                                <img src="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" alt="Imagen adjunta" class="adjunto-img">
-                            </a>
-                        {% elif es_pdf %}
-                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver PDF">
-                                <i class="bi bi-file-pdf text-danger" style="font-size:1.45em;"></i> PDF
-                            </a>
-                        {% elif es_word %}
-                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver Word">
-                                <i class="bi bi-file-earmark-word text-primary" style="font-size:1.45em;"></i> Word
-                            </a>
-                        {% elif es_excel %}
-                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver Excel">
-                                <i class="bi bi-file-earmark-excel text-success" style="font-size:1.45em;"></i> Excel
-                            </a>
-                        {% else %}
-                            <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-2" title="Ver/Descargar">
-                                <i class="bi bi-file-earmark" style="font-size:1.4em;"></i> Archivo
-                            </a>
-                        {% endif %}
-                        <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}"
-                            class="btn btn-outline-secondary btn-sm ms-2" target="_blank" title="Descargar adjunto">
-                            <i class="bi bi-download"></i>
-                        </a>
                     </div>
                 {% endif %}
-                <div class="comentario-footer">
-                    <button class="action-btn js-heart" type="button" aria-label="Reaccionar con corazon">
-                        <i class="bi bi-heart-fill"></i> Reaccionar
-                    </button>
-                    <button class="action-btn js-reply" type="button"
-                        data-comentario-id="{{ coment.idcomentario }}"
-                        data-comentario-fecha="{{ coment.fecha.strftime('%d-%m-%Y %H:%M') if coment.fecha else '' }}"
-                        data-comentario-usuario="{% for usuario in usuarios %}{% if usuario.idusuario == coment.idusuario %}{{ usuario.nombre }}{% endif %}{% endfor %}"
-                        data-comentario-texto="{{ coment.comentario }}">
-                        <i class="bi bi-reply"></i> Responder
-                    </button>
-                    <button class="action-btn js-diff d-none" type="button"
-                        data-comentario-id="{{ coment.idcomentario }}"
-                        data-comentario-texto="{{ coment.comentario }}">
-                        <i class="bi bi-file-diff"></i> Ver cambios
-                    </button>
-                    <button class="action-btn js-bookmark" type="button" aria-label="Guardar">
-                        <i class="bi bi-bookmark"></i> Guardar
-                    </button>
+                <div class="state-help">
+                    El estado del comentario es obligatorio y actualiza el estado real de la tarea. Si seleccionas un estado como <strong>Terminada</strong>, <strong>Cerrada</strong> o similar, la tarea quedara marcada con ese avance.
                 </div>
-                <div class="reaction-row">
-                    <button class="reaction-btn js-reaction" type="button" data-reaction="smile">
-                        <i class="bi bi-emoji-smile"></i> Me gusta
-                    </button>
-                    <button class="reaction-btn js-reaction" type="button" data-reaction="ok">
-                        <i class="bi bi-hand-thumbs-up"></i> OK
-                    </button>
-                    <button class="reaction-btn js-reaction" type="button" data-reaction="idea">
-                        <i class="bi bi-lightbulb"></i> Idea
-                    </button>
+
+                <label class="form-label" for="fecha"><i class="bi bi-calendar-event label-icon"></i>Fecha del comentario</label>
+                <input type="datetime-local" class="form-control" id="fecha" name="fecha" value="{{ now|default('', true) }}" required>
+
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="notificar_email" name="notificar_email" checked>
+                    <label class="form-check-label" for="notificar_email">Notificar por correo automaticamente</label>
                 </div>
             </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-secondary">No hay comentarios para esta tarea.</p>
-        {% endif %}
+
+            <div class="form-section">
+                <div class="section-title">Respuesta</div>
+                <label class="form-label" for="comentario"><i class="bi bi-chat-square-text label-icon"></i>Comentario</label>
+                <div id="replyContext" class="reply-context">
+                    <strong id="replyHeader"></strong>
+                    <div class="original" id="replyOriginal"></div>
+                </div>
+                <div class="emoji-toolbar" aria-label="Accesos rapidos de emojis">
+                    <button type="button" class="emoji-btn js-emoji" data-emoji="✅">✅</button>
+                    <button type="button" class="emoji-btn js-emoji" data-emoji="🚧">🚧</button>
+                    <button type="button" class="emoji-btn js-emoji" data-emoji="🛠️">🛠️</button>
+                    <button type="button" class="emoji-btn js-emoji" data-emoji="📌">📌</button>
+                    <button type="button" class="emoji-btn js-emoji" data-emoji="⚠️">⚠️</button>
+                    <button type="button" class="emoji-btn js-emoji" data-emoji="❌">❌</button>
+                    <button type="button" class="emoji-btn js-emoji" data-emoji="💬">💬</button>
+                    <button type="button" class="emoji-btn js-emoji" data-emoji="📷">📷</button>
+                    <button type="button" class="emoji-btn js-emoji" data-emoji="🎥">🎥</button>
+                    <button type="button" class="emoji-btn js-emoji" data-emoji="👍">👍</button>
+                </div>
+                <textarea class="form-control" id="comentario" name="comentario" rows="4" required></textarea>
+
+                <label class="form-label" for="adjunto"><i class="bi bi-paperclip label-icon"></i>Adjunto (opcional)</label>
+                <input type="file" class="form-control" id="adjunto" name="adjunto" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp,.heic,.pdf,.doc,.docx,.xls,.xlsx,.txt,.mp4,.mov,.avi,.mkv,.webm,.m4v">
+                <div class="text-secondary small mt-1">Imagenes, documentos o videos de hasta 25 MB.</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-2"><i class="bi bi-send"></i> Registrar comentario</button>
+        </form>
+
+        <div class="board-panel">
+            <div class="board-topbar">
+                <div>
+                    <div class="board-title"><i class="bi bi-journal-richtext"></i> Historial del Ticket{% if tarea_sel %}: {{ tarea_sel.titulo }}{% endif %}</div>
+                    <p class="board-subtitle">Linea de tiempo del intercambio, con evidencia adjunta y cambios de estado visibles en un solo lugar.</p>
+                </div>
+                <span class="pill"><i class="bi bi-chat-dots"></i> {{ comentarios|length }} comentario{% if comentarios|length != 1 %}s{% endif %}</span>
+            </div>
+
+            {% if tarea_sel %}
+                <div class="ticket-summary">
+                    <div class="ticket-summary-top">
+                        <div>
+                            <div class="ticket-title">{{ tarea_sel.titulo }}</div>
+                            <p class="ticket-description">{{ tarea_sel.descripcion }}</p>
+                        </div>
+                        <span class="estado-bar" style="background: {{ tarea_sel.estado.color if tarea_sel.estado else '#d3bfff' }};">
+                            {{ tarea_sel.estado.nombre_estado if tarea_sel.estado else 'Sin Estado' }}
+                        </span>
+                    </div>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="summary-label">Responsable</div>
+                            <div class="summary-value">{{ tarea_sel.nombre_responsable }}</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Creacion</div>
+                            <div class="summary-value">{{ tarea_sel.fecha_creacion.strftime('%d-%m-%Y %H:%M') if tarea_sel.fecha_creacion else 'Sin fecha' }}</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Comentarios</div>
+                            <div class="summary-value">{{ comentarios|length }} registrados</div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if comentarios %}
+                <div class="timeline">
+                    {% for coment in comentarios|reverse %}
+                    <div class="comentario-card">
+                        <span class="timeline-dot"></span>
+                        <div class="comentario-meta">
+                            <span class="avatar"><i class="bi bi-person"></i></span>
+                            <span class="comentario-author">
+                                {% for usuario in usuarios %}
+                                    {% if usuario.idusuario == coment.idusuario %}
+                                        {{ usuario.nombre }}
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                            <span class="comentario-fecha"><i class="bi bi-clock"></i> {{ coment.fecha.strftime('%d-%m-%Y %H:%M') if coment.fecha else '' }}</span>
+                            <span class="badge bg-light text-dark">#{{ coment.idcomentario }}</span>
+                            {% if coment.estado %}
+                                <span class="badge" style="background: {{ coment.estado.color }};">{{ coment.estado.nombre_estado }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="comentario-contenido" data-comentario-texto="{{ coment.comentario }}">{{ coment.comentario }}</div>
+
+                        {% if coment.idadjunto and coment.adjunto %}
+                            <div class="attachment-block">
+                                {% set tipo = coment.adjunto.tipo or '' %}
+                                {% set es_imagen = 'image' in tipo %}
+                                {% set es_pdf = tipo == 'application/pdf' %}
+                                {% set es_word = tipo in ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'] %}
+                                {% set es_excel = tipo in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'] %}
+                                {% set es_video = 'video' in tipo %}
+                                <span class="badge bg-light text-dark">
+                                    <i class="bi bi-paperclip"></i> Archivo adjunto
+                                </span>
+                                {% if es_imagen %}
+                                    <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-1" title="Ver imagen">
+                                        <img src="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" alt="Imagen adjunta" class="adjunto-img">
+                                    </a>
+                                {% elif es_video %}
+                                    <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-1" title="Ver video">
+                                        <i class="bi bi-film text-dark" style="font-size:1.45em;"></i> Video
+                                    </a>
+                                {% elif es_pdf %}
+                                    <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-1" title="Ver PDF">
+                                        <i class="bi bi-file-pdf text-danger" style="font-size:1.45em;"></i> PDF
+                                    </a>
+                                {% elif es_word %}
+                                    <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-1" title="Ver Word">
+                                        <i class="bi bi-file-earmark-word text-primary" style="font-size:1.45em;"></i> Word
+                                    </a>
+                                {% elif es_excel %}
+                                    <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-1" title="Ver Excel">
+                                        <i class="bi bi-file-earmark-excel text-success" style="font-size:1.45em;"></i> Excel
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" target="_blank" class="ms-1" title="Ver archivo">
+                                        <i class="bi bi-file-earmark" style="font-size:1.4em;"></i> Archivo
+                                    </a>
+                                {% endif %}
+                                <a href="{{ url_for('adjunto.descargar_adjunto_view', idadjunto=coment.idadjunto) }}" class="btn btn-outline-secondary btn-sm" target="_blank" title="Descargar adjunto">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+
+                        <div class="comentario-footer">
+                            <button class="action-btn js-heart" type="button" aria-label="Reaccionar con corazon">
+                                <i class="bi bi-heart-fill"></i> Reaccionar
+                            </button>
+                            <button class="action-btn js-reply" type="button"
+                                data-comentario-id="{{ coment.idcomentario }}"
+                                data-comentario-fecha="{{ coment.fecha.strftime('%d-%m-%Y %H:%M') if coment.fecha else '' }}"
+                                data-comentario-usuario="{% for usuario in usuarios %}{% if usuario.idusuario == coment.idusuario %}{{ usuario.nombre }}{% endif %}{% endfor %}"
+                                data-comentario-texto="{{ coment.comentario }}">
+                                <i class="bi bi-reply"></i> Responder
+                            </button>
+                            <button class="action-btn js-diff d-none" type="button"
+                                data-comentario-id="{{ coment.idcomentario }}"
+                                data-comentario-texto="{{ coment.comentario }}">
+                                <i class="bi bi-file-diff"></i> Ver cambios
+                            </button>
+                            <button class="action-btn js-bookmark" type="button" aria-label="Guardar">
+                                <i class="bi bi-bookmark"></i> Guardar
+                            </button>
+                        </div>
+
+                        <div class="reaction-row">
+                            <button class="reaction-btn js-reaction" type="button" data-reaction="smile">
+                                <i class="bi bi-emoji-smile"></i> Me gusta
+                            </button>
+                            <button class="reaction-btn js-reaction" type="button" data-reaction="ok">
+                                <i class="bi bi-hand-thumbs-up"></i> OK
+                            </button>
+                            <button class="reaction-btn js-reaction" type="button" data-reaction="idea">
+                                <i class="bi bi-lightbulb"></i> Idea
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="mb-2"><i class="bi bi-chat-square-text" style="font-size: 1.6rem;"></i></div>
+                    <div>No hay comentarios para esta tarea.</div>
+                    <div class="small mt-1">Usa el formulario para registrar el primer seguimiento.</div>
+                </div>
+            {% endif %}
+        </div>
     </div>
 </div>
+
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1200">
@@ -547,6 +991,7 @@
     </div>
   {% endif %}
 {% endwith %}
+
 <div class="modal fade diff-modal" id="diffModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
@@ -561,12 +1006,8 @@
     </div>
   </div>
 </div>
+
 <script>
-    function escapeHtml(value) {
-        var div = document.createElement('div');
-        div.textContent = value;
-        return div.innerHTML;
-    }
     function extractDiff(raw) {
         if (!raw) return null;
         var diffBlock = null;
@@ -584,6 +1025,7 @@
         }
         return diffBlock;
     }
+
     function renderDiff(diffText) {
         var container = document.getElementById('diffContent');
         container.innerHTML = '';
@@ -605,13 +1047,16 @@
             container.appendChild(span);
         });
     }
+
     function filtrarTareasPorProyecto(idproyecto) {
         window.location.href = "?idproyecto=" + idproyecto;
     }
+
     document.getElementById('idtarea').addEventListener('change', function() {
         var idproyecto = document.getElementById('proyecto').value;
         window.location.href = "?idproyecto=" + idproyecto + "&idtarea=" + this.value;
     });
+
     document.querySelectorAll('.js-reply').forEach(function(button) {
         button.addEventListener('click', function() {
             var comentarioId = this.dataset.comentarioId || '';
@@ -633,11 +1078,13 @@
             }
         });
     });
+
     document.querySelectorAll('.js-heart').forEach(function(button) {
         button.addEventListener('click', function() {
             button.classList.toggle('heart-active');
         });
     });
+
     document.querySelectorAll('.js-reaction').forEach(function(button) {
         button.addEventListener('click', function() {
             var label = this.textContent.trim();
@@ -648,6 +1095,7 @@
             }
         });
     });
+
     document.querySelectorAll('.comentario-contenido').forEach(function(el) {
         var raw = el.textContent || '';
         if (raw.indexOf('Respondiendo lo siguiente:') !== -1) {
@@ -659,6 +1107,7 @@
             el.innerHTML = headerHtml + replyHtml;
         }
     });
+
     document.querySelectorAll('.js-diff').forEach(function(button) {
         var raw = button.dataset.comentarioTexto || '';
         var diff = extractDiff(raw);
@@ -672,6 +1121,22 @@
             renderDiff(diffText);
             var modal = new bootstrap.Modal(document.getElementById('diffModal'));
             modal.show();
+        });
+    });
+
+    document.querySelectorAll('.js-emoji').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var emoji = this.dataset.emoji || '';
+            var textarea = document.getElementById('comentario');
+            if (!textarea) return;
+            var start = textarea.selectionStart || 0;
+            var end = textarea.selectionEnd || 0;
+            var before = textarea.value.slice(0, start);
+            var after = textarea.value.slice(end);
+            textarea.value = before + emoji + ' ' + after;
+            textarea.focus();
+            var nextPos = start + emoji.length + 1;
+            textarea.setSelectionRange(nextPos, nextPos);
         });
     });
 </script>

@@ -11,6 +11,7 @@
     <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
 
+    <link href="{{ url_for('static', filename='css/corporate.css') }}" rel="stylesheet">
     <style>
         body.print-mode .panel-title,
         body.print-mode .volver-btn,
@@ -420,7 +421,7 @@
     </style>
 </head>
 
-    <body{% if print_mode %} class="print-mode"{% endif %}>
+    <body class="violeta-corp{% if print_mode %} print-mode{% endif %}">
 <div class="main-container">
 
     <a class="volver-btn" href="{{ url_for('usuario.dashboard') }}">
@@ -454,6 +455,9 @@
                 <button id="btn-limpiar-filtros" class="btn btn-sm btn-outline-secondary">Limpiar</button>
             </div>
             <div style="display:flex; gap:8px;">
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('reports.ticket_report', proyecto_id=proyecto_seleccionado) }}">
+                    <i class="bi bi-chat-square-text"></i> Informe tickets
+                </a>
                 <a class="btn btn-sm btn-success" href="{{ url_for('reports.export_excel', proyecto_id=proyecto_seleccionado) }}">
                     <i class="bi bi-file-earmark-excel"></i> Exportar Excel
                 </a>
@@ -852,15 +856,15 @@
     });
 
     const depInfoMap = {
-        FS: `<p><strong>FS (Fin-Inicio)</strong> – La tarea siguiente empieza cuando la predecesora termina.</p>
-             <p>Ejemplo: 1FS → No diseñas la BD hasta terminar requisitos.</p>`,
-        SS: `<p><strong>SS (Inicio-Inicio)</strong> – La tarea siguiente empieza cuando la predecesora empieza.</p>
-             <p>Ejemplo: 3SS → Reportes pueden iniciar al empezar facturacion.</p>`,
-        FF: `<p><strong>FF (Fin-Fin)</strong> – La tarea siguiente termina cuando la predecesora termina.</p>
-             <p>Ejemplo: 5FF → Capacitacion termina cuando pruebas finalizan.</p>`,
-        SF: `<p><strong>SF (Inicio-Fin)</strong> – La tarea siguiente termina cuando la predecesora empieza.</p>
-             <p>Ejemplo: 8SF → Sistema antiguo termina al arrancar el nuevo.</p>`,
-        LAG: `<p><strong>Lag (retraso/adelanto)</strong> – +5d espera 5 dias, -3d adelanta 3 dias.</p>
+        FS: `<p><strong>FS (Fin-Inicio)</strong> â€“ La tarea siguiente empieza cuando la predecesora termina.</p>
+             <p>Ejemplo: 1FS â†’ No diseÃ±as la BD hasta terminar requisitos.</p>`,
+        SS: `<p><strong>SS (Inicio-Inicio)</strong> â€“ La tarea siguiente empieza cuando la predecesora empieza.</p>
+             <p>Ejemplo: 3SS â†’ Reportes pueden iniciar al empezar facturacion.</p>`,
+        FF: `<p><strong>FF (Fin-Fin)</strong> â€“ La tarea siguiente termina cuando la predecesora termina.</p>
+             <p>Ejemplo: 5FF â†’ Capacitacion termina cuando pruebas finalizan.</p>`,
+        SF: `<p><strong>SF (Inicio-Fin)</strong> â€“ La tarea siguiente termina cuando la predecesora empieza.</p>
+             <p>Ejemplo: 8SF â†’ Sistema antiguo termina al arrancar el nuevo.</p>`,
+        LAG: `<p><strong>Lag (retraso/adelanto)</strong> â€“ +5d espera 5 dias, -3d adelanta 3 dias.</p>
               <p>Ejemplo: 1FS+5d o 3FS-3d.</p>`
     };
 

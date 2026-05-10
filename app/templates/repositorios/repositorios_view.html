@@ -7,7 +7,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
+  <link href="{{ url_for('static', filename='css/corporate.css') }}" rel="stylesheet">
+    <style>
     :root {
       --ink: #1f1d2b;
       --muted: #6b7280;
@@ -280,7 +281,7 @@
     }
   </style>
 </head>
-<body>
+<body class="violeta-corp">
   <header class="main-header">
     <div>
       <h1>Mis Repositorios de GitHub</h1>
@@ -726,7 +727,7 @@
             li.dataset.path = item.path;
             li.dataset.type = item.type;
             li.innerHTML = `
-              <span>${item.type === 'dir' ? '📁' : '📄'} ${item.name}</span>
+              <span>${item.type === 'dir' ? 'ðŸ“' : 'ðŸ“„'} ${item.name}</span>
               <small>${item.type === 'dir' ? 'Carpeta' : 'Archivo'}</small>
             `;
             treeList.appendChild(li);

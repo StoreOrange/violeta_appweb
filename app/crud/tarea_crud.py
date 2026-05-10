@@ -2,12 +2,13 @@
 from app import db
 from app.models import Estado, Tarea
 
-def crear_tarea(titulo, descripcion, idproyecto, idusuario_asignado, fecha_creacion, fecha_limite, idtipo_tarea, idprioridad, idestado, idadjunto, creada_por):
+def crear_tarea(titulo, descripcion, idproyecto, idusuario_asignado, fecha_creacion, fecha_limite, idtipo_tarea, idprioridad, idestado, idadjunto, creada_por, equipo_desarrollo=False):
     tarea = Tarea(
         titulo=titulo,
         descripcion=descripcion,
         idproyecto=idproyecto,
         idusuario_asignado=idusuario_asignado,
+        equipo_desarrollo=equipo_desarrollo,
         fecha_creacion=fecha_creacion,
         fecha_limite=fecha_limite,
         idtipo_tarea=idtipo_tarea,

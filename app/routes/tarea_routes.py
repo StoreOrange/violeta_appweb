@@ -6,39 +6,71 @@ from app.crud.tarea_crud import *
 from app.crud.proyecto_crud import listar_proyectos
 from app.crud.tipo_tarea_crud import listar_tipos_tarea
 from app.crud.usuario_crud import listar_usuarios
-from app.utils.email import get_active_recipient_emails, send_new_task_email
+from app.crud.adjunto_crud import crear_adjunto
+from app.utils.email import get_task_involved_recipient_emails, send_new_task_email
+from app.utils.uploads import validate_upload, save_upload
 from datetime import datetime
 from collections import defaultdict
 
 tarea_bp = Blueprint('tarea', __name__, url_prefix='/tareas')
+TEAM_DESARROLLO_VALUE = 'team_desarrollo'
+
+
+def _get_current_user_id():
+    return session.get('user_id') or session.get('idusuario') or 1
+
+
+def _get_team_desarrollo_users():
+    return [u for u in listar_usuarios() if getattr(u, 'activo', False)]
 
 # REGISTRO DE NUEVA TAREA
 @tarea_bp.route('/nuevo', methods=['POST'])
 def nueva_tarea():
     form = request.form
     accion = form.get('accion')
-    idusuario_admin = session.get('idusuario') or 1
+    idusuario_admin = _get_current_user_id()
     idadjunto = form.get('idadjunto') or None
+    idusuario_asignado = form.get('idusuario_asignado')
+    equipo_desarrollo = idusuario_asignado == TEAM_DESARROLLO_VALUE
     if idadjunto == "":
         idadjunto = None
+    if equipo_desarrollo:
+        idusuario_asignado = None
+
+    file = request.files.get('adjunto')
+    if file and file.filename:
+        is_valid, error_message = validate_upload(file)
+        if not is_valid:
+            flash(error_message)
+            return redirect(url_for('tarea.vista_tareas'))
+        ruta_archivo = save_upload(file)
+        adjunto_obj = crear_adjunto(
+            ruta_archivo=ruta_archivo,
+            tipo=file.mimetype,
+            fecha_subida=datetime.now(),
+            idusuario=idusuario_admin,
+            descripcion='Adjunto de tarea'
+        )
+        idadjunto = adjunto_obj.idadjunto
 
     tarea = crear_tarea(
         titulo=form.get('titulo'),
         descripcion=form.get('descripcion'),
         idproyecto=form.get('idproyecto'),
-        idusuario_asignado=form.get('idusuario_asignado'),
+        idusuario_asignado=idusuario_asignado,
         fecha_creacion=form.get('fecha_creacion'),
         fecha_limite=form.get('fecha_limite'),
         idtipo_tarea=form.get('idtipo_tarea'),
         idprioridad=form.get('idprioridad'),
         idestado=form.get('idestado'),
         idadjunto=idadjunto,
-        creada_por=idusuario_admin
+        creada_por=idusuario_admin,
+        equipo_desarrollo=equipo_desarrollo
     )
 
     recipients = []
     try:
-        recipients = get_active_recipient_emails()
+        recipients = get_task_involved_recipient_emails(tarea)
         if recipients:
             ok, error = send_new_task_email(tarea, recipients)
             if not ok:
@@ -50,14 +82,18 @@ def nueva_tarea():
     if form.get('enviar_notificacion') == 'on':
         mensaje = f"Se ha asignado una nueva tarea: {tarea.titulo}"
         destinatarios_txt = ', '.join(recipients) if recipients else None
-        crear_notificacion(
-            idusuario=tarea.idusuario_asignado,
-            idtarea=tarea.idtarea,
-            mensaje=mensaje,
-            fecha_envio=datetime.now(),
-            tipo='Tarea',
-            destinatarios=destinatarios_txt
+        destinatarios_notificacion = (
+            _get_team_desarrollo_users() if tarea.equipo_desarrollo else [tarea.usuario_asignado] if tarea.usuario_asignado else []
         )
+        for usuario in destinatarios_notificacion:
+            crear_notificacion(
+                idusuario=usuario.idusuario,
+                idtarea=tarea.idtarea,
+                mensaje=mensaje,
+                fecha_envio=datetime.now(),
+                tipo='Tarea',
+                destinatarios=destinatarios_txt
+            )
 
     flash('Tarea registrada exitosamente')
     if accion == 'guardar_nueva':
@@ -103,6 +139,12 @@ def vista_tareas():
         }
         for u in usuarios
     ]
+    usuarios_json.append(
+        {
+            "idusuario": TEAM_DESARROLLO_VALUE,
+            "nombre": "Team Desarrollo"
+        }
+    )
 
     # Agrupar tareas por proyecto (solo las pendientes)
     tareas_por_proyecto = defaultdict(list)
@@ -122,7 +164,7 @@ def vista_tareas():
                 "idtarea": tarea.idtarea,
                 "titulo": tarea.titulo,
                 "descripcion": tarea.descripcion,
-                "usuario": tarea.usuario_asignado.nombre if tarea.usuario_asignado else '',
+                "usuario": tarea.nombre_responsable,
                 "prioridad": tarea.prioridad.nombre_prioridad if tarea.prioridad else 'Sin Prioridad',
                 "prioridad_color": tarea.prioridad.color if tarea.prioridad and tarea.prioridad.color else '#a386e6',
                 "estado": tarea.estado.nombre_estado if tarea.estado else 'Sin Estado',

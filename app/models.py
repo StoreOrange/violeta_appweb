@@ -103,6 +103,7 @@ class Tarea(db.Model):
     descripcion = db.Column(db.Text)
     idproyecto = db.Column(db.Integer, db.ForeignKey('proyecto.idproyecto'))
     idusuario_asignado = db.Column(db.Integer, db.ForeignKey('usuario.idusuario'))
+    equipo_desarrollo = db.Column(db.Boolean, nullable=False, default=False)
     fecha_creacion = db.Column(db.DateTime)
     fecha_limite = db.Column(db.Date)
     idtipo_tarea = db.Column(db.Integer, db.ForeignKey('tipo_tarea.idtipo_tarea'))
@@ -139,6 +140,14 @@ class Tarea(db.Model):
         foreign_keys='TareaDependencia.idpredecesor',
         back_populates='predecesor'
     )
+
+    @property
+    def nombre_responsable(self):
+        if self.equipo_desarrollo:
+            return 'Team Desarrollo'
+        if self.usuario_asignado:
+            return self.usuario_asignado.nombre
+        return 'Sin asignar'
 
 
 class TareaDependencia(db.Model):

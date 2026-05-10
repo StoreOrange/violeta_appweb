@@ -38,6 +38,7 @@ _SMTP = _TOML.get('smtp', {}) if isinstance(_TOML.get('smtp'), dict) else {}
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'clave-secreta-gestion-violeta')
+    MAX_CONTENT_LENGTH = 25 * 1024 * 1024
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL',
         'postgresql://superuser:1234@localhost:5432/GESTIONDB'

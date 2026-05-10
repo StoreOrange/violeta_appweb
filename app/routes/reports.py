@@ -3,12 +3,13 @@ from datetime import date, datetime, timedelta
 import unicodedata
 import re
 from io import BytesIO
+from collections import Counter
 
 # CRUD reales (no inventamos funciones)
 from app.crud.proyecto_crud import listar_proyectos
 from app.crud.tarea_crud import listar_tareas
 from app import db
-from app.models import Tarea, TareaDependencia
+from app.models import Tarea, TareaDependencia, Comentario
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from reportlab.lib.pagesizes import landscape, letter
@@ -75,6 +76,154 @@ def _texto_color(hex_color):
         return "#111827"
     luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
     return "#111827" if luminance > 0.6 else "#ffffff"
+
+def _parse_date_param(value):
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+def _comment_excerpt(text, limit=150):
+    if not text:
+        return "Sin detalle registrado"
+    clean = " ".join(str(text).split())
+    if len(clean) <= limit:
+        return clean
+    return clean[: limit - 3].rstrip() + "..."
+
+def _build_ticket_report_data(proyecto_id, fecha_inicio, fecha_fin):
+    proyectos = listar_proyectos()
+    comentarios_query = (
+        Comentario.query
+        .join(Tarea, Comentario.idtarea == Tarea.idtarea)
+        .filter(Comentario.fecha.isnot(None))
+    )
+
+    if proyecto_id:
+        comentarios_query = comentarios_query.filter(Tarea.idproyecto == proyecto_id)
+    if fecha_inicio:
+        comentarios_query = comentarios_query.filter(Comentario.fecha >= datetime.combine(fecha_inicio, datetime.min.time()))
+    if fecha_fin:
+        comentarios_query = comentarios_query.filter(Comentario.fecha < datetime.combine(fecha_fin + timedelta(days=1), datetime.min.time()))
+
+    comentarios = (
+        comentarios_query
+        .order_by(Comentario.fecha.desc(), Comentario.idcomentario.desc())
+        .all()
+    )
+
+    resumen_por_tarea = {}
+    total_adjuntos = 0
+    usuarios_activos = set()
+    estados_counter = Counter()
+    ultimos_movimientos = []
+
+    for comentario in comentarios:
+        tarea = comentario.tarea
+        if not tarea:
+            continue
+
+        resumen = resumen_por_tarea.get(tarea.idtarea)
+        if resumen is None:
+            resumen = {
+                "tarea": tarea,
+                "comentarios": [],
+                "participantes": {},
+                "estado_counter": Counter(),
+                "con_adjuntos": 0,
+            }
+            resumen_por_tarea[tarea.idtarea] = resumen
+
+        resumen["comentarios"].append(comentario)
+        if comentario.usuario:
+            resumen["participantes"][comentario.usuario.idusuario] = comentario.usuario
+            usuarios_activos.add(comentario.usuario.idusuario)
+        if comentario.idadjunto:
+            resumen["con_adjuntos"] += 1
+            total_adjuntos += 1
+
+        estado_nombre = _estado_nombre(comentario.estado)
+        resumen["estado_counter"][estado_nombre] += 1
+        estados_counter[estado_nombre] += 1
+
+    filas = []
+    for resumen in resumen_por_tarea.values():
+        comentarios_tarea = sorted(
+            resumen["comentarios"],
+            key=lambda item: (item.fecha or datetime.min, item.idcomentario or 0)
+        )
+        primero = comentarios_tarea[0]
+        ultimo = comentarios_tarea[-1]
+        ultimo_estado_nombre = _estado_nombre(ultimo.estado or resumen["tarea"].estado)
+        ultimo_estado_clase = _estado_clase(ultimo_estado_nombre)
+        ultimo_estado_color = _estado_color(ultimo.estado or resumen["tarea"].estado)
+        ultimo_estado_texto = _texto_color(ultimo_estado_color)
+        participantes = list(resumen["participantes"].values())
+        estado_detalle = [
+            {"nombre": nombre, "total": total}
+            for nombre, total in resumen["estado_counter"].most_common()
+        ]
+
+        fila = {
+            "tarea": resumen["tarea"],
+            "total_comentarios": len(comentarios_tarea),
+            "total_participantes": len(participantes),
+            "participantes": participantes,
+            "fecha_primera_respuesta": primero.fecha,
+            "fecha_ultima_respuesta": ultimo.fecha,
+            "ultimo_usuario": ultimo.usuario,
+            "ultimo_estado_nombre": ultimo_estado_nombre,
+            "ultimo_estado_clase": ultimo_estado_clase,
+            "ultimo_estado_color": ultimo_estado_color,
+            "ultimo_estado_texto": ultimo_estado_texto,
+            "estado_detalle": estado_detalle,
+            "con_adjuntos": resumen["con_adjuntos"],
+            "ultimo_comentario": _comment_excerpt(ultimo.comentario),
+        }
+        filas.append(fila)
+        ultimos_movimientos.append(ultimo)
+
+    filas.sort(
+        key=lambda item: (
+            item["fecha_ultima_respuesta"] or datetime.min,
+            item["tarea"].titulo or ""
+        ),
+        reverse=True
+    )
+
+    tareas_cerradas = 0
+    for fila in filas:
+        normalized = unicodedata.normalize("NFKD", fila["ultimo_estado_nombre"] or "")
+        stripped = "".join(c for c in normalized if not unicodedata.combining(c)).lower()
+        if any(word in stripped for word in ("cerrad", "terminad", "completad", "finalizad")):
+            tareas_cerradas += 1
+
+    resumen_estados = [
+        {"nombre": nombre, "total": total, "clase": _estado_clase(nombre)}
+        for nombre, total in estados_counter.most_common()
+    ]
+
+    resumen_general = {
+        "total_tareas": len(filas),
+        "total_comentarios": len(comentarios),
+        "total_participantes": len(usuarios_activos),
+        "total_adjuntos": total_adjuntos,
+        "tareas_cerradas": tareas_cerradas,
+        "promedio_seguimientos": round((len(comentarios) / len(filas)), 1) if filas else 0,
+        "ultimo_movimiento": max(ultimos_movimientos, key=lambda item: item.fecha) if ultimos_movimientos else None,
+    }
+
+    return {
+        "proyectos": proyectos,
+        "filas": filas,
+        "resumen_general": resumen_general,
+        "resumen_estados": resumen_estados,
+        "proyecto_seleccionado": proyecto_id,
+        "fecha_inicio": fecha_inicio,
+        "fecha_fin": fecha_fin,
+    }
 
 def _parse_predecesores(raw):
     if not raw:
@@ -322,6 +471,19 @@ def project_report():
         dependencias=dependencias_info,
         print_mode=print_mode
     )
+
+
+@reports_bp.route("/ticket-report", methods=["GET"])
+def ticket_report():
+    proyecto_id = request.args.get("proyecto_id", type=int)
+    fecha_inicio = _parse_date_param(request.args.get("fecha_inicio")) or (date.today() - timedelta(days=29))
+    fecha_fin = _parse_date_param(request.args.get("fecha_fin")) or date.today()
+
+    if fecha_fin < fecha_inicio:
+        fecha_fin = fecha_inicio
+
+    report = _build_ticket_report_data(proyecto_id, fecha_inicio, fecha_fin)
+    return render_template("reports/ticket_report.html", **report)
 
 
 @reports_bp.route("/project-report/export/excel", methods=["GET"])

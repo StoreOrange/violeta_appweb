@@ -1,7 +1,8 @@
 # app/__init__.py
 
-from flask import Flask
+from flask import Flask, flash, redirect, request
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.exceptions import RequestEntityTooLarge
 
 
 db = SQLAlchemy()
@@ -11,6 +12,12 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')  # <-- ¡ASÍ ESTÁ CORRECTO!
     db.init_app(app)
+
+    @app.errorhandler(RequestEntityTooLarge)
+    def handle_large_file(_error):
+        flash('El archivo supera el limite permitido de 25 MB.')
+        return redirect(request.referrer or '/')
+
     from app.routes.main_routes import main_bp
     from app.routes.usuario_routes import usuario_bp
     from app.routes.proyecto_routes import proyecto_bp

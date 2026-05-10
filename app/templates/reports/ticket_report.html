@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Informe de Tickets | Violeta Workspace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/corporate.css') }}" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #edf3f8;
+            --ink: #14243b;
+            --muted: #61738a;
+            --brand: #23406d;
+            --accent: #0f9d8f;
+            --card: #ffffff;
+            --line: #dce4ef;
+            --chip: #eef4fb;
+            --shadow: 0 18px 36px rgba(20, 36, 59, 0.12);
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at top left, rgba(255,255,255,0.9), transparent 34%),
+                linear-gradient(160deg, #f7fbff 0%, var(--bg) 100%);
+            color: var(--ink);
+            font-family: "Sora", "Segoe UI", Arial, sans-serif;
+        }
+
+        .page-shell {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 28px 18px 42px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(35, 64, 109, 0.12);
+            color: var(--brand);
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 10px 26px rgba(20, 36, 59, 0.08);
+        }
+
+        .hero {
+            margin-top: 18px;
+            background: linear-gradient(135deg, rgba(20, 36, 59, 0.96), rgba(35, 64, 109, 0.92));
+            color: #fff;
+            border-radius: 30px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr);
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.75rem;
+            opacity: 0.72;
+            margin-bottom: 10px;
+        }
+
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: 2rem;
+            line-height: 1.08;
+        }
+
+        .hero p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.82);
+            max-width: 720px;
+        }
+
+        .hero-aside {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 22px;
+            padding: 18px 18px 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-aside strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+
+        .range-label {
+            color: rgba(255, 255, 255, 0.76);
+            font-size: 0.92rem;
+        }
+
+        .range-value {
+            margin-top: 12px;
+            display: inline-flex;
+            gap: 10px;
+            align-items: center;
+            border-radius: 999px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.12);
+            font-weight: 600;
+        }
+
+        .panel {
+            margin-top: 20px;
+            background: var(--card);
+            border-radius: 28px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+            gap: 14px;
+            align-items: end;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.84rem;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .field select,
+        .field input {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 12px 14px;
+            background: #f8fbff;
+            color: var(--ink);
+            font: inherit;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 12px 18px;
+            text-decoration: none;
+            font-weight: 700;
+            border: 1px solid transparent;
+        }
+
+        .btn-action.primary {
+            background: var(--brand);
+            color: #fff;
+        }
+
+        .btn-action.ghost {
+            background: #fff;
+            border-color: var(--line);
+            color: var(--brand);
+        }
+
+        .kpis {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 14px;
+        }
+
+        .kpi {
+            background: linear-gradient(180deg, #ffffff, #f7fbff);
+            border: 1px solid #e6edf6;
+            border-radius: 22px;
+            padding: 18px;
+        }
+
+        .kpi-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .kpi-value {
+            margin-top: 10px;
+            font-size: 1.95rem;
+            line-height: 1;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .kpi-note {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .content-grid {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: minmax(0, 2.2fr) minmax(280px, 0.95fr);
+            gap: 18px;
+        }
+
+        .section-title {
+            margin: 0 0 14px;
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid #e7edf5;
+            border-radius: 22px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1120px;
+        }
+
+        thead th {
+            text-align: left;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            background: #f7fbff;
+            padding: 14px 16px;
+            border-bottom: 1px solid #e7edf5;
+        }
+
+        tbody td {
+            padding: 16px;
+            border-bottom: 1px solid #eef3f9;
+            vertical-align: top;
+            font-size: 0.92rem;
+        }
+
+        tbody tr:hover {
+            background: #fbfdff;
+        }
+
+        .task-title {
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+
+        .task-meta,
+        .excerpt,
+        .mini-note {
+            color: var(--muted);
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        .status-pill,
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-pill {
+            background: #e8eef7;
+            color: var(--brand);
+        }
+
+        .chip {
+            background: var(--chip);
+            color: var(--brand);
+            margin: 4px 6px 0 0;
+        }
+
+        .participants {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .side-stack {
+            display: grid;
+            gap: 18px;
+        }
+
+        .state-list,
+        .movement-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .state-item,
+        .movement-item {
+            border: 1px solid #e7edf5;
+            border-radius: 18px;
+            padding: 14px;
+            background: linear-gradient(180deg, #ffffff, #f8fbff);
+        }
+
+        .state-line,
+        .movement-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .empty {
+            border: 1px dashed #cfd9e6;
+            border-radius: 24px;
+            padding: 28px;
+            text-align: center;
+            color: var(--muted);
+            background: linear-gradient(180deg, #ffffff, #f7fbff);
+        }
+
+        @media (max-width: 1080px) {
+            .hero-grid,
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .page-shell {
+                padding: 18px 12px 28px;
+            }
+
+            .hero,
+            .panel {
+                border-radius: 24px;
+                padding: 18px;
+            }
+
+            .hero h1 {
+                font-size: 1.6rem;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="violeta-corp">
+    <div class="page-shell">
+        <a class="back-link" href="{{ url_for('usuario.dashboard') }}">
+            <i class="bi bi-arrow-left"></i> Volver al panel
+        </a>
+
+        <section class="hero">
+            <div class="hero-grid">
+                <div>
+                    <div class="eyebrow">Ticket Analytics</div>
+                    <h1>Informe resumido de tareas, tickets y seguimientos</h1>
+                    <p>Consulta de fecha a fecha el movimiento real de cada tarea: respuestas, participantes, estados usados en comentarios y último avance reportado.</p>
+                </div>
+                <aside class="hero-aside">
+                    <strong>Rango analizado</strong>
+                    <div class="range-label">Los datos se calculan según la fecha del comentario o seguimiento registrado.</div>
+                    <div class="range-value">
+                        <i class="bi bi-calendar-range"></i>
+                        {{ fecha_inicio.strftime('%d/%m/%Y') if fecha_inicio else '--' }} a {{ fecha_fin.strftime('%d/%m/%Y') if fecha_fin else '--' }}
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="panel">
+            <form method="get" class="filters">
+                <div class="field">
+                    <label for="proyecto_id">Proyecto</label>
+                    <select id="proyecto_id" name="proyecto_id">
+                        <option value="">Todos los proyectos</option>
+                        {% for proyecto in proyectos %}
+                        <option value="{{ proyecto.idproyecto }}" {% if proyecto.idproyecto == proyecto_seleccionado %}selected{% endif %}>
+                            {{ proyecto.nombre_proyecto }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="fecha_inicio">Fecha inicio</label>
+                    <input id="fecha_inicio" type="date" name="fecha_inicio" value="{{ fecha_inicio.isoformat() if fecha_inicio else '' }}" required>
+                </div>
+                <div class="field">
+                    <label for="fecha_fin">Fecha fin</label>
+                    <input id="fecha_fin" type="date" name="fecha_fin" value="{{ fecha_fin.isoformat() if fecha_fin else '' }}" required>
+                </div>
+                <div class="field">
+                    <label>Acceso rapido</label>
+                    <a class="btn-action ghost" href="{{ url_for('reports.project_report', proyecto_id=proyecto_seleccionado) }}">
+                        <i class="bi bi-diagram-3"></i> Ver Gantt
+                    </a>
+                </div>
+                <div class="actions">
+                    <button class="btn-action primary" type="submit">
+                        <i class="bi bi-search"></i> Generar informe
+                    </button>
+                    <a class="btn-action ghost" href="{{ url_for('reports.ticket_report') }}">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reiniciar
+                    </a>
+                </div>
+            </form>
+
+            <div class="kpis">
+                <article class="kpi">
+                    <div class="kpi-top"><span>Tareas con movimiento</span><i class="bi bi-list-task"></i></div>
+                    <div class="kpi-value">{{ resumen_general.total_tareas }}</div>
+                    <div class="kpi-note">Tareas con al menos un comentario en el rango.</div>
+                </article>
+                <article class="kpi">
+                    <div class="kpi-top"><span>Seguimientos</span><i class="bi bi-chat-left-text"></i></div>
+                    <div class="kpi-value">{{ resumen_general.total_comentarios }}</div>
+                    <div class="kpi-note">Total de respuestas y actualizaciones registradas.</div>
+                </article>
+                <article class="kpi">
+                    <div class="kpi-top"><span>Participantes</span><i class="bi bi-people"></i></div>
+                    <div class="kpi-value">{{ resumen_general.total_participantes }}</div>
+                    <div class="kpi-note">Usuarios distintos que intervinieron en tickets.</div>
+                </article>
+                <article class="kpi">
+                    <div class="kpi-top"><span>Tareas cerradas</span><i class="bi bi-check2-circle"></i></div>
+                    <div class="kpi-value">{{ resumen_general.tareas_cerradas }}</div>
+                    <div class="kpi-note">Según el último estado reportado en comentarios.</div>
+                </article>
+                <article class="kpi">
+                    <div class="kpi-top"><span>Promedio por tarea</span><i class="bi bi-activity"></i></div>
+                    <div class="kpi-value">{{ resumen_general.promedio_seguimientos }}</div>
+                    <div class="kpi-note">Seguimientos promedio por tarea con actividad.</div>
+                </article>
+                <article class="kpi">
+                    <div class="kpi-top"><span>Adjuntos</span><i class="bi bi-paperclip"></i></div>
+                    <div class="kpi-value">{{ resumen_general.total_adjuntos }}</div>
+                    <div class="kpi-note">Comentarios con archivos, fotos o videos asociados.</div>
+                </article>
+            </div>
+
+            {% if filas %}
+            <div class="content-grid">
+                <div>
+                    <h2 class="section-title">Resumen por tarea</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tarea</th>
+                                    <th>Responsable</th>
+                                    <th>Seguimiento</th>
+                                    <th>Participantes</th>
+                                    <th>Estado final</th>
+                                    <th>Último movimiento</th>
+                                    <th>Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for fila in filas %}
+                                <tr>
+                                    <td>
+                                        <div class="task-title">{{ fila.tarea.titulo }}</div>
+                                        <div class="task-meta">{{ fila.tarea.proyecto.nombre_proyecto if fila.tarea.proyecto else 'Sin proyecto' }}</div>
+                                        <div class="mini-note">
+                                            Creada {{ fila.tarea.fecha_creacion.strftime('%d/%m/%Y') if fila.tarea.fecha_creacion else 'sin fecha' }}
+                                            {% if fila.tarea.fecha_limite %}
+                                            · vence {{ fila.tarea.fecha_limite.strftime('%d/%m/%Y') }}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="chip"><i class="bi bi-person-badge"></i> {{ fila.tarea.nombre_responsable }}</span>
+                                        {% if fila.con_adjuntos %}
+                                        <div><span class="chip"><i class="bi bi-paperclip"></i> {{ fila.con_adjuntos }} adjuntos</span></div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="task-title">{{ fila.total_comentarios }}</div>
+                                        <div class="mini-note">
+                                            Primera: {{ fila.fecha_primera_respuesta.strftime('%d/%m/%Y %H:%M') if fila.fecha_primera_respuesta else '--' }}<br>
+                                            Última: {{ fila.fecha_ultima_respuesta.strftime('%d/%m/%Y %H:%M') if fila.fecha_ultima_respuesta else '--' }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="task-title">{{ fila.total_participantes }}</div>
+                                        <div class="participants">
+                                            {% for participante in fila.participantes %}
+                                            <span class="chip"><i class="bi bi-person"></i> {{ participante.nombre }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="status-pill"{% if fila.ultimo_estado_color %} style="background: {{ fila.ultimo_estado_color }}; color: {{ fila.ultimo_estado_texto }};"{% endif %}>
+                                            <i class="bi bi-flag"></i> {{ fila.ultimo_estado_nombre }}
+                                        </span>
+                                        <div class="participants">
+                                            {% for estado in fila.estado_detalle %}
+                                            <span class="chip">{{ estado.nombre }} · {{ estado.total }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="task-title">{{ fila.ultimo_usuario.nombre if fila.ultimo_usuario else 'Usuario no identificado' }}</div>
+                                        <div class="mini-note">{{ fila.fecha_ultima_respuesta.strftime('%d/%m/%Y %H:%M') if fila.fecha_ultima_respuesta else '--' }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="excerpt">{{ fila.ultimo_comentario }}</div>
+                                        <div class="mini-note" style="margin-top: 10px;">
+                                            <a href="{{ url_for('comentario.vista_comentarios', idproyecto=fila.tarea.idproyecto, idtarea=fila.tarea.idtarea) }}">Abrir ticket</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <aside class="side-stack">
+                    <section>
+                        <h2 class="section-title">Estados mas usados</h2>
+                        <div class="state-list">
+                            {% for estado in resumen_estados %}
+                            <div class="state-item">
+                                <div class="state-line">
+                                    <span class="status-pill">{{ estado.nombre }}</span>
+                                    <strong>{{ estado.total }}</strong>
+                                </div>
+                                <div class="mini-note">Apariciones de este estado dentro de comentarios del rango.</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+
+                    <section>
+                        <h2 class="section-title">Ultimo movimiento global</h2>
+                        {% if resumen_general.ultimo_movimiento %}
+                        <div class="movement-item">
+                            <div class="movement-line">
+                                <strong>{{ resumen_general.ultimo_movimiento.tarea.titulo if resumen_general.ultimo_movimiento.tarea else 'Tarea' }}</strong>
+                                <span class="chip">{{ resumen_general.ultimo_movimiento.fecha.strftime('%d/%m/%Y %H:%M') if resumen_general.ultimo_movimiento.fecha else '--' }}</span>
+                            </div>
+                            <div class="mini-note" style="margin-top: 8px;">
+                                Por {{ resumen_general.ultimo_movimiento.usuario.nombre if resumen_general.ultimo_movimiento.usuario else 'Usuario' }}
+                            </div>
+                            <div class="excerpt" style="margin-top: 10px;">
+                                {{ resumen_general.ultimo_movimiento.comentario or 'Sin contenido registrado' }}
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="empty">No hay movimientos en el rango seleccionado.</div>
+                        {% endif %}
+                    </section>
+                </aside>
+            </div>
+            {% else %}
+            <div class="empty" style="margin-top: 18px;">
+                <h2 class="section-title" style="margin-bottom: 8px;">Sin actividad en ese rango</h2>
+                <div>No se encontraron comentarios o seguimientos entre las fechas indicadas. Ajusta el rango o cambia el proyecto para generar el informe.</div>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+</body>
+</html>
