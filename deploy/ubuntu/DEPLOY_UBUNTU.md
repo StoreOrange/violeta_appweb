@@ -119,6 +119,29 @@ sudo systemctl restart violeta
 sudo systemctl reload nginx
 ```
 
+## 9.1. Alinear una base existente con el proyecto actual
+
+Si la base ya existia antes de integrar Alembic, primero aplica el parche seguro:
+
+```bash
+cd /home/ubuntu/Documents/Violeta
+PGPASSWORD=1234 psql -h localhost -U user -d gestiondb -f deploy/ubuntu/update_schema_violeta.sql
+```
+
+Luego marca la base con la revision inicial de migraciones:
+
+```bash
+source .venv/bin/activate
+export FLASK_APP=wsgi.py
+flask db stamp faa6f74cbb59
+```
+
+Despues de eso, las siguientes actualizaciones ya pueden usar:
+
+```bash
+flask db upgrade
+```
+
 ## 10. Validaciones finales
 
 ```bash

@@ -1,17 +1,20 @@
 # app/__init__.py
 
 from flask import Flask, flash, redirect, request
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import RequestEntityTooLarge
 
 
 db = SQLAlchemy()
+migrate = Migrate()
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('config.Config')  # <-- ¡ASÍ ESTÁ CORRECTO!
+    app.config.from_object('config.Config')
     db.init_app(app)
+    migrate.init_app(app, db)
 
     @app.errorhandler(RequestEntityTooLarge)
     def handle_large_file(_error):
@@ -32,7 +35,6 @@ def create_app():
     from app.routes.agenda_routes import agenda_bp
     from app.routes.repositorios_routes import repositorios_bp
     from app.routes.seguimiento_routes import seguimiento_bp
-    
 
     app.register_blueprint(main_bp)
     app.register_blueprint(usuario_bp)
@@ -50,8 +52,3 @@ def create_app():
     app.register_blueprint(seguimiento_bp)
 
     return app
-
-
-
-
-
