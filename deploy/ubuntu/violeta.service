@@ -1,0 +1,17 @@
+[Unit]
+Description=Violeta Flask app via Gunicorn
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/Documents/Violeta
+Environment="PATH=/home/ubuntu/Documents/Violeta/.venv/bin"
+Environment="FLASK_DEBUG=false"
+Environment="CONFIG_TOML_PATH=/home/ubuntu/Documents/Violeta/config.toml"
+ExecStart=/home/ubuntu/Documents/Violeta/.venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 wsgi:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
